@@ -1,0 +1,27 @@
+start 2 ok f=1286 tile=13,23 dir=2 dots=0 level=2 4E04=3 score=0
+start 3 ok f=2276 tile=13,23 dir=2 dots=0 level=3 4E04=3 score=0
+start 4 ok f=2630 tile=13,23 dir=2 dots=0 level=4 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} best=2 fruit=0 t=0s
+d=10 jobs=75 kids=65 fails={'dead': 5, 'shortwin': 4} best=37 fruit=0 t=4s
+d=20 jobs=170 kids=148 fails={'dead': 20} best=83 fruit=0 t=45s
+d=30 jobs=174 kids=158 fails={'dead': 10} best=108 fruit=1 t=90s
+d=40 jobs=168 kids=147 fails={'shortwin': 5, 'dead': 13} best=141 fruit=1 t=132s
+d=50 jobs=155 kids=115 fails={'dead': 36, 'shortwin': 2} best=156 fruit=1 t=174s
+d=60 jobs=178 kids=150 fails={'dead': 19} best=183 fruit=1 t=222s
+d=70 jobs=165 kids=111 fails={'dead': 53} best=166 fruit=1 t=269s
+d=80 jobs=163 kids=127 fails={'dead': 31, 'shortwin': 4, 'late-dead': 1} best=177 fruit=1 t=309s
+d=90 jobs=157 kids=132 fails={'shortwin': 4, 'dead': 15} best=187 fruit=2 t=373s
+d=100 jobs=142 kids=80 fails={'dead': 62} best=203 fruit=2 t=433s
+d=110 jobs=126 kids=68 fails={'dead': 51, 'shortwin': 6} best=209 fruit=2 t=463s
+d=120 jobs=176 kids=109 fails={'dead': 59, 'shortwin': 4} best=220 fruit=2 t=536s
+d=130 jobs=141 kids=84 fails={'dead': 53, 'shortwin': 4} best=209 fruit=2 t=599s
+d=140 jobs=143 kids=90 fails={'dead': 48, 'shortwin': 2} best=234 fruit=2 t=667s
+d=150 jobs=170 kids=125 fails={'dead': 40} best=235 fruit=2 t=740s
+d=160 jobs=124 kids=74 fails={'dead': 43, 'shortwin': 3} best=237 fruit=2 t=813s
+d=170 jobs=114 kids=61 fails={'dead': 52} best=229 fruit=2 t=886s
+d=180 jobs=83 kids=39 fails={'dead': 41} best=227 fruit=2 t=942s
+d=190 jobs=27 kids=16 fails={'dead': 10} best=226 fruit=2 t=970s
+d=200 jobs=29 kids=16 fails={'dead': 13} best=232 fruit=2 t=991s
+d=210 jobs=6 kids=4 fails={'dead': 2} best=226 fruit=2 t=1000s
+d=212 stalled: no progress past 238 dots for 30 moves
+RESULT cleared=False dots=238 frames=4331 fruits=2 moves=182 turns=131 minwin=5 route=LLURRDRURRUUUULDLULLDDRDDRURDRUUURULDRDLDDDDRURULULULLULURRRRDRULLDLDLLDLDLDRDRUURURDLDLLLDLULURDRRRRDLDLULURULUULUULDRURRRRDLDLULURRRRDDDDLLLLLDLLDRRURURULUUULURULLLDRDLDDDRDRRDLDRU

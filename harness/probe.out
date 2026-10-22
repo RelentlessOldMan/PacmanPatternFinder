@@ -1,0 +1,62 @@
+﻿PORT :DSW1 FIELD Coinage
+PORT :DSW1 FIELD Lives
+PORT :DSW1 FIELD Ghost Names
+PORT :DSW1 FIELD Bonus Life
+PORT :DSW1 FIELD Difficulty
+PORT :IN0 FIELD P1 Up
+PORT :IN0 FIELD P1 Down
+PORT :IN0 FIELD Coin 1
+PORT :IN0 FIELD Coin 2
+PORT :IN0 FIELD Service 1
+PORT :IN0 FIELD P1 Left
+PORT :IN0 FIELD P1 Right
+PORT :IN0 FIELD Rack Test (Cheat)
+PORT :IN1 FIELD P2 Down
+PORT :IN1 FIELD Service Mode
+PORT :IN1 FIELD 2 Players Start
+PORT :IN1 FIELD 1 Player Start
+PORT :IN1 FIELD P2 Left
+PORT :IN1 FIELD Cabinet
+PORT :IN1 FIELD P2 Up
+PORT :IN1 FIELD P2 Right
+f=630 pac(4D08,4D09)=0,0 tile(4D39,4D3A)=56,46 blinky(4D00,4D01)=0,0 level=0 lives=0
+f=660 pac(4D08,4D09)=0,0 tile(4D39,4D3A)=56,46 blinky(4D00,4D01)=0,0 level=0 lives=0
+f=690 pac(4D08,4D09)=0,0 tile(4D39,4D3A)=56,46 blinky(4D00,4D01)=0,0 level=0 lives=0
+f=720 pac(4D08,4D09)=0,0 tile(4D39,4D3A)=56,46 blinky(4D00,4D01)=0,0 level=0 lives=3
+f=750 pac(4D08,4D09)=0,0 tile(4D39,4D3A)=56,46 blinky(4D00,4D01)=0,0 level=0 lives=3
+f=780 pac(4D08,4D09)=0,0 tile(4D39,4D3A)=56,46 blinky(4D00,4D01)=0,0 level=0 lives=3
+f=810 pac(4D08,4D09)=0,0 tile(4D39,4D3A)=56,46 blinky(4D00,4D01)=0,0 level=0 lives=3
+f=840 pac(4D08,4D09)=0,0 tile(4D39,4D3A)=56,46 blinky(4D00,4D01)=0,0 level=0 lives=3
+f=870 pac(4D08,4D09)=196,128 tile(4D39,4D3A)=56,46 blinky(4D00,4D01)=100,128 level=0 lives=3
+f=900 pac(4D08,4D09)=196,128 tile(4D39,4D3A)=56,46 blinky(4D00,4D01)=100,128 level=0 lives=3
+f=930 pac(4D08,4D09)=196,128 tile(4D39,4D3A)=56,46 blinky(4D00,4D01)=100,128 level=0 lives=3
+f=960 pac(4D08,4D09)=196,128 tile(4D39,4D3A)=56,46 blinky(4D00,4D01)=100,128 level=0 lives=3
+f=990 pac(4D08,4D09)=196,154 tile(4D39,4D3A)=56,49 blinky(4D00,4D01)=100,156 level=0 lives=3
+f=1020 pac(4D08,4D09)=196,181 tile(4D39,4D3A)=56,52 blinky(4D00,4D01)=120,164 level=0 lives=3
+f=1050 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=124,188 level=0 lives=3
+f=1080 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=96,188 level=0 lives=3
+f=1110 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=68,188 level=0 lives=3
+f=1140 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=52,176 level=0 lives=3
+f=1170 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=52,148 level=0 lives=3
+f=1200 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=52,119 level=0 lives=3
+f=1230 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=52,91 level=0 lives=3
+f=1260 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=47,68 level=0 lives=3
+f=1290 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=20,67 level=0 lives=3
+f=1320 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=20,39 level=0 lives=3
+f=1350 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=37,28 level=0 lives=3
+f=1380 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=52,41 level=0 lives=3
+f=1410 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=61,28 level=0 lives=3
+f=1440 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=76,42 level=0 lives=3
+f=1470 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=78,68 level=0 lives=3
+f=1500 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=106,68 level=0 lives=3
+f=1530 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=124,78 level=0 lives=3
+f=1560 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=138,92 level=0 lives=3
+f=1590 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=148,110 level=0 lives=3
+f=1620 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=148,138 level=0 lives=3
+f=1650 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=150,164 level=0 lives=3
+f=1680 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=172,164 level=0 lives=3
+f=1710 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=172,164 level=0 lives=3
+f=1740 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=0,0 level=0 lives=3
+f=1770 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=0,0 level=0 lives=3
+f=1800 pac(4D08,4D09)=196,188 tile(4D39,4D3A)=56,53 blinky(4D00,4D01)=0,0 level=0 lives=3
+Average speed: 10899.95% (29 seconds)

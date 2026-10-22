@@ -1,0 +1,15 @@
+start 2 ok f=1286 tile=13,23 dir=2 dots=0 level=2 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} best=2 fruit=0 t=0s
+d=10 jobs=81 kids=71 fails={'dead': 5, 'shortwin': 4} best=37 fruit=0 t=2s
+d=20 jobs=170 kids=149 fails={'dead': 21} best=72 fruit=0 t=15s
+d=30 jobs=172 kids=162 fails={'shortwin': 4, 'dead': 4} best=115 fruit=1 t=31s
+d=40 jobs=158 kids=145 fails={'shortwin': 5, 'dead': 5} best=149 fruit=1 t=46s
+d=50 jobs=158 kids=143 fails={'dead': 14} best=162 fruit=1 t=67s
+d=60 jobs=170 kids=151 fails={'dead': 13, 'shortwin': 6} best=182 fruit=2 t=95s
+d=70 jobs=172 kids=158 fails={'dead': 12} best=204 fruit=2 t=120s
+d=80 jobs=176 kids=147 fails={'dead': 19} best=214 fruit=2 t=147s
+d=90 jobs=183 kids=161 fails={'dead': 12, 'shortwin': 2} best=232 fruit=2 t=177s
+d=100 jobs=166 kids=147 fails={'shortwin': 3, 'dead': 3} best=237 fruit=2 t=207s
+d=110 jobs=170 kids=123 fails={'dead': 20, 'shortwin': 3} best=241 fruit=2 t=239s
+d=120 jobs=185 kids=136 fails={'shortwin': 5, 'dead': 30} best=242 fruit=2 t=271s
+RESULT cleared=True dots=244 frames=3156 fruits=2 moves=121 turns=87 minwin=5 route=LDRDRURURUUURUULLDLULLDDRDDRURDLDRRURDLDRDLLLURRURRULURDRUUUURDLLDLDLULULLURRDLLURDLLDDDLDRDRURDRDRRULLUUUUULLLLDRDLDLDDD

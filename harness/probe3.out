@@ -1,0 +1,20 @@
+﻿CORNER k=10 pressed_x=130 turned_x=137 end pac=172,140
+CORNER k=9 pressed_x=131 turned_x=137 end pac=172,140
+CORNER k=8 pressed_x=132 turned_x=137 end pac=172,140
+CORNER k=7 pressed_x=133 turned_x=137 end pac=172,140
+CORNER k=6 pressed_x=134 turned_x=137 end pac=172,140
+CORNER k=5 pressed_x=135 turned_x=137 end pac=172,140
+CORNER k=4 pressed_x=136 turned_x=137 end pac=172,140
+CORNER k=3 pressed_x=137 turned_x=139 end pac=172,140
+CORNER k=2 pressed_x=138 turned_x=140 end pac=172,140
+CORNER k=1 pressed_x=139 turned_x=140 end pac=172,140
+CORNER k=0 pressed_x=140 turned_x=140 end pac=172,140
+CORNER k=-1 pressed_x=141 turned_x=141 end pac=172,140
+CORNER k=-2 pressed_x=142 turned_x=142 end pac=172,140
+CORNER k=-3 pressed_x=143 turned_x=nil end pac=196,183
+CORNER k=-4 pressed_x=144 turned_x=nil end pac=196,183
+CORNER k=-5 pressed_x=145 turned_x=nil end pac=196,183
+CORNER k=-6 pressed_x=146 turned_x=nil end pac=196,183
+CORNER k=-7 pressed_x=147 turned_x=nil end pac=196,183
+CORNER k=-8 pressed_x=148 turned_x=nil end pac=196,183
+Average speed: 10171.76% (30 seconds)

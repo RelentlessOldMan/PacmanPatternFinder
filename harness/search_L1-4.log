@@ -1,0 +1,8 @@
+start 1 ok f=932 tile=13,23 dir=2 dots=0 level=1 4E04=3 score=0
+start 2 ok f=1286 tile=13,23 dir=2 dots=0 level=2 4E04=3 score=0
+start 3 ok f=2276 tile=13,23 dir=2 dots=0 level=3 4E04=3 score=0
+start 4 ok f=2630 tile=13,23 dir=2 dots=0 level=4 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} best=2 fruit=0 t=0s
+d=10 jobs=75 kids=65 fails={'dead': 5, 'shortwin': 4} best=37 fruit=0 t=6s
+d=20 jobs=175 kids=144 fails={'dead': 26, 'shortwin': 4} best=70 fruit=0 t=64s
+d=30 jobs=169 kids=132 fails={'dead': 30, 'shortwin': 7} best=78 fruit=1 t=159s
