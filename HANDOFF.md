@@ -99,3 +99,8 @@ Example: `python -u search.py --levels 1,2,3,4 --beam 96 --minwin 10 --out resul
 4. Rank solutions by turns; produce a human-readable maze drawing of each pattern.
 - Job sizes: a search runs 10 MAMEs (~5.5 of 12 logical cores, little RAM). Level 21 alone ~6 min;
   2–4 joint ~30 min; 1–4 joint 80 min. `validate.py` on 3 levels ~5 min.
+
+### 2026-10-22 08:00
+- Fixed: stepped sims ran 1 frame later than straight-through play (the savestate costs a frame); search.py `stepped_lag` presses 1 frame sooner. Verified frame-identical over 171 moves.
+- Best 2–4: `result_L2-4_human3.json`, 117 moves / 83 turns (user prefix + search). Jitter 30/30 on L2–4; fixed 0–12 ok on L3, 0–11 on L2; L4 dies at fixed 9 and 11; corner-late 30/18/22 of 30.
+- Still running at 08:00: `search_L5-20_all.log` (13 distinct levels, best 222 dots) and `search_L2-4_human4.log` (fixed 4,7,9,10,11 + jitter, best ~240).
