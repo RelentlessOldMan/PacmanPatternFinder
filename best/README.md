@@ -3,7 +3,7 @@
 Level 1 is played by hand. Routes are the direction to leave each junction/corner with (R D L U),
 starting from Pac-Man's start position heading left. Every route eats both fruits and never reverses.
 
-| Levels | File | Moves | Turns | Timing (checked) |
+| Levels | File | Moves | Turns | Timing (checked; see caveat below) |
 |---|---|---|---|---|
 | 2–4 | `L2-4.json` | 117 | 83 | jitter 0–8f 30/30 on L2–4; every turn k frames late: L2 ok to 11, L3 ok to 12, L4 dies at 9 and 11 |
 | 5–8 | `L5-8.json` | 168 | 117 | **every combination of 0–10f late on every turn is safe** (exhaust.py) |
@@ -16,5 +16,11 @@ bottom: its window is only 6 frames, so hold Down early there. It's in the user'
 
 5–20 share the first 139 moves (`harness/trunk139.txt`, through the lower-left energizer) and only split
 after that. 2–4 and 5–20 both start with the user's opening (first 30 moves).
+
+**Caveat (found 2026-10-22 from a real game):** exhaust.py's "k frames late" counts from the moment
+Pac-Man leaves the previous junction, not from the turn itself. Most moves take 16-20 frames, so 0-10
+mostly tested pressing ahead of time. A real level-7 game pressed moves 24, 25 and 42 at 15-16 frames
+(2-4 frames past the full-cornering point) and died at move 83; replaying those presses reproduces the
+death exactly. Any one of the three alone still clears. Lateness needs to be re-measured from the turn.
 
 Videos of 5, 9, 15 and 20 played on time to a full clear: `videos/`.
