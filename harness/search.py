@@ -97,6 +97,13 @@ def jitter_lag(sim, depth, corner):
     return random.Random(seed * 7919 + depth).randint(0, JITTER_CORNER if corner else JITTER)
 
 
+def stepped_lag(lag):
+    """Saving the state at the end of a move costs one emulated frame, so a sim that is reloaded for
+    every move starts each move one frame later than straight-through play (validate.py, a human).
+    Press one frame sooner to make "k frames late" mean the same thing in both."""
+    return max(0, lag - 1)
+
+
 def run_child(w, sims, held, opt, minwin, route=(), expect=None, corner=False):
     """Run one move on every sim; stop at the first failure.
 
@@ -123,7 +130,7 @@ def run_child(w, sims, held, opt, minwin, route=(), expect=None, corner=False):
         lag = 0
         if opt != held:
             lag = minwin if late else jitter_lag(sim, len(route), corner) if jit else 0
-        r = parse_seg(w.cmd(f"seg {opt} E {lag}"))
+        r = parse_seg(w.cmd(f"seg {opt} E {stepped_lag(lag)}"))
         if r["st"] not in ("ok", "clear"):
             if r["st"] == "stuck":
                 print(f"STUCK route={''.join(route)}+{opt} {r}", flush=True)
@@ -139,7 +146,7 @@ def run_child(w, sims, held, opt, minwin, route=(), expect=None, corner=False):
         res.append(r)
         if not late and not jit and corner and opt != held and r["win"] < minwin and LATE_VARIANTS:
             w.cmd(f"load {name0} {held}")
-            rl = parse_seg(w.cmd(f"seg {opt} E {minwin}"))
+            rl = parse_seg(w.cmd(f"seg {opt} E {stepped_lag(minwin)}"))
             if rl["st"] not in ("ok", "clear"):
                 return "late-" + rl["st"], i, None
             lname = new_name()
