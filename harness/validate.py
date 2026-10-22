@@ -2,6 +2,7 @@
 
   early     : every press made the moment the previous node is passed
   jitterN   : each press delayed by a random 0..N frames (a human pressing "some time early")
+  fixedK    : every press exactly K frames late (a consistently late player), K = 0..--fixed-max
   lateK     : (informational) each press made at a random point in the last few px before the
               turn -- the timing the patterns are designed NOT to rely on
 A route is timing-robust when every jitter run plays out frame-identical to the early run.
@@ -11,7 +12,7 @@ import json
 import random
 
 import maze
-from search import Pool, make_starts, parse_seg
+from search import Pool, cleanup, make_starts, parse_seg
 
 LATE = ["3", "2", "1", "0", "-1"]
 
@@ -37,6 +38,7 @@ def main():
     ap.add_argument("--jitter", type=int, default=8)
     ap.add_argument("--corner-lag", type=int, default=10)
     ap.add_argument("--workers", type=int, default=10)
+    ap.add_argument("--fixed-max", type=int, default=12, help="also test every turn pressed exactly 0..N frames late")
     args = ap.parse_args()
     res = json.load(open(args.result))
     route = res["route"]
@@ -54,6 +56,8 @@ def main():
             rng = random.Random(3000 + t)
             tests.append((f"cornerlate{t}", ["E"] * n,
                           [rng.randint(0, args.corner_lag) if c else rng.randint(0, args.jitter) for c in corner]))
+        for k in range(args.fixed_max + 1):
+            tests.append((f"fixed{k}", ["E"] * n, [k] * n))
         for t in range(10):
             rng = random.Random(2000 + t)
             tests.append((f"late{t}", [rng.choice(LATE) for _ in route], [0] * n))
@@ -70,7 +74,11 @@ def main():
         print(f"L{lv}: early={base[0]}@{base[1]}  jitter 0-{args.jitter}f: {jit_clear}/{len(jit)} cleared, "
               f"{same}/{len(jit)} frame-identical to early  |  late presses: {late_clear}/10 cleared", flush=True)
         print(f"     corners pressed up to {args.corner_lag}f late (Pac-Man pauses): {cl_clear}/{len(cl)} cleared {cl_fails}", flush=True)
+        fixed = [f"{k}:" + ("ok" if results[f"fixed{k}"][0] == "clear" else f"{results[f'fixed{k}'][0]}@{results[f'fixed{k}'][1]}")
+                 for k in range(args.fixed_max + 1)]
+        print(f"     every turn exactly k frames late: {' '.join(fixed)}", flush=True)
     pool.close()
+    cleanup(set(), "*")
 
 
 if __name__ == "__main__":

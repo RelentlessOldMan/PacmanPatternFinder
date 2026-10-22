@@ -11,6 +11,7 @@ it survives on all of them, which is how one route gets shared across a group of
 import argparse
 import itertools
 import json
+import os
 import queue
 import random
 import threading
@@ -62,9 +63,13 @@ _ids = itertools.count()
 _id_lock = threading.Lock()
 
 
+# savestates of concurrent runs share STATE_DIR, so every name carries this run's prefix
+RUN = f"r{os.getpid()}"
+
+
 def new_name():
     with _id_lock:
-        return f"n{next(_ids)}"
+        return f"{RUN}n{next(_ids)}"
 
 
 def parse_seg(r):
@@ -76,11 +81,30 @@ def parse_seg(r):
 BADLOADS = []
 
 
-def run_child(w, sims, held, opt, minwin, route=(), expect=None):
+def base(sim):
+    """Savestate name of a sim: strips the late marker "*" and the jitter seed "~s"."""
+    return sim.split("~")[0].rstrip("*")
+
+
+def jitter_lag(sim, depth, corner):
+    """A jitter sim ("name~seed") presses every turn a fixed pseudo-random number of frames late,
+    the same ranges validate.py uses, so the search tests the timings the validator will.
+    "name~fK" presses every turn exactly K frames late (a consistently late player)."""
+    tag = sim.split("~")[1]
+    if tag.startswith("f"):
+        return int(tag[1:])
+    seed = int(tag)
+    return random.Random(seed * 7919 + depth).randint(0, JITTER_CORNER if corner else JITTER)
+
+
+def run_child(w, sims, held, opt, minwin, route=(), expect=None, corner=False):
     """Run one move on every sim; stop at the first failure.
 
     Returns (status, sims, results); on failure (status, index of the failing sim, None). The
     first len(sims0) sims are always the per-level on-time sims, in level order.
+
+    A sim name "name~seed" is a jitter sim (see jitter_lag); `corner` says whether this move's
+    node is a corner, and len(route) is the move number.
 
     A sim name ending in "*" is a "late player" variant: it presses every corner turn `minwin`
     frames after passing the previous node, so at a tight corner Pac-Man pauses against the wall
@@ -90,12 +114,16 @@ def run_child(w, sims, held, opt, minwin, route=(), expect=None):
     out, res, spawned = [], [], []
     for i, sim in enumerate(sims):
         late = sim.endswith("*")
-        name0 = sim.rstrip("*")
+        jit = "~" in sim
+        name0 = base(sim)
         got = w.cmd(f"load {name0} {held}")
         if expect and got != expect:
             BADLOADS.append((sim, "".join(route), expect, got, w.cmd(f"load {name0} {held}")))
             return "badload", i, None
-        r = parse_seg(w.cmd(f"seg {opt} E {minwin if late and opt != held else 0}"))
+        lag = 0
+        if opt != held:
+            lag = minwin if late else jitter_lag(sim, len(route), corner) if jit else 0
+        r = parse_seg(w.cmd(f"seg {opt} E {lag}"))
         if r["st"] not in ("ok", "clear"):
             if r["st"] == "stuck":
                 print(f"STUCK route={''.join(route)}+{opt} {r}", flush=True)
@@ -103,13 +131,13 @@ def run_child(w, sims, held, opt, minwin, route=(), expect=None):
         # a late press at a corner only makes Pac-Man pause there; at a junction it sends him the
         # wrong way, so junctions get the full window and corners a shorter one
         corner = len(maze.exits(*r["node"])) == 2
-        if not late and opt != held and r["win"] < (CORNER_MINWIN if corner else minwin):
+        if not late and not jit and opt != held and r["win"] < (CORNER_MINWIN if corner else minwin):
             return "shortwin", i, None
         name = new_name()
         w.cmd(f"save {name}")
-        out.append(name + ("*" if late else ""))
+        out.append(name + ("*" if late else "") + (sim[sim.index("~"):] if jit else ""))
         res.append(r)
-        if not late and corner and opt != held and r["win"] < minwin and LATE_VARIANTS:
+        if not late and not jit and corner and opt != held and r["win"] < minwin and LATE_VARIANTS:
             w.cmd(f"load {name0} {held}")
             rl = parse_seg(w.cmd(f"seg {opt} E {minwin}"))
             if rl["st"] not in ("ok", "clear"):
@@ -124,6 +152,8 @@ def run_child(w, sims, held, opt, minwin, route=(), expect=None):
 CLUSTER_COST = 40
 CORNER_MINWIN = 8
 LATE_VARIANTS = True
+TURN_COST = 0.0
+JITTER, JITTER_CORNER = 8, 10
 
 
 def score(c):
@@ -131,12 +161,21 @@ def score(c):
     near = maze.bfs_dist(c.tile, left)
     # each stranded pocket of dots costs a long trip back later (with a faster red ghost)
     return (len(c.eaten) * 10 - c.frames * 0.25 - near * 6 - c.risk * 2 + c.fruits * 400
-            - maze.clusters(left) * CLUSTER_COST)
+            - maze.clusters(left) * CLUSTER_COST - n_turns(c) * TURN_COST)
 
 
-def cleanup(keep):
-    keep = {f"{k.rstrip('*')}.sta" for k in keep}
-    for f in (STATE_DIR / "pacman").glob("n*.sta"):
+def n_turns(c):
+    return sum(s["turn"] for s in c.segs)
+
+
+def solution_cost(c):
+    """Which of two clearing routes is better: faster, and (with --turn-cost) fewer turns."""
+    return c.frames * 0.25 + n_turns(c) * TURN_COST
+
+
+def cleanup(keep, pattern="n*"):
+    keep = {f"{base(k)}.sta" for k in keep}
+    for f in (STATE_DIR / "pacman").glob(f"{RUN}{pattern}.sta"):
         if f.name not in keep:
             try:
                 f.unlink()
@@ -146,11 +185,11 @@ def cleanup(keep):
 
 def make_starts(pool, levels):
     def mk(w, lv):
-        w.cmd("newgame"); w.cmd(f"level {lv}"); w.cmd(f"save start_L{lv}")
+        w.cmd("newgame"); w.cmd(f"level {lv}"); w.cmd(f"save {RUN}start_L{lv}")
         return w.cmd("peek")
     for lv in levels:
         print("start", lv, pool.submit(mk, lv).result())
-    return [f"start_L{lv}" for lv in levels]
+    return [f"{RUN}start_L{lv}" for lv in levels]
 
 
 def make_child(c, path, opt, sims, res):
@@ -207,7 +246,8 @@ def rollout(w, c, moves, minwin):
     Returns (clearing child, None) or (None, (status, failing sim index, dots left))."""
     for opt in moves:
         node, path = maze.next_node(*c.tile, c.heading)
-        st, sims, res = run_child(w, c.sims, c.heading, opt, minwin)
+        st, sims, res = run_child(w, c.sims, c.heading, opt, minwin, c.route,
+                                  corner=len(maze.exits(*node)) == 2)
         if res is None:
             return None, (st, sims, len(maze.DOTS - c.eaten))
         c = make_child(c, path, opt, sims, res)
@@ -238,15 +278,19 @@ def endgame(pool, beam, args, rng):
             n, tot = why.get(k, (0, 0))
             why[k] = (n + 1, tot + left)
     summary = {k: f"{n}x avg{tot / n:.0f}left" for k, (n, tot) in sorted(why.items(), key=lambda kv: -kv[1][0])}
-    return min(sols, key=lambda s: s.frames) if sols else None, len(jobs), summary
+    return min(sols, key=solution_cost) if sols else None, len(jobs), summary
 
 
 SIMS0 = []
 
 
 def sim_label(sims0, i):
-    """Failing-sim index -> level label; indexes past the per-level sims are late-press variants."""
-    return sims0[i].removeprefix("start_") if i < len(sims0) else "late"
+    """Failing-sim index -> level label ("L5", jitter sims "L5~"); indexes past the starting
+    sims are late-press variants."""
+    if i >= len(sims0):
+        return "late"
+    s = sims0[i].split("start_")[-1]
+    return s.split("~")[0] + "~" if "~" in s else s
 
 
 def search(pool, sims0, args, log=print):
@@ -256,14 +300,23 @@ def search(pool, sims0, args, log=print):
     beam = [Cand([], (13, 23), "L", frozenset(), 0, 0.0, 0, sims0, [])]
     best_partial, best_depth, solution = beam[0], 0, None
     rng = random.Random(args.seed)
-    for depth in itertools.count():
+    # backtracking: the beam narrows to one family of routes near the end, and when that family
+    # dies the search has nothing to fall back on. Keep a beam snapshot every 5 moves; on a dead
+    # end, rewind (further each time it fails again) and drop the ancestors of the dead family.
+    snapshots, last_beam, backtracks, misses = [], beam, 0, 0
+    depth = -1
+    while True:
+        depth += 1
+        if depth % 5 == 0 and not (snapshots and snapshots[-1][0] == depth):
+            snapshots = (snapshots + [(depth, beam)])[-args.snapshots:]
         jobs = []
         for c in beam:
             node, path = maze.next_node(*c.tile, c.heading)
             for opt in maze.exits(*node):
                 if opt != maze.REV[c.heading]:
                     jobs.append((c, path, opt, pool.submit(run_child, c.sims, c.heading, opt, args.minwin, c.route,
-                                                         f"ok {c.tile[0]} {c.tile[1]} {len(c.eaten)}" if c.route else None)))
+                                                         f"ok {c.tile[0]} {c.tile[1]} {len(c.eaten)}" if c.route else None,
+                                                         len(maze.exits(*node)) == 2)))
         children, fails, by_sim = {}, {}, {}
         for c, path, opt, fut in jobs:
             st, sims, res = fut.result()
@@ -279,7 +332,7 @@ def search(pool, sims0, args, log=print):
             if st == "clear":
                 if ch.fruits < args.need_fruits:
                     fails["nofruit"] = fails.get("nofruit", 0) + 1
-                elif solution is None or ch.frames < solution.frames:
+                elif solution is None or solution_cost(ch) < solution_cost(solution):
                     solution = ch
                 continue
             key = (ch.tile, ch.heading, ch.eaten)
@@ -301,7 +354,29 @@ def search(pool, sims0, args, log=print):
             if sol:
                 solution = sol
         if beam and len(beam[0].eaten) > len(best_partial.eaten):
-            best_partial, best_depth = beam[0], depth
+            best_partial, best_depth, misses = beam[0], depth, 0
+        if beam:
+            last_beam = beam
+        dead_end = solution is None and (not beam or depth - best_depth > args.stall)
+        if dead_end and backtracks < args.backtracks:
+            why = "beam died" if not beam else f"no progress past {len(best_partial.eaten)} dots"
+            dead = {tuple(c.route) for c in last_beam}
+            for back in range(min(misses + 1, len(snapshots)), len(snapshots) + 1):
+                snap_depth, snap = snapshots[-back]
+                alive = [c for c in snap if not any(r[:len(c.route)] == tuple(c.route) for r in dead)]
+                if alive:
+                    break
+            else:
+                alive = []
+            if alive:
+                backtracks, misses = backtracks + 1, misses + 1
+                log(f"d={depth} {why}: backtrack #{backtracks} to d={snap_depth}, "
+                    f"{len(alive)}/{len(snap)} candidates left after dropping the dead family")
+                snapshots = snapshots[:len(snapshots) - back + 1]
+                snapshots[-1] = (snap_depth, alive)
+                best_depth = max(best_depth, depth)  # restart the stall clock from the failure
+                beam, depth = alive, snap_depth - 1  # the snapshot is the beam going into snap_depth
+                continue
         if depth - best_depth > args.stall:
             log(f"d={depth} stalled: no progress past {len(best_partial.eaten)} dots for {args.stall} moves")
             return solution, best_partial
@@ -314,7 +389,8 @@ def search(pool, sims0, args, log=print):
             log(f"d={depth} jobs={len(jobs)} kids={len(children)} fails={fails} on={by_sim} "
                 f"best={len(top.eaten) if top else '-'} fruit={top.fruits if top else '-'} "
                 f"t={time.time() - t0:.0f}s")
-        keep = {s for c in beam for s in c.sims} | set(solution.sims if solution else []) | set(sims0)
+        keep = ({s for c in beam for s in c.sims} | set(solution.sims if solution else []) | set(sims0)
+                | {s for _, snap in snapshots for c in snap for s in c.sims})
         cleanup(keep)
         if solution is not None or not beam:
             return solution, best_partial
@@ -344,14 +420,28 @@ def main():
     ap.add_argument("--endgame-cands", type=int, default=12)
     ap.add_argument("--endgame-plans", type=int, default=12)
     ap.add_argument("--seed", type=int, default=1)
+    ap.add_argument("--backtracks", type=int, default=10, help="max rewinds on dead ends (0 = old behaviour)")
+    ap.add_argument("--snapshots", type=int, default=8, help="beam snapshots kept for backtracking (one per 5 moves)")
     ap.add_argument("--no-late", action="store_true", help="don't test late presses at tight corners")
+    ap.add_argument("--jitter-sims", type=int, default=0,
+                    help="per level, this many sims that press every turn randomly late (replaces late variants)")
+    ap.add_argument("--jitter", type=int, default=8, help="jitter sims: max frames late at junctions")
+    ap.add_argument("--jitter-corner", type=int, default=10, help="jitter sims: max frames late at corners")
+    ap.add_argument("--fixed-sims", default="",
+                    help="comma list K: per level, a sim that presses every turn exactly K frames late")
+    ap.add_argument("--turn-cost", type=float, default=0, help="score penalty per turn (a dot is worth 10)")
     ap.add_argument("--out", default="result.json")
     args = ap.parse_args()
-    global CLUSTER_COST, CORNER_MINWIN, LATE_VARIANTS
-    CLUSTER_COST, CORNER_MINWIN, LATE_VARIANTS = args.cluster_cost, args.corner_minwin, not args.no_late
+    global CLUSTER_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER
+    CLUSTER_COST, CORNER_MINWIN = args.cluster_cost, args.corner_minwin
+    LATE_VARIANTS = not args.no_late and not args.jitter_sims and not args.fixed_sims
+    TURN_COST, JITTER, JITTER_CORNER = args.turn_cost, args.jitter, args.jitter_corner
     levels = [int(x) for x in args.levels.split(",")]
     pool = Pool(args.workers)
     sims0 = args.starts.split(",") if args.starts else make_starts(pool, levels)
+    fixed = [int(k) for k in args.fixed_sims.split(",") if k]
+    sims0 += ([f"{s}~{100 * (j + 1) + k}" for k in range(args.jitter_sims) for j, s in enumerate(sims0)]
+              + [f"{s}~f{k}" for k in fixed for s in sims0])
     solution, partial = search(pool, sims0, args, log=lambda s: print(s, flush=True))
     out = summarize(solution or partial, levels, solution is not None)
     json.dump(out, open(args.out, "w"), indent=1, default=list)
@@ -359,6 +449,7 @@ def main():
         out["cleared"], out["dots"], out["frames"], out["fruits"], out["n_moves"], out["n_turns"],
         out["min_window"], out["route"]))
     pool.close()
+    cleanup(set(), "*")
 
 
 if __name__ == "__main__":
