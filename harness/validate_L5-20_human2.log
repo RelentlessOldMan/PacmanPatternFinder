@@ -1,0 +1,72 @@
+﻿cw : [cw] Started pid 44232 (full).
+At line:1 char:338
++ ... \mame.exe"; cw run --estimate 60m --owner "Claude Code (PacmanPattern ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([cw] Started pid 44232 (full).:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+start 5 ok f=2984 tile=13,23 dir=2 dots=0 level=5 4E04=3 score=0
+start 6 ok f=3848 tile=13,23 dir=2 dots=0 level=6 4E04=3 score=0
+start 7 ok f=4202 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=0
+start 8 ok f=4556 tile=13,23 dir=2 dots=0 level=8 4E04=3 score=0
+start 9 ok f=4910 tile=13,23 dir=2 dots=0 level=9 4E04=3 score=0
+start 10 ok f=5786 tile=13,23 dir=2 dots=0 level=10 4E04=3 score=0
+start 11 ok f=6140 tile=13,23 dir=2 dots=0 level=11 4E04=3 score=0
+start 12 ok f=6494 tile=13,23 dir=2 dots=0 level=12 4E04=3 score=0
+start 13 ok f=6848 tile=13,23 dir=2 dots=0 level=13 4E04=3 score=0
+start 14 ok f=7724 tile=13,23 dir=2 dots=0 level=14 4E04=3 score=0
+start 15 ok f=8756 tile=13,23 dir=2 dots=0 level=15 4E04=3 score=70
+start 16 ok f=9110 tile=13,23 dir=2 dots=0 level=16 4E04=3 score=70
+start 17 ok f=9464 tile=13,23 dir=2 dots=0 level=17 4E04=3 score=70
+start 18 ok f=10340 tile=13,23 dir=2 dots=0 level=18 4E04=3 score=70
+start 19 ok f=10694 tile=13,23 dir=2 dots=0 level=19 4E04=3 score=70
+start 20 ok f=11048 tile=13,23 dir=2 dots=0 level=20 4E04=3 score=70
+L5: early=clear@173  jitter 0-8f: 30/30 cleared, 23/30 frame-identical to early  |  late presses: 0/10 cleared
+     corners pressed up to 10f late (Pac-Man pauses): 29/30 cleared ['dead@169']
+     every turn exactly k frames late: 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:ok 11:ok 12:dead@122
+L6: early=dead@146  jitter 0-8f: 0/30 cleared, 26/30 frame-identical to early  |  late presses: 0/10 cleared
+     corners pressed up to 10f late (Pac-Man pauses): 2/30 cleared ['dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146', 'dead@146']
+     every turn exactly k frames late: 0:dead@146 1:dead@146 2:dead@146 3:dead@146 4:dead@146 5:dead@146 6:dead@146 7:dead@146 8:dead@146 9:dead@146 10:ok 11:dead@145 12:dead@122
+L7: early=clear@173  jitter 0-8f: 26/30 cleared, 23/30 frame-identical to early  |  late presses: 0/10 cleared
+     corners pressed up to 10f late (Pac-Man pauses): 24/30 cleared ['dead@160', 'dead@160', 'dead@160', 'dead@160', 'dead@161', 'dead@161']
+     every turn exactly k frames late: 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:dead@161 9:dead@160 10:ok 11:ok 12:dead@122
+L8: early=clear@173  jitter 0-8f: 26/30 cleared, 23/30 frame-identical to early  |  late presses: 0/10 cleared
+     corners pressed up to 10f late (Pac-Man pauses): 24/30 cleared ['dead@160', 'dead@160', 'dead@160', 'dead@160', 'dead@161', 'dead@161']
+     every turn exactly k frames late: 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:dead@161 9:dead@160 10:ok 11:ok 12:dead@122
+L9: early=clear@173  jitter 0-8f: 30/30 cleared, 23/30 frame-identical to early  |  late presses: 0/10 cleared
+     corners pressed up to 10f late (Pac-Man pauses): 30/30 cleared []
+     every turn exactly k frames late: 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:dead@168 11:dead@140 12:dead@122
+L10: early=clear@173  jitter 0-8f: 30/30 cleared, 23/30 frame-identical to early  |  late presses: 0/10 cleared
+     corners pressed up to 10f late (Pac-Man pauses): 28/30 cleared ['dead@140', 'dead@140']
+     every turn exactly k frames late: 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:dead@140 11:ok 12:dead@122
+L11: early=clear@173  jitter 0-8f: 30/30 cleared, 23/30 frame-identical to early  |  late presses: 0/10 cleared
+     corners pressed up to 10f late (Pac-Man pauses): 26/30 cleared ['dead@160', 'dead@160', 'dead@160', 'dead@160']
+     every turn exactly k frames late: 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:dead@160 10:ok 11:dead@169 12:dead@122
+L12: early=clear@173  jitter 0-8f: 30/30 cleared, 23/30 frame-identical to early  |  late presses: 0/10 cleared
+     corners pressed up to 10f late (Pac-Man pauses): 26/30 cleared ['dead@156', 'dead@156', 'dead@156', 'dead@156']
+     every turn exactly k frames late: 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:dead@156 10:ok 11:ok 12:dead@122
+L13: early=clear@173  jitter 0-8f: 30/30 cleared, 23/30 frame-identical to early  |  late presses: 0/10 cleared
+     corners pressed up to 10f late (Pac-Man pauses): 26/30 cleared ['dead@156', 'dead@156', 'dead@156', 'dead@156']
+     every turn exactly k frames late: 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:dead@156 10:ok 11:ok 12:dead@122
+L14: early=dead@160  jitter 0-8f: 7/30 cleared, 23/30 frame-identical to early  |  late presses: 0/10 cleared
+     corners pressed up to 10f late (Pac-Man pauses): 7/30 cleared ['dead@140', 'dead@140', 'dead@140', 'dead@140', 'dead@142', 'dead@142', 'dead@160', 'dead@160', 'dead@160', 'dead@160', 'dead@160', 'dead@160', 'dead@160', 'dead@160', 'dead@160', 'dead@160', 'dead@160', 'dead@160', 'dead@160', 'dead@160', 'dead@160', 'dead@160', 'dead@160']
+     every turn exactly k frames late: 0:dead@160 1:dead@160 2:dead@160 3:dead@160 4:dead@160 5:dead@160 6:dead@160 7:dead@160 8:ok 9:dead@140 10:dead@142 11:ok 12:dead@122
+L15: early=clear@173  jitter 0-8f: 30/30 cleared, 23/30 frame-identical to early  |  late presses: 0/10 cleared
+     corners pressed up to 10f late (Pac-Man pauses): 24/30 cleared ['dead@116', 'dead@116', 'dead@156', 'dead@156', 'dead@156', 'dead@156']
+     every turn exactly k frames late: 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:dead@156 10:dead@116 11:dead@141 12:dead@66
+L16: early=clear@173  jitter 0-8f: 30/30 cleared, 23/30 frame-identical to early  |  late presses: 0/10 cleared
+     corners pressed up to 10f late (Pac-Man pauses): 24/30 cleared ['dead@116', 'dead@116', 'dead@156', 'dead@156', 'dead@156', 'dead@156']
+     every turn exactly k frames late: 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:dead@156 10:dead@116 11:dead@141 12:dead@66
+L17: early=clear@173  jitter 0-8f: 30/30 cleared, 23/30 frame-identical to early  |  late presses: 0/10 cleared
+     corners pressed up to 10f late (Pac-Man pauses): 28/30 cleared ['dead@116', 'dead@116']
+     every turn exactly k frames late: 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:dead@116 11:ok 12:dead@66
+L18: early=clear@173  jitter 0-8f: 30/30 cleared, 23/30 frame-identical to early  |  late presses: 0/10 cleared
+     corners pressed up to 10f late (Pac-Man pauses): 24/30 cleared ['dead@116', 'dead@116', 'dead@156', 'dead@156', 'dead@156', 'dead@156']
+     every turn exactly k frames late: 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:dead@156 10:dead@116 11:dead@141 12:dead@66
+L19: early=clear@173  jitter 0-8f: 30/30 cleared, 23/30 frame-identical to early  |  late presses: 0/10 cleared
+     corners pressed up to 10f late (Pac-Man pauses): 30/30 cleared []
+     every turn exactly k frames late: 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:ok 11:ok 12:dead@98
+L20: early=clear@173  jitter 0-8f: 30/30 cleared, 23/30 frame-identical to early  |  late presses: 0/10 cleared
+     corners pressed up to 10f late (Pac-Man pauses): 30/30 cleared []
+     every turn exactly k frames late: 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:ok 11:ok 12:dead@98
+[cw] Exited with code 0.

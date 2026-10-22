@@ -298,13 +298,26 @@ def search(pool, sims0, args, log=print):
     t0 = time.time()
     n = len(sims0)
     beam = [Cand([], (13, 23), "L", frozenset(), 0, 0.0, 0, sims0, [])]
-    best_partial, best_depth, solution = beam[0], 0, None
+    # --prefix: play a given opening (e.g. a human's, from watch.py) and search on from its end
+    for opt in args.prefix:
+        c = beam[0]
+        node, path = maze.next_node(*c.tile, c.heading)
+        st, sims, res = pool.submit(run_child, c.sims, c.heading, opt, args.minwin, c.route,
+                                    f"ok {c.tile[0]} {c.tile[1]} {len(c.eaten)}" if c.route else None,
+                                    len(maze.exits(*node)) == 2).result()
+        if res is None:
+            log(f"prefix fails at move {len(c.route)} ({opt} at {node}): {st} on {sim_label(sims0, sims)}")
+            break
+        beam = [make_child(c, path, opt, sims, res)]
+    if args.prefix:
+        log(f"prefix: {len(beam[0].route)}/{len(args.prefix)} moves, {len(beam[0].eaten)} dots")
+    best_partial, best_depth, solution = beam[0], len(beam[0].route), None
     rng = random.Random(args.seed)
     # backtracking: the beam narrows to one family of routes near the end, and when that family
     # dies the search has nothing to fall back on. Keep a beam snapshot every 5 moves; on a dead
     # end, rewind (further each time it fails again) and drop the ancestors of the dead family.
-    snapshots, last_beam, backtracks, misses = [], beam, 0, 0
-    depth = -1
+    snapshots, last_beam, backtracks, misses, last_target = [], beam, 0, 0, None
+    depth = len(beam[0].route) - 1
     while True:
         depth += 1
         if depth % 5 == 0 and not (snapshots and snapshots[-1][0] == depth):
@@ -361,15 +374,18 @@ def search(pool, sims0, args, log=print):
         if dead_end and backtracks < args.backtracks:
             why = "beam died" if not beam else f"no progress past {len(best_partial.eaten)} dots"
             dead = {tuple(c.route) for c in last_beam}
-            for back in range(min(misses + 1, len(snapshots)), len(snapshots) + 1):
+            # a repeat failure (no new best since the last rewind) rewinds to before the last target
+            limit = last_target - 1 if misses and last_target is not None else depth
+            alive = []
+            for back in range(1, len(snapshots) + 1):
                 snap_depth, snap = snapshots[-back]
+                if snap_depth > limit:
+                    continue
                 alive = [c for c in snap if not any(r[:len(c.route)] == tuple(c.route) for r in dead)]
                 if alive:
                     break
-            else:
-                alive = []
             if alive:
-                backtracks, misses = backtracks + 1, misses + 1
+                backtracks, misses, last_target = backtracks + 1, misses + 1, snap_depth
                 log(f"d={depth} {why}: backtrack #{backtracks} to d={snap_depth}, "
                     f"{len(alive)}/{len(snap)} candidates left after dropping the dead family")
                 snapshots = snapshots[:len(snapshots) - back + 1]
@@ -420,7 +436,8 @@ def main():
     ap.add_argument("--endgame-cands", type=int, default=12)
     ap.add_argument("--endgame-plans", type=int, default=12)
     ap.add_argument("--seed", type=int, default=1)
-    ap.add_argument("--backtracks", type=int, default=10, help="max rewinds on dead ends (0 = old behaviour)")
+    ap.add_argument("--prefix", default="", help="opening route to play before searching (e.g. from watch.py)")
+    ap.add_argument("--backtracks", type=int, default=20, help="max rewinds on dead ends (0 = old behaviour)")
     ap.add_argument("--snapshots", type=int, default=8, help="beam snapshots kept for backtracking (one per 5 moves)")
     ap.add_argument("--no-late", action="store_true", help="don't test late presses at tight corners")
     ap.add_argument("--jitter-sims", type=int, default=0,

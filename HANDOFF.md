@@ -35,7 +35,14 @@ Rules: no reversing (double-backing) inside a pattern; on the high-value fruit l
   The log attributes failures to levels: `on={'L2': 9, 'late': 3}` per depth, and per endgame batch
   `{'dead:L3': '42x avg34left'}` (failure:level, count, average dots left when it died).
 - `harness/validate.py result.json [--levels ..]` – replays a route straight through with random
-  press jitter / late corners / late presses and reports how many clear.
+  press jitter / late corners / late presses / every turn exactly 0..12 frames late, and reports how many clear.
+- Search options added 2026-10-22: `--prefix ROUTE` (play a fixed opening, search from its end),
+  backtracking (`--backtracks 20`, beam snapshot every 5 moves; repeat failures rewind further),
+  `--fixed-sims 8,10` (extra sims pressing every turn exactly K frames late; replaces late variants),
+  `--jitter-sims N`, `--turn-cost F`. Savestate names carry a per-run prefix so runs can share `state/`.
+- `harness/watch.lua` + `watch.py` – watch a human play: launch the real (windowed) MAME with
+  `-autoboot_script harness/watch.lua` (env `PACMAN_WATCH_LOG`, optional `PACMAN_LEVEL=n` skips to level n),
+  then `python watch.py log [--check 5,7,...]` turns the game into a route and checks it on those levels.
 
 Example: `python -u search.py --levels 1,2,3,4 --beam 96 --minwin 10 --out result_L1-4.json > search_L1-4.log`
 
@@ -52,6 +59,20 @@ Example: `python -u search.py --levels 1,2,3,4 --beam 96 --minwin 10 --out resul
   every route has to pass them, which is why corners get a smaller min window.
 - Pressing the next direction before Pac-Man leaves a corner tile changes the game; ≥4 frames after the
   turn registers is identical (no hidden extra window).
+
+## Status (2026-10-22 night)
+- **The user's own opening** (recorded with watch.lua; level-7 "higher level" version, logs in `harness/watch/`):
+  `LLDLLDRRURULURRURUURRRRDLDLLDLDDD` (33 moves, 95 dots). Survives every turn 0–10 frames late on 2–19.
+  All searches below are seeded with its first 30 moves (`--prefix`).
+- Fixed: the press-window measurement broke at the tunnel wrap (window 0), so every turn right after the
+  tunnel was rejected as `shortwin`. Results before this fix never turn just out of the tunnel.
+- **5–20 seeded** (levels 5,7,10,13,17,19, beam 128): CLEARED, `result_L5-20_human2.json`, 174 moves / 126 turns.
+  Validated on all 16 levels (`validate_L5-20_human2.log`): **dies on L6 (move 146) and L14 (move 160)**,
+  and every-turn-8..10-late fails on several levels. Rerun with levels 5,6,7,10,13,14,17,19 + `--fixed-sims 8,10`.
+- **2–4 seeded**: CLEARED, `result_L2-4_human.json`, 165 moves / 116 turns (old route 146). Validated:
+  jitter 30/30 all levels, fixed-late OK to 12 on L2, 11 on L3, but L4 dies at exactly 10 late (move 118).
+  Rerun with `--fixed-sims 8,10`.
+- Unseeded 5–20 (two runs) stalled at 240/244, dying on L17 (no blue ghosts, Elroy from 100 dots left).
 
 ## Status (2026-10-21, second machine)
 - **Plan changed: level 1 is played by hand (user's call), so the blocks are 2–4 | 5–20 | 21–255.**

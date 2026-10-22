@@ -53,8 +53,12 @@ local function center_px(c, r) return (29 - c) * 8 + 4, (r + 1) * 8 + 4 end
 local function dist_to(c, r, d)
   local x, y = pac_px()
   local cx, cy = center_px(c, r)
-  if d == 2 then return cx - x elseif d == 0 then return x - cx
-  elseif d == 1 then return cy - y else return y - cy end
+  if d == 1 then return cy - y elseif d == 3 then return y - cy end
+  -- horizontal: x wraps at 256 through the tunnel; no straight run is longer than 26 tiles, so
+  -- anything beyond 248px ahead is really a few px past the center
+  local v = ((d == 2) and (cx - x) or (x - cx)) % 256
+  if v > 248 then v = v - 256 end
+  return v
 end
 
 local function ghost_min_dist()
