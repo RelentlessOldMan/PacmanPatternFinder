@@ -9,9 +9,10 @@ Rules: no reversing (double-backing) inside a pattern; on the high-value fruit l
 ~50 total turns is the memorability target (Procyon pattern ≈ 45–50).
 
 ## Setup at home (MAME + ROM are not in git)
-1. Download MAME 0.289 (Windows 64-bit) and unpack into `mame-0.289/` in this folder
-   (the code expects `mame-0.289/mame.exe`, see `harness/worker.py`).
-2. Put your own `pacman.zip` ROM into `mame-0.289/roms/`.
+1. Download MAME 0.289 (Windows 64-bit) and unpack into `mame-0.289/` in this folder,
+   **or** point `MAME_EXE` at an existing `mame.exe` (e.g. `$env:MAME_EXE = "D:\Mame\mame.exe"`).
+   MAME 0.287 reproduces the 0.289 results exactly. cfg/nvram/savestates always go in this repo.
+2. Put your own `pacman.zip` ROM into `roms/` next to that `mame.exe`.
 3. Python 3.12, no extra packages. Run everything from `harness/`.
 4. Smoke test: `python test_saveload.py` (expect `mismatches: 0 / 30`).
 
@@ -21,7 +22,8 @@ Rules: no reversing (double-backing) inside a pattern; on the high-value fruit l
   completing levels, needed so the difficulty pointer 0x4E0A advances), `save`/`load name heldDir`,
   `seg DIR policy lag [nxtK]` (run to the next junction/corner and leave it going DIR), `hash`, `peek`, `mem`, `dump`.
 - `harness/lib.lua` – frame-coroutine helpers. `H.load` loads TWICE (one load sometimes lands one frame short).
-- `harness/worker.py` – one MAME process per worker; `search.py` uses a pool of 10.
+- `harness/worker.py` – one MAME process per worker (started at below-normal priority); `search.py` uses
+  a pool of 10 (~5.5 of 12 logical cores).
 - `harness/maze.py` – maze model (`maze.txt`), nodes, BFS distances, dot clusters.
 - `harness/search.py` – beam search over node decisions, never reversing. **Multi-sim**: each move is
   played from savestates on every target level at once and must survive on all of them.
@@ -30,6 +32,8 @@ Rules: no reversing (double-backing) inside a pattern; on the high-value fruit l
   ("late variant" sims, name suffix `*`) and must survive the pause too.
   Endgame planner (`--endgame 40`): once ≤40 dots remain, plays complete planned cleanup routes.
   Output: `result_*.json` (route string, per-segment windows), log `search_*.log`.
+  The log attributes failures to levels: `on={'L2': 9, 'late': 3}` per depth, and per endgame batch
+  `{'dead:L3': '42x avg34left'}` (failure:level, count, average dots left when it died).
 - `harness/validate.py result.json [--levels ..]` – replays a route straight through with random
   press jitter / late corners / late presses and reports how many clear.
 
@@ -40,28 +44,37 @@ Example: `python -u search.py --levels 1,2,3,4 --beam 96 --minwin 10 --out resul
   4E0E dots eaten (244 = clear), 4E13 level (0-based), 4E04 state (3 = playing), 4E80-82 score BCD,
   4E0A difficulty row (0x68 + level-1, caps at level 21).
 - Difficulty rows (ROM 0x0796): speeds change at 1 | 2–4 | 5–20 | 21+; identical rows {7,8} {16,18} {19,20};
-  **levels 21–255 are identical** → one level-21 pattern covers 21–255. No blue ghosts at 17, 19, 20, 21+.
+  **levels 21–255 are identical** → one level-21 pattern covers 21–255 (confirmed: L21 and L30 replay
+  frame-identical; the L21 route dies at move 17 on 17–20). No blue ghosts at 17, 19, 20, 21+.
+  Scatter/chase timing: 1 | 2–4 | 5+. Pac-Man is slower at 21+ than at 5–20.
 - Cruise Elroy (Blinky speed-up) dots-left threshold: 20 | 30 | 40 (3–5) | 50 (6–8) | 60 (9–11) | 80 (12–14) | 100 (15–18) | 120 (19+).
 - Bottom nooks (24..26,23) and mirror: two corners 2 tiles apart, only ~6 frames window at level 2+ —
   every route has to pass them, which is why corners get a smaller min window.
 - Pressing the next direction before Pac-Man leaves a corner tile changes the game; ≥4 frames after the
   turn registers is identical (no hidden extra window).
 
-## Status (2026-10-21)
-- Level 1 alone: cleared (`result_L1.json`, 104 moves / 81 turns). Dies on levels 2–5.
-- Level 2 alone: cleared with late variants (`result_L2.json`, 121 moves / 87 turns); validated
-  30/30 with up to 10f late corners, 5/20 at 20f.
-- Levels 2–4 joint: stalled at 238/244 (`result_L2-4.json`). 1–4 joint (old settings) stalled at 214.
-- User verdict: 2–4 / 3–4 sharing is not good enough. **Need 1–4 or better.**
-- Endgame planner was just added; the 1–4 run with it was stopped at depth 30 (78 dots) — not yet evaluated.
-- Turn counts (80+) are far above the ~50 target – memorability not addressed yet.
+## Status (2026-10-21, second machine)
+- **Plan changed: level 1 is played by hand (user's call), so the blocks are 2–4 | 5–20 | 21–255.**
+  Timing slack minwin 10 (junctions) / corner-minwin 5 confirmed by the user as the floor.
+- **2–4 joint: CLEARED** (`result_L2-4_diag.json`, 202 moves / 146 turns, both fruits on each level;
+  the endgame planner finished it at depth 198). Validated: jitter 0–8f 30/30 on every level;
+  corners up to 10f late 28/30, 30/30, 29/30 on L2/L3/L4.
+- **21–255: CLEARED** (`result_L21.json`, 140 moves / 102 turns, both keys, ~6 min search). Validated
+  on L21 and L30: jitter 19/20, corners up to 10f late only 13/20 (always dies at move 65 or 113).
+  Cause: the search's late variant only tests a corner pressed exactly `minwin` frames late;
+  intermediate lateness (e.g. 3–7f) can kill.
+- 1–4 joint with endgame planner: stalled at 229 (`result_L1-4_eg.json`); dropped since level 1 is manual.
+- Failure attribution on 2–4: deaths spread evenly over L2/L3/L4; late variants are the top endgame killer.
+- Old: level 1 alone (`result_L1.json`, 81 turns), level 2 alone (`result_L2.json`, 87 turns).
+- Turn counts (100–146) are far above the ~50 target.
 
 ## Next steps
-1. Rerun 1–4 with the endgame planner. If it still stalls, fix the search rather than tune it:
-   - backtracking: rewind 20–30 moves when the end can't be finished (beam never revisits choices);
-   - log which move kills which level (is level 1's slower speed the conflict?);
-   - seed with big regional loops like human patterns and let the search repair details
-     (this also helps the ~50-turn target).
-2. Level 21 alone (covers 21–255), then validate downward to find y.
-3. Middle pattern, both fruits on key levels (`--need-fruits 2`), save/resume from level starts.
+1. Search changes, then rerun 2–4 and 21:
+   - per-turn cost in `score()` (prefer straight runs / big loops) to cut turns, keeping minwin 10/5;
+   - late variants at several lateness values (e.g. 3, 6, 10f) at tight corners, not just `minwin`.
+2. 5–20: search on a subset (e.g. 5, 9, 13, 17), validate on all distinct levels (7=8, 16=18, 19=20),
+   add failing levels to the search set. If it can't share, split where the failures say (5–8 | 9–20?).
+3. If turns stay high: seed with big regional loops like human patterns; backtracking on stalls.
 4. Rank solutions by turns; produce a human-readable maze drawing of each pattern.
+- Job sizes: a search runs 10 MAMEs (~5.5 of 12 logical cores, little RAM). Level 21 alone ~6 min;
+  2–4 joint ~30 min; 1–4 joint 80 min. `validate.py` on 3 levels ~5 min.

@@ -1,9 +1,11 @@
 ﻿"""MAME worker process wrapper: one headless MAME running server.lua, driven over pipes."""
+import os
 import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-MAME = ROOT / "mame-0.289" / "mame.exe"
+# MAME_EXE overrides the bundled install; ROMs are read from roms/ next to the exe
+MAME = Path(os.environ.get("MAME_EXE", ROOT / "mame-0.289" / "mame.exe"))
 STATE_DIR = ROOT / "state"
 
 
@@ -24,7 +26,9 @@ class Worker:
              "-video", "none", "-sound", "none", "-nothrottle", "-skip_gameinfo",
              "-autoboot_script", str(Path(__file__).parent / "server.lua")],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-            text=True, bufsize=1, cwd=str(ROOT))
+            text=True, bufsize=1, cwd=str(ROOT),
+            # searches run 10 unthrottled MAMEs; keep them behind foreground work
+            creationflags=getattr(subprocess, "BELOW_NORMAL_PRIORITY_CLASS", 0))
         line = self._readline()
         assert line == "ready", line
 

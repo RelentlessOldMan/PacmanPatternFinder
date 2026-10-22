@@ -1,0 +1,57 @@
+start 1 ok f=932 tile=13,23 dir=2 dots=0 level=1 4E04=3 score=0
+start 2 ok f=1286 tile=13,23 dir=2 dots=0 level=2 4E04=3 score=0
+start 3 ok f=2276 tile=13,23 dir=2 dots=0 level=3 4E04=3 score=0
+start 4 ok f=2630 tile=13,23 dir=2 dots=0 level=4 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} best=2 fruit=0 t=0s
+d=10 jobs=75 kids=65 fails={'dead': 5, 'shortwin': 4} best=37 fruit=0 t=7s
+d=20 jobs=175 kids=144 fails={'dead': 26, 'shortwin': 4} best=70 fruit=0 t=76s
+[cw] Throttled to 1 core at below-normal priority: StepMania (StepMania.exe) is running.
+d=30 jobs=169 kids=132 fails={'dead': 30, 'shortwin': 7} best=78 fruit=1 t=206s
+[cw] Full speed again.
+[cw] Throttled to 1 core at below-normal priority: StepMania (StepMania.exe) is running.
+d=40 jobs=159 kids=107 fails={'dead': 49} best=104 fruit=1 t=532s
+[cw] Full speed again.
+[cw] Throttled to 1 core at below-normal priority: StepMania (StepMania.exe) is running.
+[cw] Full speed again.
+d=50 jobs=160 kids=123 fails={'dead': 29, 'shortwin': 2} best=172 fruit=1 t=817s
+[cw] Throttled to 1 core at below-normal priority: StepMania (StepMania.exe) is running.
+d=60 jobs=167 kids=110 fails={'dead': 50, 'shortwin': 2} best=176 fruit=1 t=1066s
+d=70 jobs=167 kids=117 fails={'dead': 42, 'shortwin': 3} best=183 fruit=2 t=1381s
+d=75 endgame: 12 planned cleanups tried -> none cleared
+d=78 endgame: 108 planned cleanups tried -> none cleared
+d=80 jobs=145 kids=113 fails={'dead': 29, 'shortwin': 2} best=199 fruit=1 t=1707s
+d=81 endgame: 144 planned cleanups tried -> none cleared
+d=84 endgame: 144 planned cleanups tried -> none cleared
+d=87 endgame: 144 planned cleanups tried -> none cleared
+d=90 endgame: 143 planned cleanups tried -> none cleared
+d=90 jobs=163 kids=109 fails={'dead': 46, 'shortwin': 7} best=187 fruit=1 t=2196s
+d=93 endgame: 143 planned cleanups tried -> none cleared
+d=96 endgame: 142 planned cleanups tried -> none cleared
+d=99 endgame: 144 planned cleanups tried -> none cleared
+d=100 jobs=176 kids=123 fails={'dead': 45} best=196 fruit=1 t=2849s
+d=102 endgame: 142 planned cleanups tried -> none cleared
+d=105 endgame: 140 planned cleanups tried -> none cleared
+d=108 endgame: 127 planned cleanups tried -> none cleared
+d=110 jobs=183 kids=120 fails={'shortwin': 10, 'dead': 45} best=199 fruit=1 t=3622s
+d=111 endgame: 138 planned cleanups tried -> none cleared
+d=114 endgame: 138 planned cleanups tried -> none cleared
+d=117 endgame: 136 planned cleanups tried -> none cleared
+d=120 endgame: 137 planned cleanups tried -> none cleared
+d=120 jobs=145 kids=73 fails={'dead': 70, 'shortwin': 1} best=228 fruit=1 t=4241s
+d=123 endgame: 138 planned cleanups tried -> none cleared
+d=126 endgame: 128 planned cleanups tried -> none cleared
+[cw] Full speed again.
+d=129 endgame: 133 planned cleanups tried -> none cleared
+d=130 jobs=172 kids=113 fails={'dead': 46, 'shortwin': 2} best=202 fruit=1 t=4641s
+d=132 endgame: 117 planned cleanups tried -> none cleared
+d=135 endgame: 125 planned cleanups tried -> none cleared
+d=138 endgame: 105 planned cleanups tried -> none cleared
+d=140 jobs=65 kids=18 fails={'dead': 47} best=229 fruit=1 t=4740s
+d=141 endgame: 41 planned cleanups tried -> none cleared
+d=144 endgame: 12 planned cleanups tried -> none cleared
+d=147 endgame: 93 planned cleanups tried -> none cleared
+d=150 endgame: 107 planned cleanups tried -> none cleared
+d=150 jobs=17 kids=9 fails={'dead': 6, 'shortwin': 2} best=211 fruit=1 t=4776s
+d=152 stalled: no progress past 229 dots for 30 moves
+RESULT cleared=False dots=229 frames=3298 fruits=1 moves=122 turns=92 minwin=6 route=LLDLULURRRDRRDLDRULLULLURRRDLDLUUUUURULDRDLULLURDLDLDRDRUULDLDLULULURDRRDLDLLDLUURDRDLDDRURURULLLLLLLURDLDRDDDRRRRDLDLULUL
+[cw] Exited with code 0.

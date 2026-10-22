@@ -1,0 +1,25 @@
+start 21 ok f=10724 tile=13,23 dir=2 dots=0 level=21 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} on={'L21': 1} best=2 fruit=0 t=0s
+d=10 jobs=144 kids=130 fails={'dead': 5, 'shortwin': 6} on={'L21': 11} best=47 fruit=0 t=2s
+d=20 jobs=153 kids=130 fails={'dead': 20, 'shortwin': 3} on={'late': 4, 'L21': 19} best=77 fruit=0 t=14s
+d=30 jobs=176 kids=156 fails={'dead': 12, 'shortwin': 6} on={'late': 4, 'L21': 14} best=103 fruit=1 t=33s
+d=40 jobs=174 kids=141 fails={'dead': 31} on={'L21': 29, 'late': 2} best=127 fruit=1 t=54s
+d=50 jobs=159 kids=130 fails={'dead': 28} on={'L21': 21, 'late': 7} best=151 fruit=1 t=76s
+d=60 jobs=174 kids=157 fails={'shortwin': 2, 'dead': 12} on={'L21': 14} best=185 fruit=2 t=100s
+d=70 jobs=166 kids=133 fails={'dead': 33} on={'L21': 20, 'late': 13} best=196 fruit=2 t=125s
+d=75 endgame: 96 planned cleanups tried -> none cleared {'dead:late': '65x avg38left', 'dead:L21': '31x avg38left'}
+d=78 endgame: 144 planned cleanups tried -> none cleared {'dead:late': '75x avg34left', 'dead:L21': '65x avg35left', 'shortwin:L21': '4x avg36left'}
+d=80 jobs=161 kids=121 fails={'dead': 34, 'shortwin': 3} on={'late': 15, 'L21': 22} best=209 fruit=2 t=173s
+d=81 endgame: 144 planned cleanups tried -> none cleared {'dead:late': '77x avg32left', 'dead:L21': '67x avg32left'}
+d=84 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '105x avg29left', 'dead:late': '39x avg29left'}
+d=87 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '92x avg26left', 'dead:late': '52x avg26left'}
+d=90 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '75x avg22left', 'dead:late': '67x avg23left', 'shortwin:L21': '2x avg27left'}
+d=90 jobs=164 kids=119 fails={'dead': 40, 'shortwin': 5} on={'late': 15, 'L21': 30} best=218 fruit=2 t=247s
+d=93 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '79x avg21left', 'dead:late': '65x avg20left'}
+d=96 endgame: 144 planned cleanups tried -> none cleared {'dead:late': '90x avg19left', 'dead:L21': '54x avg18left'}
+d=99 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '107x avg16left', 'dead:late': '37x avg14left'}
+d=100 jobs=161 kids=120 fails={'dead': 33, 'shortwin': 4} on={'late': 12, 'L21': 25} best=229 fruit=2 t=316s
+d=102 endgame: 144 planned cleanups tried -> CLEARED {'dead:L21': '80x avg12left', 'dead:late': '61x avg13left', 'shortwin:L21': '2x avg2left'}
+d=102 jobs=175 kids=129 fails={'dead': 41} on={'L21': 27, 'late': 14} best=231 fruit=2 t=339s
+RESULT cleared=True dots=244 frames=3453 fruits=2 moves=140 turns=102 minwin=5 route=LLDLLDRRRULLUULLDLULURURUURULDRDLUULDLULLDDRDDDDLULURRURDRULULURULLLDRDRRDDDRDLLLLDRDRURULLLDRDRURURURDLDRDLLULULUUUURDRDLDLUULURDDLURRRRRRR
+[cw] Exited with code 0.

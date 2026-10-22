@@ -1,4 +1,4 @@
-﻿"""Beam search for robust Pac-Man routes, using MAME as the simulator.
+"""Beam search for robust Pac-Man routes, using MAME as the simulator.
 
 A route is the direction taken at each node (junction or corner), never reversing. Presses are
 "early": made as soon as the previous node is passed. Measured in MAME, any press made at least
@@ -79,29 +79,32 @@ BADLOADS = []
 def run_child(w, sims, held, opt, minwin, route=(), expect=None):
     """Run one move on every sim; stop at the first failure.
 
+    Returns (status, sims, results); on failure (status, index of the failing sim, None). The
+    first len(sims0) sims are always the per-level on-time sims, in level order.
+
     A sim name ending in "*" is a "late player" variant: it presses every corner turn `minwin`
     frames after passing the previous node, so at a tight corner Pac-Man pauses against the wall
     first. When an on-time sim takes a corner whose window is shorter than `minwin`, a late variant
     is spawned from it; from then on the route has to survive both.
     """
     out, res, spawned = [], [], []
-    for sim in sims:
+    for i, sim in enumerate(sims):
         late = sim.endswith("*")
         name0 = sim.rstrip("*")
         got = w.cmd(f"load {name0} {held}")
         if expect and got != expect:
             BADLOADS.append((sim, "".join(route), expect, got, w.cmd(f"load {name0} {held}")))
-            return "badload", None, None
+            return "badload", i, None
         r = parse_seg(w.cmd(f"seg {opt} E {minwin if late and opt != held else 0}"))
         if r["st"] not in ("ok", "clear"):
             if r["st"] == "stuck":
                 print(f"STUCK route={''.join(route)}+{opt} {r}", flush=True)
-            return r["st"], None, None
+            return r["st"], i, None
         # a late press at a corner only makes Pac-Man pause there; at a junction it sends him the
         # wrong way, so junctions get the full window and corners a shorter one
         corner = len(maze.exits(*r["node"])) == 2
         if not late and opt != held and r["win"] < (CORNER_MINWIN if corner else minwin):
-            return "shortwin", None, None
+            return "shortwin", i, None
         name = new_name()
         w.cmd(f"save {name}")
         out.append(name + ("*" if late else ""))
@@ -110,7 +113,7 @@ def run_child(w, sims, held, opt, minwin, route=(), expect=None):
             w.cmd(f"load {name0} {held}")
             rl = parse_seg(w.cmd(f"seg {opt} E {minwin}"))
             if rl["st"] not in ("ok", "clear"):
-                return "late-" + rl["st"], None, None
+                return "late-" + rl["st"], i, None
             lname = new_name()
             w.cmd(f"save {lname}")
             spawned.append(lname + "*")
@@ -199,16 +202,18 @@ def plan_moves(tile, heading, left, rng, k=3, cap=80):
 
 
 def rollout(w, c, moves, minwin):
-    """Play a whole planned move list from candidate c on all its sims; return the clearing child."""
+    """Play a whole planned move list from candidate c on all its sims.
+
+    Returns (clearing child, None) or (None, (status, failing sim index, dots left))."""
     for opt in moves:
         node, path = maze.next_node(*c.tile, c.heading)
         st, sims, res = run_child(w, c.sims, c.heading, opt, minwin)
-        if sims is None:
-            return None
+        if res is None:
+            return None, (st, sims, len(maze.DOTS - c.eaten))
         c = make_child(c, path, opt, sims, res)
         if st == "clear":
-            return c
-    return None
+            return c, None
+    return None, ("unfinished", None, len(maze.DOTS - c.eaten))
 
 
 def endgame(pool, beam, args, rng):
@@ -221,11 +226,31 @@ def endgame(pool, beam, args, rng):
             if mv and (id(c), tuple(mv)) not in tried:
                 tried.add((id(c), tuple(mv)))
                 jobs.append(pool.submit(rollout, c, mv, args.minwin))
-    sols = [s for s in (j.result() for j in jobs) if s is not None and s.fruits >= args.need_fruits]
-    return min(sols, key=lambda s: s.frames) if sols else None, len(jobs)
+    sols, why = [], {}
+    for j in jobs:
+        s, fail = j.result()
+        if s is not None and s.fruits >= args.need_fruits:
+            sols.append(s)
+        elif fail:
+            st, i, left = fail
+            who = "-" if i is None else sim_label(SIMS0, i)
+            k = f"{st}:{who}"
+            n, tot = why.get(k, (0, 0))
+            why[k] = (n + 1, tot + left)
+    summary = {k: f"{n}x avg{tot / n:.0f}left" for k, (n, tot) in sorted(why.items(), key=lambda kv: -kv[1][0])}
+    return min(sols, key=lambda s: s.frames) if sols else None, len(jobs), summary
+
+
+SIMS0 = []
+
+
+def sim_label(sims0, i):
+    """Failing-sim index -> level label; indexes past the per-level sims are late-press variants."""
+    return sims0[i].removeprefix("start_") if i < len(sims0) else "late"
 
 
 def search(pool, sims0, args, log=print):
+    SIMS0[:] = sims0
     t0 = time.time()
     n = len(sims0)
     beam = [Cand([], (13, 23), "L", frozenset(), 0, 0.0, 0, sims0, [])]
@@ -239,11 +264,13 @@ def search(pool, sims0, args, log=print):
                 if opt != maze.REV[c.heading]:
                     jobs.append((c, path, opt, pool.submit(run_child, c.sims, c.heading, opt, args.minwin, c.route,
                                                          f"ok {c.tile[0]} {c.tile[1]} {len(c.eaten)}" if c.route else None)))
-        children, fails = {}, {}
+        children, fails, by_sim = {}, {}, {}
         for c, path, opt, fut in jobs:
             st, sims, res = fut.result()
-            if sims is None:
+            if res is None:
+                who = sim_label(sims0, sims)
                 fails[st] = fails.get(st, 0) + 1
+                by_sim[who] = by_sim.get(who, 0) + 1
                 continue
             ch = make_child(c, path, opt, sims, res)
             r0 = res[0]
@@ -268,9 +295,9 @@ def search(pool, sims0, args, log=print):
             if len(beam) >= args.beam:
                 break
         if args.endgame and solution is None and beam and depth % args.endgame_every == 0:
-            sol, njobs = endgame(pool, beam, args, rng)
+            sol, njobs, why = endgame(pool, beam, args, rng)
             if njobs:
-                log(f"d={depth} endgame: {njobs} planned cleanups tried -> {'CLEARED' if sol else 'none cleared'}")
+                log(f"d={depth} endgame: {njobs} planned cleanups tried -> {'CLEARED' if sol else 'none cleared'} {why}")
             if sol:
                 solution = sol
         if beam and len(beam[0].eaten) > len(best_partial.eaten):
@@ -284,7 +311,7 @@ def search(pool, sims0, args, log=print):
             BADLOADS.clear()
         top = beam[0] if beam else None
         if depth % 10 == 0 or solution or not beam:
-            log(f"d={depth} jobs={len(jobs)} kids={len(children)} fails={fails} "
+            log(f"d={depth} jobs={len(jobs)} kids={len(children)} fails={fails} on={by_sim} "
                 f"best={len(top.eaten) if top else '-'} fruit={top.fruits if top else '-'} "
                 f"t={time.time() - t0:.0f}s")
         keep = {s for c in beam for s in c.sims} | set(solution.sims if solution else []) | set(sims0)
