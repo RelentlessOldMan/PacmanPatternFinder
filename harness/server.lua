@@ -171,6 +171,11 @@ H.run(function()
     elseif cmd == "level" then
       to_level(tonumber(a)); reply("ok " .. H.rd(0x4E13) + 1)
     elseif cmd == "save" then H.save(a); reply("ok")
+    elseif cmd == "rec" then
+      -- video for showing a route: "rec <file.avi>" starts (in the snap directory), "rec" stops
+      if a ~= "" then manager.machine.video:begin_recording(a, "avi") else manager.machine.video:end_recording() end
+      reply("ok")
+    elseif cmd == "wait" then H.wait(tonumber(a)); reply("ok")
     elseif cmd == "load" then
       -- savestates don't carry the joystick; restore the direction held when it was saved
       local held = b ~= "" and b or nil
