@@ -93,6 +93,9 @@ def jitter_lag(sim, depth, corner):
     tag = sim.split("~")[1]
     if tag.startswith("f"):
         return int(tag[1:])
+    if tag.startswith("h"):
+        hist = HISTORIES[tag]
+        return hist[depth] if depth < len(hist) else 0
     seed = int(tag)
     return random.Random(seed * 7919 + depth).randint(0, JITTER_CORNER if corner else JITTER)
 
@@ -161,6 +164,7 @@ CORNER_MINWIN = 8
 LATE_VARIANTS = True
 TURN_COST = 0.0
 JITTER, JITTER_CORNER = 8, 10
+HISTORIES = {}  # "h<level>_<j>" -> per-move lateness, from exhaust.py --dump
 
 
 def score(c):
@@ -453,12 +457,15 @@ def main():
     ap.add_argument("--jitter-corner", type=int, default=10, help="jitter sims: max frames late at corners")
     ap.add_argument("--fixed-sims", default="",
                     help="comma list K: per level, a sim that presses every turn exactly K frames late")
+    ap.add_argument("--history-sims", default="",
+                    help="exhaust.py --dump file: per level, a sim replaying each distinct lateness history "
+                         "(e.g. every way the opening can end), on time after it")
     ap.add_argument("--turn-cost", type=float, default=0, help="score penalty per turn (a dot is worth 10)")
     ap.add_argument("--out", default="result.json")
     args = ap.parse_args()
     global CLUSTER_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER
     CLUSTER_COST, CORNER_MINWIN = args.cluster_cost, args.corner_minwin
-    LATE_VARIANTS = not args.no_late and not args.jitter_sims and not args.fixed_sims
+    LATE_VARIANTS = not args.no_late and not args.jitter_sims and not args.fixed_sims and not args.history_sims
     TURN_COST, JITTER, JITTER_CORNER = args.turn_cost, args.jitter, args.jitter_corner
     levels = [int(x) for x in args.levels.split(",")]
     pool = Pool(args.workers)
@@ -466,6 +473,13 @@ def main():
     fixed = [int(k) for k in args.fixed_sims.split(",") if k]
     sims0 += ([f"{s}~{100 * (j + 1) + k}" for k in range(args.jitter_sims) for j, s in enumerate(sims0)]
               + [f"{s}~f{k}" for k in fixed for s in sims0])
+    if args.history_sims:
+        hist = json.load(open(args.history_sims))
+        for lv, s in zip(levels, list(sims0[:len(levels)])):
+            for j, h in enumerate(hist.get(str(lv), [])):
+                if any(h):  # the all-on-time history is the level's own sim
+                    HISTORIES[f"h{lv}_{j}"] = h
+                    sims0.append(f"{s}~h{lv}_{j}")
     solution, partial = search(pool, sims0, args, log=lambda s: print(s, flush=True))
     out = summarize(solution or partial, levels, solution is not None)
     json.dump(out, open(args.out, "w"), indent=1, default=list)

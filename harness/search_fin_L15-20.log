@@ -1,0 +1,18 @@
+﻿cw : [cw] Started pid 18420 (full).
+At line:1 char:436
++ ... xt).Trim(); cw run --estimate 120m --owner "Claude Code (PacmanPatter ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([cw] Started pid 18420 (full).:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+start 15 ok f=8078 tile=13,23 dir=2 dots=0 level=15 4E04=3 score=0
+start 16 ok f=8432 tile=13,23 dir=2 dots=0 level=16 4E04=3 score=0
+start 17 ok f=8786 tile=13,23 dir=2 dots=0 level=17 4E04=3 score=0
+start 19 ok f=10016 tile=13,23 dir=2 dots=0 level=19 4E04=3 score=0
+prefix: 139/139 moves, 210 dots
+d=140 jobs=3 kids=3 fails={} on={} best=216 fruit=2 t=110s
+d=141 endgame: 45 planned cleanups tried -> none cleared {'dead:L17': '18x avg23left', 'shortwin:L15': '14x avg11left', 'dead:L17~': '9x avg17left', 'dead:L15': '4x avg20left'}
+d=144 endgame: 139 planned cleanups tried -> CLEARED {'dead:L15': '59x avg24left', 'dead:L17': '41x avg21left', 'shortwin:L15': '14x avg10left', 'dead:L17~': '14x avg17left', 'dead:L19': '7x avg13left', 'dead:L19~': '2x avg12left', 'dead:L15~': '1x avg12left'}
+d=144 jobs=14 kids=12 fails={'dead': 2} on={'L15': 2} best=216 fruit=2 t=302s
+RESULT cleared=True dots=244 frames=3813 fruits=2 moves=171 turns=116 minwin=6 route=LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLDRDRDRRULLUUUUULLLULDLDRURDRDRRDRDDLLLULURUULURURRDLULLURDLDLDLLDDDLDRRRURRUUULDLDRDDDLDLULLDDLULURRUULLDRDLDLUUUUUURDDLULLLLLLURR
+[cw] Exited with code 0.

@@ -62,6 +62,7 @@ def run_level(pool, start, route, max_lag, cap, log):
             return f"{st} at move {i}", peak, turn_lags
         if len(states) > cap:
             return f"too many states ({len(states)}) at move {i}", peak, None
+    run_level.ends = list(states.values())
     return "ok", peak, None
 
 
@@ -73,19 +74,25 @@ def main():
     ap.add_argument("--max-lag", type=int, default=10)
     ap.add_argument("--cap", type=int, default=3000, help="give up when the state set grows past this")
     ap.add_argument("--workers", type=int, default=10)
+    ap.add_argument("--dump", help="write {level: [lateness history per final state]} here (for search.py --history-sims)")
     args = ap.parse_args()
     route = json.load(open(args.result))["route"]
     route = route[:args.moves] if args.moves else route
     levels = [int(x) for x in args.levels.split(",")]
     pool = Pool(args.workers)
     starts = make_starts(pool, levels)
+    ends = {}
     for lv, start in zip(levels, starts):
         t0 = time.time()
+        run_level.ends = []
         print(f"L{lv}:", flush=True)
         verdict, peak, example = run_level(pool, start, route, args.max_lag, args.cap,
                                            lambda s: print(s, flush=True))
         print(f"L{lv}: {verdict}; peak {peak} states; {time.time() - t0:.0f}s"
               + (f"\n     lateness per turn that fails: {example}" if example else ""), flush=True)
+        ends[lv] = run_level.ends
+    if args.dump:
+        json.dump(ends, open(args.dump, "w"))
     pool.close()
     cleanup(set(), "*")
 
