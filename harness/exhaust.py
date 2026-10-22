@@ -43,36 +43,60 @@ def play(w, state, held, opt, lag):
     return r["st"], w.cmd("hash").split()[1], n
 
 
-def run_level(pool, start, route, max_lag, cap, log, limits={}):
-    states = {start: ()}  # savestate -> one lateness history that reaches it
+def nlate(hist):
+    return sum(1 for l in hist if l)
+
+
+def run_level(pool, start, route, max_lag, cap, log, limits={}, keep_going=False, max_late=10**9):
+    """With keep_going, dead states are dropped instead of ending the check, and each death is
+    reported with the fewest late presses that reach it (states keep their least-late history).
+    max_late: at most this many late presses per level, anywhere. Still exact: of two histories
+    that reach the same game state, the one with fewer late presses is kept, and it can absorb
+    every slip the other could."""
+    states = {start: ()}  # savestate -> the lateness history with the fewest late presses that reaches it
+    deaths = []
     held = "L"
     peak = 1
     for i, opt in enumerate(route):
         lags = range(limits.get(i, max_lag) + 1) if opt != held else [0]
-        jobs = [(s, hist, lag, pool.submit(play, s, held, opt, lag)) for s, hist in states.items() for lag in lags]
-        nxt, seen, fails = {}, set(), {}
+        jobs = [(s, hist, lag, pool.submit(play, s, held, opt, lag)) for s, hist in states.items()
+                for lag in (lags if nlate(hist) < max_late else [0])]
+        nxt, seen, fails = {}, {}, {}
         for s, hist, lag, f in jobs:
             st, h, n = f.result()
+            hist = hist + (lag,)
             if n is None:
-                fails.setdefault(st, hist + (lag,))
+                if st not in fails or nlate(hist) < nlate(fails[st]):
+                    fails[st] = hist
                 continue
             if h in seen:
                 cleanup({}, n.removeprefix(RUN))
+                if nlate(hist) < nlate(nxt[seen[h]]):
+                    nxt[seen[h]] = hist
                 continue
-            seen.add(h)
-            nxt[n] = hist + (lag,)
+            seen[h] = n
+            nxt[n] = hist
         cleanup(set(nxt), "x*")
         states, held = nxt, opt
         peak = max(peak, len(states))
         if fails or i % 10 == 0 or opt != route[i - 1:i]:
             log(f"  move {i} {opt}: {len(states)} states" + (f"  FAIL {list(fails)}" if fails else ""))
         if fails:
-            st, hist = next(iter(fails.items()))
-            turn_lags = [l for l, o, h in zip(hist, route, "L" + route) if o != h]
-            return f"{st} at move {i}", peak, turn_lags
+            st, hist = min(fails.items(), key=lambda kv: nlate(kv[1]))
+            late = {m: l for m, l in enumerate(hist) if l}
+            if not keep_going:
+                return f"{st} at move {i}", peak, late
+            deaths.append((i, st, late))
+            log(f"    fewest late presses that die here: {len(late)}  {late}")
+            if not states:
+                return f"every state dead at move {i}", peak, late
         if len(states) > cap:
             return f"too many states ({len(states)}) at move {i}", peak, None
     run_level.ends = list(states.values())
+    if deaths:
+        i, st, late = min(deaths, key=lambda d: len(d[2]))
+        return (f"{len(states)} states survive; deaths at moves {[d[0] for d in deaths]}; fewest late "
+                f"presses that kill it: {len(late)} (move {i})"), peak, late
     return "ok", peak, None
 
 
@@ -86,6 +110,10 @@ def main():
     ap.add_argument("--workers", type=int, default=10)
     ap.add_argument("--limit", default="", help="per-move max lag overrides, e.g. 5:4 (a corner the player presses early)")
     ap.add_argument("--dump", help="write {level: [lateness history per final state]} here (for search.py --history-sims)")
+    ap.add_argument("--max-late", type=int, default=10**9,
+                    help="at most this many late presses per level (each 1..max-lag frames), anywhere")
+    ap.add_argument("--keep-going", action="store_true",
+                    help="drop dead states and carry on; report each death with its fewest late presses")
     ap.add_argument("--rel", action="store_true",
                     help="count lateness from the turn (frames after the last clean-cornering press), not from "
                          "leaving the previous junction")
@@ -104,9 +132,10 @@ def main():
         print(f"L{lv}:", flush=True)
         verdict, peak, example = run_level(pool, start, route, args.max_lag, args.cap,
                                            lambda s: print(s, flush=True),
-                                           {int(m): int(k) for m, k in (x.split(":") for x in args.limit.split(",") if x)})
+                                           {int(m): int(k) for m, k in (x.split(":") for x in args.limit.split(",") if x)},
+                                           args.keep_going, args.max_late)
         print(f"L{lv}: {verdict}; peak {peak} states; {time.time() - t0:.0f}s"
-              + (f"\n     lateness per turn that fails: {example}" if example else ""), flush=True)
+              + (f"\n     late presses (move: frames) that fail: {example}" if example else ""), flush=True)
         ends[lv] = run_level.ends
     if args.dump:
         json.dump(ends, open(args.dump, "w"))

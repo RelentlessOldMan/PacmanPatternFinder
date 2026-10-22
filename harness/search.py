@@ -169,13 +169,20 @@ def run_child(w, sims, held, opt, minwin, route=(), expect=None, corner=False):
 def run_child_branch(w, sims, held, opt, minwin, route=(), expect=None):
     """--branch N: at a turn, every sim splits into one per press 0..N frames late (counted from the
     last clean-cornering point); children that leave the game in an identical state (RAM hash) merge.
-    Each level keeps its on-time sim (the first len(SIMS0) sims, in level order) plus at most
-    BRANCH_CAP others ("name@<level index>"), a random sample, so the set stays affordable."""
+    Each level keeps its on-time sim (the first len(SIMS0) sims, in level order) plus others
+    ("name@<level index>.<late presses so far>.<fruits so far>"; the on-time sims carry the same
+    suffix). Fruits are counted per sim because variants eat a fruit on different moves: the
+    candidate's fruit count is the lowest total over its sims, not a sum of per-move minimums.
+    Without --late-budget, at most BRANCH_CAP others per level, a random sample (not exhaustive).
+    With --late-budget K, a sim that has used K late presses only plays on time, merges keep the
+    fewest late presses, and nothing is sampled: every combination of up to K late presses per
+    level is followed exactly. More than BRANCH_CAP others in a level rejects the move ("toomany")."""
     n0 = len(SIMS0)
-    main, extra, res, seen = [None] * n0, {}, [], set()
+    main, extra, res, seen = [None] * n0, {}, [], {}
     for i, sim in enumerate(sims):
-        lv = i if i < n0 else int(sim.split("@")[1])
-        for k in (range(BRANCH + 1) if opt != held else [0]):
+        lv, used, fr = map(int, sim.split("@")[1].split(".")) if "@" in sim else (i, 0, 0)
+        lags = range(BRANCH + 1) if opt != held and used < LATE_BUDGET else [0]
+        for k in lags:
             got = w.cmd(f"load {base(sim)} {held}")
             if expect and got != expect:
                 BADLOADS.append((sim, "".join(route), expect, got, w.cmd(f"load {base(sim)} {held}")))
@@ -183,25 +190,36 @@ def run_child_branch(w, sims, held, opt, minwin, route=(), expect=None):
             r = parse_seg(w.cmd(f"seg {opt} 4 {k}" if k else f"seg {opt} E 0"))
             if r["st"] not in ("ok", "clear"):
                 return r["st"], i, None
+            r["fruits"] += fr  # running total for this sim
             on_time = i < n0 and k == 0
             if on_time and opt != held:
                 corner = len(maze.exits(*r["node"])) == 2
                 if r["win"] < (CORNER_MINWIN if corner else minwin):
                     return "shortwin", i, None
             h = w.cmd("hash").split()[1]
-            if h in seen and not on_time:
+            late = used + (k > 0)
+            key = (lv, h)
+            if key in seen and not on_time:
+                if seen[key] is not None and late < extra[lv][seen[key]][1]:
+                    extra[lv][seen[key]][1] = late
                 continue
-            seen.add(h)
             name = new_name()
             w.cmd(f"save {name}")
             res.append(r)
             if on_time:
-                main[i] = name
+                main[i] = f"{name}@{lv}.0.{r['fruits']}"
+                seen[key] = None
             else:
-                extra.setdefault(lv, []).append(name)
-    rng = random.Random("".join(route) + opt)
-    kept = [f"{n}@{lv}" for lv, names in sorted(extra.items())
-            for n in (names if len(names) <= BRANCH_CAP else rng.sample(names, BRANCH_CAP))]
+                seen[key] = len(extra.setdefault(lv, []))
+                extra[lv].append([name, late, r["fruits"]])
+    if LATE_BUDGET < 10**9:
+        if any(len(v) > BRANCH_CAP for v in extra.values()):
+            return "toomany", 0, None
+        kept = [f"{n}@{lv}.{late}.{f}" for lv, v in sorted(extra.items()) for n, late, f in v]
+    else:
+        rng = random.Random("".join(route) + opt)
+        kept = [f"{n}@{lv}.0.{f}" for lv, v in sorted(extra.items())
+                for n, _, f in (v if len(v) <= BRANCH_CAP else rng.sample(v, BRANCH_CAP))]
     return ("clear" if all(r["st"] == "clear" for r in res) else "ok"), main + kept, res
 
 
@@ -212,6 +230,7 @@ TURN_COST = 0.0
 JITTER, JITTER_CORNER = 8, 10
 HISTORIES = {}  # "h<level>_<j>" -> per-move lateness, from exhaust.py --dump
 BRANCH, BRANCH_CAP = 0, 0
+LATE_BUDGET = 10**9  # --late-budget: late presses per level that --branch follows exactly
 LATE_REL = False  # --late-rel: jitter/fixed sims count lateness from the turn, not the previous junction
 GOAL = maze.DOTS  # --leave-pockets: every dot but the energizer pockets, which are never entered
 AVOID = frozenset()
@@ -277,7 +296,7 @@ def make_child(c, path, opt, sims, res):
               c.eaten | (frozenset(path) & maze.DOTS) | (frozenset([r0["tile"]]) & maze.DOTS),
               c.frames + max(r["fr"] for r in res),
               c.risk + max(0, 24 - min(r["mind"] for r in res)),
-              c.fruits + min(r["fruits"] for r in res), sims,
+              min(r["fruits"] for r in res) if BRANCH else c.fruits + min(r["fruits"] for r in res), sims,
               c.segs + [dict(node=r0["node"], dir=opt, turn=opt != c.heading,
                              win=min(r["win"] for r in res), mind=min(r["mind"] for r in res),
                              frames=r0["fr"])])
@@ -581,7 +600,10 @@ def main():
     ap.add_argument("--branch", type=int, default=0,
                     help="every turn, each sim splits into presses 0..N frames late (from the last clean-cornering "
                          "point); identical states merge")
-    ap.add_argument("--branch-cap", type=int, default=8, help="--branch: max extra sims kept per level")
+    ap.add_argument("--branch-cap", type=int, default=8,
+                    help="--branch: max extra sims kept per level (with --late-budget: more rejects the move)")
+    ap.add_argument("--late-budget", type=int, default=None,
+                    help="--branch: follow every combination of up to K late presses per level exactly")
     ap.add_argument("--leave-pockets", action="store_true",
                     help="goal: every dot except the 4 energizer pockets (maze.POCKETS), never entering them")
     ap.add_argument("--safe-after", type=int, default=3,
@@ -592,12 +614,14 @@ def main():
                     help="carry on from --checkpoint (same arguments otherwise; code may have changed)")
     ap.add_argument("--out", default="result.json")
     args = ap.parse_args()
-    global CLUSTER_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER
+    global CLUSTER_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET
     CLUSTER_COST, CORNER_MINWIN = args.cluster_cost, args.corner_minwin
     LATE_VARIANTS = not args.no_late and not args.jitter_sims and not args.fixed_sims and not args.history_sims
     TURN_COST, JITTER, JITTER_CORNER = args.turn_cost, args.jitter, args.jitter_corner
     LATE_REL = args.late_rel
     BRANCH, BRANCH_CAP = args.branch, args.branch_cap
+    if args.late_budget is not None:
+        LATE_BUDGET = args.late_budget
     if BRANCH:
         LATE_VARIANTS = False
     if args.leave_pockets:
