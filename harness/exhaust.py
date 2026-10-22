@@ -33,12 +33,12 @@ def play(w, state, held, opt, lag):
     return r["st"], w.cmd("hash").split()[1], n
 
 
-def run_level(pool, start, route, max_lag, cap, log):
+def run_level(pool, start, route, max_lag, cap, log, limits={}):
     states = {start: ()}  # savestate -> one lateness history that reaches it
     held = "L"
     peak = 1
     for i, opt in enumerate(route):
-        lags = range(max_lag + 1) if opt != held else [0]
+        lags = range(limits.get(i, max_lag) + 1) if opt != held else [0]
         jobs = [(s, hist, lag, pool.submit(play, s, held, opt, lag)) for s, hist in states.items() for lag in lags]
         nxt, seen, fails = {}, set(), {}
         for s, hist, lag, f in jobs:
@@ -74,6 +74,7 @@ def main():
     ap.add_argument("--max-lag", type=int, default=10)
     ap.add_argument("--cap", type=int, default=3000, help="give up when the state set grows past this")
     ap.add_argument("--workers", type=int, default=10)
+    ap.add_argument("--limit", default="", help="per-move max lag overrides, e.g. 5:4 (a corner the player presses early)")
     ap.add_argument("--dump", help="write {level: [lateness history per final state]} here (for search.py --history-sims)")
     args = ap.parse_args()
     route = json.load(open(args.result))["route"]
@@ -87,7 +88,8 @@ def main():
         run_level.ends = []
         print(f"L{lv}:", flush=True)
         verdict, peak, example = run_level(pool, start, route, args.max_lag, args.cap,
-                                           lambda s: print(s, flush=True))
+                                           lambda s: print(s, flush=True),
+                                           {int(m): int(k) for m, k in (x.split(":") for x in args.limit.split(",") if x)})
         print(f"L{lv}: {verdict}; peak {peak} states; {time.time() - t0:.0f}s"
               + (f"\n     lateness per turn that fails: {example}" if example else ""), flush=True)
         ends[lv] = run_level.ends

@@ -1,0 +1,21 @@
+﻿cw : [cw] Started pid 41356 (full).
+At line:1 char:436
++ ... xt).Trim(); cw run --estimate 180m --owner "Claude Code (PacmanPatter ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([cw] Started pid 41356 (full).:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+start 9 ok f=4910 tile=13,23 dir=2 dots=0 level=9 4E04=3 score=0
+start 10 ok f=5786 tile=13,23 dir=2 dots=0 level=10 4E04=3 score=0
+start 11 ok f=6140 tile=13,23 dir=2 dots=0 level=11 4E04=3 score=0
+start 12 ok f=6494 tile=13,23 dir=2 dots=0 level=12 4E04=3 score=0
+start 13 ok f=6848 tile=13,23 dir=2 dots=0 level=13 4E04=3 score=0
+start 14 ok f=7724 tile=13,23 dir=2 dots=0 level=14 4E04=3 score=0
+prefix: 139/139 moves, 210 dots
+d=140 jobs=3 kids=3 fails={} on={} best=216 fruit=2 t=232s
+d=141 endgame: 23 planned cleanups tried -> none cleared {'dead:L11': '12x avg28left', 'dead:L9~': '11x avg28left'}
+d=144 endgame: 23 planned cleanups tried -> none cleared {'dead:L9': '12x avg28left', 'dead:L11': '11x avg28left'}
+d=146 beam died: backtrack #1 to d=145, 1/2 candidates left after dropping the dead family
+d=145 jobs=1 kids=0 fails={'dead': 1} on={'L9': 1} best=- fruit=- t=265s
+RESULT cleared=False dots=216 frames=3062 fruits=2 moves=141 turns=101 minwin=6 route=LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLDRDRDRRULLUUUUULLLULDLDRURDRDRRDRDDLLLULURUULURURRDLULLURDLDLDLLDDDLDRRRURRUUULDLDRDDDLDLULLDDLULURU
+[cw] Exited with code 0.

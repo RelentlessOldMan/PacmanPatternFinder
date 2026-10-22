@@ -104,3 +104,12 @@ Example: `python -u search.py --levels 1,2,3,4 --beam 96 --minwin 10 --out resul
 - Fixed: stepped sims ran 1 frame later than straight-through play (the savestate costs a frame); search.py `stepped_lag` presses 1 frame sooner. Verified frame-identical over 171 moves.
 - Best 2–4: `result_L2-4_human3.json`, 117 moves / 83 turns (user prefix + search). Jitter 30/30 on L2–4; fixed 0–12 ok on L3, 0–11 on L2; L4 dies at fixed 9 and 11; corner-late 30/18/22 of 30.
 - Still running at 08:00: `search_L5-20_all.log` (13 distinct levels, best 222 dots) and `search_L2-4_human4.log` (fixed 4,7,9,10,11 + jitter, best ~240).
+
+### 2026-10-22 afternoon: shared trunk + three finishers
+- Trunk: first 139 moves of `result_L5-20_human3.json` (`trunk139.txt`), through the lower-left energizer.
+- Finishers: `result_fin_L5-8.json` (168 moves), `result_fin_L9-14.json` (178 moves/122 turns), `result_fin_L15-20.json` (171 moves/116 turns).
+- `exhaust.py` checks every lateness combination (identical RAM states merge; never more than ~64 states at once).
+  All three routes survive every combination of 0-10 frames late on every turn, provided move 5 (the Down at the
+  bottom-left corner (1,26), 6-frame window) is pressed within 6 frames, i.e. held early (`--limit 5:6`).
+  5-8 is safe even without that limit. Without it, move 5 at 9-10 frames late kills 11-13 and 15-18.
+- Tried: making the 9-14 finisher survive every trunk ending (`--history-sims`); it dead-ends 7 moves after the trunk.
