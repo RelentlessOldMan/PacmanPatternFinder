@@ -1,0 +1,35 @@
+﻿cw : [cw] Started pid 49572 (throttled).
+At line:1 char:394
++ ... \mame.exe"; cw run --estimate 30m --owner "Claude Code (PacmanPattern ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([cw] Started pid 49572 (throttled).:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[cw] Throttled to 1 core at below-normal priority: Overwatch (Overwatch.exe) is running.
+start 5 ok f=2984 tile=13,23 dir=2 dots=0 level=5 4E04=3 score=0
+start 6 ok f=3848 tile=13,23 dir=2 dots=0 level=6 4E04=3 score=0
+start 7 ok f=4202 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=0
+start 9 ok f=4910 tile=13,23 dir=2 dots=0 level=9 4E04=3 score=0
+start 10 ok f=5786 tile=13,23 dir=2 dots=0 level=10 4E04=3 score=0
+start 11 ok f=6140 tile=13,23 dir=2 dots=0 level=11 4E04=3 score=0
+start 12 ok f=6494 tile=13,23 dir=2 dots=0 level=12 4E04=3 score=0
+start 13 ok f=6848 tile=13,23 dir=2 dots=0 level=13 4E04=3 score=0
+start 14 ok f=7724 tile=13,23 dir=2 dots=0 level=14 4E04=3 score=0
+start 15 ok f=8078 tile=13,23 dir=2 dots=0 level=15 4E04=3 score=0
+start 16 ok f=9110 tile=13,23 dir=2 dots=0 level=16 4E04=3 score=70
+start 17 ok f=9464 tile=13,23 dir=2 dots=0 level=17 4E04=3 score=70
+start 19 ok f=10694 tile=13,23 dir=2 dots=0 level=19 4E04=3 score=70
+L5: fixed 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:ok 11:ok 12:ok | jitter 30/30 []
+L6: fixed 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:ok 11:ok 12:ok | jitter 30/30 []
+L7: fixed 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:ok 11:ok 12:ok | jitter 30/30 []
+L9: fixed 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:ok 11:ok 12:ok | jitter 30/30 []
+L10: fixed 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:ok 11:ok 12:ok | jitter 30/30 []
+L11: fixed 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:ok 11:ok 12:ok | jitter 30/30 []
+L12: fixed 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:ok 11:ok 12:ok | jitter 30/30 []
+L13: fixed 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:ok 11:ok 12:ok | jitter 30/30 []
+L14: fixed 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:ok 11:ok 12:ok | jitter 30/30 []
+L15: fixed 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:dead@116 11:ok 12:dead@66 | jitter 28/30 ['dead@116', 'dead@116']
+L16: fixed 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:dead@116 11:ok 12:dead@66 | jitter 28/30 ['dead@116', 'dead@116']
+L17: fixed 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:dead@116 11:ok 12:dead@66 | jitter 28/30 ['dead@116', 'dead@116']
+L19: fixed 0:ok 1:ok 2:ok 3:ok 4:ok 5:ok 6:ok 7:ok 8:ok 9:ok 10:ok 11:ok 12:dead@98 | jitter 30/30 []
+[cw] Exited with code 0.
