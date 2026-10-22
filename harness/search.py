@@ -12,6 +12,7 @@ import argparse
 import itertools
 import json
 import os
+import pickle
 import queue
 import random
 import threading
@@ -35,6 +36,7 @@ class Cand:
     sims: list
     segs: list
     score: float = 0.0
+    after: int = -1  # moves played since the goal was reached (-1: not yet)
 
 
 class Pool:
@@ -83,7 +85,7 @@ BADLOADS = []
 
 def base(sim):
     """Savestate name of a sim: strips the late marker "*" and the jitter seed "~s"."""
-    return sim.split("~")[0].rstrip("*")
+    return sim.split("~")[0].split("@")[0].rstrip("*")
 
 
 def jitter_lag(sim, depth, corner):
@@ -121,6 +123,8 @@ def run_child(w, sims, held, opt, minwin, route=(), expect=None, corner=False):
     first. When an on-time sim takes a corner whose window is shorter than `minwin`, a late variant
     is spawned from it; from then on the route has to survive both.
     """
+    if BRANCH:
+        return run_child_branch(w, sims, held, opt, minwin, route, expect)
     out, res, spawned = [], [], []
     for i, sim in enumerate(sims):
         late = sim.endswith("*")
@@ -133,7 +137,10 @@ def run_child(w, sims, held, opt, minwin, route=(), expect=None, corner=False):
         lag = 0
         if opt != held:
             lag = minwin if late else jitter_lag(sim, len(route), corner) if jit else 0
-        r = parse_seg(w.cmd(f"seg {opt} E {stepped_lag(lag)}"))
+        if LATE_REL and lag:  # k frames after the last press that still corners cleanly
+            r = parse_seg(w.cmd(f"seg {opt} 4 {lag}"))
+        else:
+            r = parse_seg(w.cmd(f"seg {opt} E {stepped_lag(lag)}"))
         if r["st"] not in ("ok", "clear"):
             if r["st"] == "stuck":
                 print(f"STUCK route={''.join(route)}+{opt} {r}", flush=True)
@@ -159,16 +166,77 @@ def run_child(w, sims, held, opt, minwin, route=(), expect=None, corner=False):
     return ("clear" if all(r["st"] == "clear" for r in res) else "ok"), out + spawned, res
 
 
+def run_child_branch(w, sims, held, opt, minwin, route=(), expect=None):
+    """--branch N: at a turn, every sim splits into one per press 0..N frames late (counted from the
+    last clean-cornering point); children that leave the game in an identical state (RAM hash) merge.
+    Each level keeps its on-time sim (the first len(SIMS0) sims, in level order) plus at most
+    BRANCH_CAP others ("name@<level index>"), a random sample, so the set stays affordable."""
+    n0 = len(SIMS0)
+    main, extra, res, seen = [None] * n0, {}, [], set()
+    for i, sim in enumerate(sims):
+        lv = i if i < n0 else int(sim.split("@")[1])
+        for k in (range(BRANCH + 1) if opt != held else [0]):
+            got = w.cmd(f"load {base(sim)} {held}")
+            if expect and got != expect:
+                BADLOADS.append((sim, "".join(route), expect, got, w.cmd(f"load {base(sim)} {held}")))
+                return "badload", i, None
+            r = parse_seg(w.cmd(f"seg {opt} 4 {k}" if k else f"seg {opt} E 0"))
+            if r["st"] not in ("ok", "clear"):
+                return r["st"], i, None
+            on_time = i < n0 and k == 0
+            if on_time and opt != held:
+                corner = len(maze.exits(*r["node"])) == 2
+                if r["win"] < (CORNER_MINWIN if corner else minwin):
+                    return "shortwin", i, None
+            h = w.cmd("hash").split()[1]
+            if h in seen and not on_time:
+                continue
+            seen.add(h)
+            name = new_name()
+            w.cmd(f"save {name}")
+            res.append(r)
+            if on_time:
+                main[i] = name
+            else:
+                extra.setdefault(lv, []).append(name)
+    rng = random.Random("".join(route) + opt)
+    kept = [f"{n}@{lv}" for lv, names in sorted(extra.items())
+            for n in (names if len(names) <= BRANCH_CAP else rng.sample(names, BRANCH_CAP))]
+    return ("clear" if all(r["st"] == "clear" for r in res) else "ok"), main + kept, res
+
+
 CLUSTER_COST = 40
 CORNER_MINWIN = 8
 LATE_VARIANTS = True
 TURN_COST = 0.0
 JITTER, JITTER_CORNER = 8, 10
 HISTORIES = {}  # "h<level>_<j>" -> per-move lateness, from exhaust.py --dump
+BRANCH, BRANCH_CAP = 0, 0
+LATE_REL = False  # --late-rel: jitter/fixed sims count lateness from the turn, not the previous junction
+GOAL = maze.DOTS  # --leave-pockets: every dot but the energizer pockets, which are never entered
+AVOID = frozenset()
+
+
+SAFE_AFTER = 0  # --safe-after: moves every sim must survive past the goal before it counts
+
+
+def done(c):
+    return GOAL <= c.eaten
+
+
+def finished(c):
+    """The goal is reached and every sim has lived SAFE_AFTER more moves (not just reached it with
+    a ghost about to land on Pac-Man)."""
+    return c.after >= SAFE_AFTER
+
+
+def allowed(c, node, opt):
+    """Never reverse; stay out of the pockets until the goal is reached."""
+    return opt != maze.REV[c.heading] and (c.after >= 0 or maze.step(*node, opt) not in AVOID)
 
 
 def score(c):
-    left = maze.DOTS - c.eaten
+    left = GOAL - c.eaten
     near = maze.bfs_dist(c.tile, left)
     # each stranded pocket of dots costs a long trip back later (with a faster red ghost)
     return (len(c.eaten) * 10 - c.frames * 0.25 - near * 6 - c.risk * 2 + c.fruits * 400
@@ -213,7 +281,8 @@ def make_child(c, path, opt, sims, res):
               c.segs + [dict(node=r0["node"], dir=opt, turn=opt != c.heading,
                              win=min(r["win"] for r in res), mind=min(r["mind"] for r in res),
                              frames=r0["fr"])])
-    ch.score = score(ch)
+    ch.after = c.after + 1 if c.after >= 0 else (0 if done(ch) else -1)
+    ch.score = score(ch) + (100000 + 1000 * ch.after if ch.after >= 0 else 0)
     return ch
 
 
@@ -232,9 +301,9 @@ def plan_moves(tile, heading, left, rng, k=3, cap=80):
             seen.add((t, h))
             node, path = maze.next_node(*t, h)
             for opt in maze.exits(*node):
-                if opt == maze.REV[h]:
-                    continue
                 nt = maze.step(*node, opt)
+                if opt == maze.REV[h] or nt in AVOID:
+                    continue
                 walked = set(path) | {nt}
                 if walked & left:
                     goals.append((ms + (opt,), nt, opt))
@@ -260,20 +329,39 @@ def rollout(w, c, moves, minwin):
         st, sims, res = run_child(w, c.sims, c.heading, opt, minwin, c.route,
                                   corner=len(maze.exits(*node)) == 2)
         if res is None:
-            return None, (st, sims, len(maze.DOTS - c.eaten))
+            return None, (st, sims, len(GOAL - c.eaten))
         c = make_child(c, path, opt, sims, res)
-        if st == "clear":
+        if st == "clear" or finished(c):
             return c, None
-    return None, ("unfinished", None, len(maze.DOTS - c.eaten))
+        if c.after >= 0:  # goal reached: any continuation that every sim survives will do
+            s = survive(w, c, minwin)
+            return (s, None) if s else (None, ("dead-after-goal", None, 0))
+    return None, ("unfinished", None, len(GOAL - c.eaten))
+
+
+def survive(w, c, minwin):
+    """Depth-first: extend c past the goal until finished(), trying every option at each node."""
+    if finished(c):
+        return c
+    node, path = maze.next_node(*c.tile, c.heading)
+    for opt in maze.exits(*node):
+        if allowed(c, node, opt):
+            st, sims, res = run_child(w, c.sims, c.heading, opt, minwin, c.route,
+                                      corner=len(maze.exits(*node)) == 2)
+            if res is not None:
+                s = survive(w, make_child(c, path, opt, sims, res), minwin)
+                if s:
+                    return s
+    return None
 
 
 def endgame(pool, beam, args, rng):
     """Try full planned cleanup routes from the best few candidates that have few dots left."""
-    cands = [c for c in beam if len(maze.DOTS - c.eaten) <= args.endgame][:args.endgame_cands]
+    cands = [c for c in beam if len(GOAL - c.eaten) <= args.endgame][:args.endgame_cands]
     jobs, tried = [], set()
     for c in cands:
         for _ in range(args.endgame_plans):
-            mv = plan_moves(c.tile, c.heading, maze.DOTS - c.eaten, rng)
+            mv = plan_moves(c.tile, c.heading, GOAL - c.eaten, rng)
             if mv and (id(c), tuple(mv)) not in tried:
                 tried.add((id(c), tuple(mv)))
                 jobs.append(pool.submit(rollout, c, mv, args.minwin))
@@ -304,13 +392,27 @@ def sim_label(sims0, i):
     return s.split("~")[0] + "~" if "~" in s else s
 
 
-def search(pool, sims0, args, log=print):
+CKPT_KEYS = ("depth", "beam", "best_partial", "best_depth", "solution", "snapshots", "last_beam",
+             "backtracks", "misses", "last_target")
+
+
+def save_checkpoint(args, sims0, state, rng):
+    """Everything the search loop needs to carry on (--resume), written atomically. The savestates
+    it refers to stay on disk: the beam and snapshots are never cleaned up while they're live."""
+    state = dict(state, rng=rng.getstate(), sims0=sims0, histories=HISTORIES, run=RUN)
+    tmp = args.checkpoint + ".tmp"
+    with open(tmp, "wb") as f:
+        pickle.dump(state, f)
+    os.replace(tmp, args.checkpoint)
+
+
+def search(pool, sims0, args, log=print, resume=None):
     SIMS0[:] = sims0
     t0 = time.time()
     n = len(sims0)
     beam = [Cand([], (13, 23), "L", frozenset(), 0, 0.0, 0, sims0, [])]
     # --prefix: play a given opening (e.g. a human's, from watch.py) and search on from its end
-    for opt in args.prefix:
+    for opt in ("" if resume else args.prefix):
         c = beam[0]
         node, path = maze.next_node(*c.tile, c.heading)
         st, sims, res = pool.submit(run_child, c.sims, c.heading, opt, args.minwin, c.route,
@@ -329,15 +431,26 @@ def search(pool, sims0, args, log=print):
     # end, rewind (further each time it fails again) and drop the ancestors of the dead family.
     snapshots, last_beam, backtracks, misses, last_target = [], beam, 0, 0, None
     depth = len(beam[0].route) - 1
+    if resume:
+        (depth, beam, best_partial, best_depth, solution, snapshots, last_beam, backtracks, misses,
+         last_target) = (resume[k] for k in CKPT_KEYS)
+        rng.setstate(resume["rng"])
+        log(f"resumed at d={depth} from {args.checkpoint}")
+        depth -= 1
     while True:
         depth += 1
         if depth % 5 == 0 and not (snapshots and snapshots[-1][0] == depth):
             snapshots = (snapshots + [(depth, beam)])[-args.snapshots:]
+            if args.checkpoint:
+                save_checkpoint(args, sims0, dict(
+                    depth=depth, beam=beam, best_partial=best_partial, best_depth=best_depth, solution=solution,
+                    snapshots=snapshots, last_beam=last_beam, backtracks=backtracks, misses=misses,
+                    last_target=last_target), rng)
         jobs = []
         for c in beam:
             node, path = maze.next_node(*c.tile, c.heading)
             for opt in maze.exits(*node):
-                if opt != maze.REV[c.heading]:
+                if allowed(c, node, opt):
                     jobs.append((c, path, opt, pool.submit(run_child, c.sims, c.heading, opt, args.minwin, c.route,
                                                          f"ok {c.tile[0]} {c.tile[1]} {len(c.eaten)}" if c.route else None,
                                                          len(maze.exits(*node)) == 2)))
@@ -353,7 +466,7 @@ def search(pool, sims0, args, log=print):
             r0 = res[0]
             if r0["dots"] != len(ch.eaten) and args.debug:
                 print(f"DOTMISMATCH game={r0['dots']} mine={len(ch.eaten)} route={''.join(ch.route)}", flush=True)
-            if st == "clear":
+            if st == "clear" or finished(ch):
                 if ch.fruits < args.need_fruits:
                     fails["nofruit"] = fails.get("nofruit", 0) + 1
                 elif solution is None or solution_cost(ch) < solution_cost(solution):
@@ -427,7 +540,8 @@ def summarize(c, levels, cleared):
     turns = [s for s in c.segs if s["turn"]]
     return dict(levels=levels, cleared=cleared, dots=len(c.eaten), frames=c.frames, fruits=c.fruits,
                 route="".join(c.route), n_moves=len(c.route), n_turns=len(turns),
-                min_window=min((s["win"] for s in turns), default=99), segs=c.segs, end_sims=c.sims)
+                min_window=min((s["win"] for s in turns), default=99), segs=c.segs, end_sims=c.sims,
+                goal_at=len(c.route) - c.after if c.after >= 0 else None)
 
 
 def main():
@@ -461,26 +575,53 @@ def main():
                     help="exhaust.py --dump file: per level, a sim replaying each distinct lateness history "
                          "(e.g. every way the opening can end), on time after it")
     ap.add_argument("--turn-cost", type=float, default=0, help="score penalty per turn (a dot is worth 10)")
+    ap.add_argument("--late-rel", action="store_true",
+                    help="jitter/fixed sims press K frames after the last clean-cornering point (4px before the "
+                         "turn) instead of K frames after leaving the previous junction")
+    ap.add_argument("--branch", type=int, default=0,
+                    help="every turn, each sim splits into presses 0..N frames late (from the last clean-cornering "
+                         "point); identical states merge")
+    ap.add_argument("--branch-cap", type=int, default=8, help="--branch: max extra sims kept per level")
+    ap.add_argument("--leave-pockets", action="store_true",
+                    help="goal: every dot except the 4 energizer pockets (maze.POCKETS), never entering them")
+    ap.add_argument("--safe-after", type=int, default=3,
+                    help="--leave-pockets: moves every sim must survive after the goal is reached")
+    ap.add_argument("--checkpoint", default=None,
+                    help="write the search state here every 5 moves (default: <out>.ckpt; 'none' = off)")
+    ap.add_argument("--resume", action="store_true",
+                    help="carry on from --checkpoint (same arguments otherwise; code may have changed)")
     ap.add_argument("--out", default="result.json")
     args = ap.parse_args()
-    global CLUSTER_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER
+    global CLUSTER_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER
     CLUSTER_COST, CORNER_MINWIN = args.cluster_cost, args.corner_minwin
     LATE_VARIANTS = not args.no_late and not args.jitter_sims and not args.fixed_sims and not args.history_sims
     TURN_COST, JITTER, JITTER_CORNER = args.turn_cost, args.jitter, args.jitter_corner
+    LATE_REL = args.late_rel
+    BRANCH, BRANCH_CAP = args.branch, args.branch_cap
+    if BRANCH:
+        LATE_VARIANTS = False
+    if args.leave_pockets:
+        GOAL, AVOID = maze.DOTS - maze.POCKETS, maze.POCKETS
+        SAFE_AFTER = args.safe_after
     levels = [int(x) for x in args.levels.split(",")]
     pool = Pool(args.workers)
-    sims0 = args.starts.split(",") if args.starts else make_starts(pool, levels)
+    args.checkpoint = None if args.checkpoint == "none" else args.checkpoint or args.out + ".ckpt"
+    resume = None
+    if args.resume:
+        resume = pickle.load(open(args.checkpoint, "rb"))
+        HISTORIES.update(resume["histories"])
+    sims0 = resume["sims0"] if resume else args.starts.split(",") if args.starts else make_starts(pool, levels)
     fixed = [int(k) for k in args.fixed_sims.split(",") if k]
-    sims0 += ([f"{s}~{100 * (j + 1) + k}" for k in range(args.jitter_sims) for j, s in enumerate(sims0)]
+    sims0 += [] if resume else ([f"{s}~{100 * (j + 1) + k}" for k in range(args.jitter_sims) for j, s in enumerate(sims0)]
               + [f"{s}~f{k}" for k in fixed for s in sims0])
-    if args.history_sims:
+    if args.history_sims and not resume:
         hist = json.load(open(args.history_sims))
         for lv, s in zip(levels, list(sims0[:len(levels)])):
             for j, h in enumerate(hist.get(str(lv), [])):
                 if any(h):  # the all-on-time history is the level's own sim
                     HISTORIES[f"h{lv}_{j}"] = h
                     sims0.append(f"{s}~h{lv}_{j}")
-    solution, partial = search(pool, sims0, args, log=lambda s: print(s, flush=True))
+    solution, partial = search(pool, sims0, args, log=lambda s: print(s, flush=True), resume=resume)
     out = summarize(solution or partial, levels, solution is not None)
     json.dump(out, open(args.out, "w"), indent=1, default=list)
     print("RESULT cleared=%s dots=%d frames=%d fruits=%d moves=%d turns=%d minwin=%d route=%s" % (
@@ -488,6 +629,12 @@ def main():
         out["min_window"], out["route"]))
     pool.close()
     cleanup(set(), "*")
+    if resume and resume["run"] != RUN:  # the savestates the checkpointed run left behind
+        for f in (STATE_DIR / "pacman").glob(f"{resume['run']}*.sta"):
+            try:
+                f.unlink()
+            except OSError:
+                pass
 
 
 if __name__ == "__main__":

@@ -2,6 +2,10 @@
 
   python exhaust.py result.json --levels 5,15 --moves 139 --max-lag 10
 
+With --rel, "k frames late" means k frames after the last press that still corners cleanly (Pac-Man
+4px before the turn); without it (the old meaning), k frames after leaving the previous junction,
+which for most moves is still ahead of the turn.
+
 At every turn, each live state is played with the press 0..max-lag frames late; results that
 leave the game in an identical state (same RAM) merge into one. A route passes when no state
 in the set dies or misses a turn, which covers every combination of per-turn lateness up to
@@ -23,9 +27,15 @@ def name():
         return f"{RUN}x{next(_ids)}"
 
 
+REL = False  # --rel: lag k = k frames after the last clean-cornering point (4px before the turn)
+
+
 def play(w, state, held, opt, lag):
     w.cmd(f"load {state} {held}")
-    r = parse_seg(w.cmd(f"seg {opt} E {stepped_lag(lag) if opt != held else 0}"))
+    if REL and lag:
+        r = parse_seg(w.cmd(f"seg {opt} 4 {lag}"))
+    else:
+        r = parse_seg(w.cmd(f"seg {opt} E {stepped_lag(lag) if opt != held else 0}"))
     if r["st"] not in ("ok", "clear"):
         return r["st"], None, None
     n = name()
@@ -76,7 +86,12 @@ def main():
     ap.add_argument("--workers", type=int, default=10)
     ap.add_argument("--limit", default="", help="per-move max lag overrides, e.g. 5:4 (a corner the player presses early)")
     ap.add_argument("--dump", help="write {level: [lateness history per final state]} here (for search.py --history-sims)")
+    ap.add_argument("--rel", action="store_true",
+                    help="count lateness from the turn (frames after the last clean-cornering press), not from "
+                         "leaving the previous junction")
     args = ap.parse_args()
+    global REL
+    REL = args.rel
     route = json.load(open(args.result))["route"]
     route = route[:args.moves] if args.moves else route
     levels = [int(x) for x in args.levels.split(",")]

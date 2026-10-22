@@ -95,3 +95,21 @@ def clusters(dots):
                 if nb in left:
                     left.remove(nb); stack.append(nb)
     return n
+
+
+def _pockets():
+    """Tiles that can only be reached through an energizer without reversing: from each energizer,
+    walk both ways along the corridor (through corners) up to the first junction."""
+    out = set()
+    for e in ENERGIZERS:
+        out.add(e)
+        for d in exits(*e):
+            c, r, h = *step(*e, d), d
+            while len(exits(c, r)) == 2:
+                out.add((c, r))
+                h = next(x for x in exits(c, r) if x != REV[h])
+                c, r = step(c, r, h)
+    return frozenset(out)
+
+
+POCKETS = _pockets()  # 4 energizers + 7 dots each at the top corners, 11 each at the bottom
