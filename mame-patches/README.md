@@ -1,6 +1,7 @@
 # MAME patches
 
-MAME is GPL-2.0-or-later; these are changes to its source, not official MAME.
+MAME is GPL-2.0-or-later; these are changes to its source, not official MAME, and are licensed
+GPL-2.0-or-later too (the rest of this repo is MIT).
 
 ## memstate.patch (MAME 0.289)
 

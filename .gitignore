@@ -13,3 +13,4 @@ snap/
 *.ckpt
 *.ckpt.*
 *.sols.jsonl
+videos/
