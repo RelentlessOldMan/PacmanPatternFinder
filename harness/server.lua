@@ -184,9 +184,14 @@ local function ram_hash()
   -- stale bytes, like the return address left where the interrupt happened to land, that the
   -- game never reads, so they must not keep identical game states from merging
   local s = H.mem:read_range(0x4000, 0x4F7F, 8) .. H.mem:read_range(0x4FC0, 0x4FEF, 8)
-  local h = 0
-  for i = 1, #s do h = (h * 31 + s:byte(i)) % 2147483647 end
-  return h
+  -- 8 bytes at a time as 64-bit integers (wrapping), 64 bytes per unpack: 8x fewer Lua steps
+  s = s .. string.rep(" ", -#s % 64)
+  local h, up, fmt = 0, string.unpack, "<i8i8i8i8i8i8i8i8"
+  for i = 1, #s, 64 do
+    local a, b, c, d, e, f, g, k = up(fmt, s, i)
+    h = ((((((((h * 31 + a) * 31 + b) * 31 + c) * 31 + d) * 31 + e) * 31 + f) * 31 + g) * 31 + k)
+  end
+  return h % 2147483647
 end
 
 -- fruits this level that have appeared and are gone again (eaten or expired): 0x4E0C/0x4E0D flip
