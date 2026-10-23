@@ -17,11 +17,12 @@ heading left. Details, timing data and older patterns are in [`best/`](best/READ
 | 5–20 | `best/L5-20_nopockets_99.json` | 99 / 67 | leaves the 4 corner pockets to eat by hand |
 | 21+ | `best/L21_full_118.json` | 118 / 88 | full clear, both fruits, ~48 s; starts like 5–20 |
 
-Pattern sheets, one image each (drawn from our own maze file, made by `harness/pattern_sheet.py`):
+Pattern sheets, one image each (made by `harness/pattern_sheet.py`; plain drawn versions without game
+graphics: [5–20](best/L5-20_99.png), [21+](best/L21_118.png)):
 
-![Levels 5-20 pattern](best/L5-20_99.png)
+![Levels 5-20 pattern](best/L5-20_99_screen.png)
 
-![Levels 21+ pattern](best/L21_118.png)
+![Levels 21+ pattern](best/L21_118_screen.png)
 
 Videos (played by MAME exactly on time): 5–20 on [level 5](videos/L5-20_99_level5.mp4) (the corner
 dots are left to eat by hand) and 21+ on [level 21](videos/L21_118_level21.mp4).

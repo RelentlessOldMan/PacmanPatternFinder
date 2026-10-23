@@ -1,8 +1,9 @@
-"""pattern_sheet.py <route.json> <out.png> <title>: draw a route as one image to learn it from.
+"""pattern_sheet.py <route.json> <out.png> <title> [screenshot.png]: draw a route as one image to learn it from.
 
 The route is split into legs, one maze panel each: the leg's path in colour with every move numbered
 where it's taken, on the dots still left when the leg starts. The maze is drawn from maze.txt (no game
-graphics)."""
+graphics), or with a screenshot, on that: a 3x MAME frame (672x864) of the level's start, its eaten dots
+blacked out."""
 import json, sys, os
 from PIL import Image, ImageDraw, ImageFont
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -10,6 +11,8 @@ import maze
 
 T = 20                      # pixels per tile
 PW, PH = maze.W * T, maze.H * T
+MY = 0                      # where the maze starts in a panel (a screenshot has the score above it)
+LW = 4                      # path line width
 PAD, HEAD, LEGHEAD, FOOT = 24, 96, 56, 60
 BG, WALL, WALL_EDGE, DOT = (12, 12, 20), (24, 34, 92), (70, 90, 200), (235, 205, 170)
 COLOURS = [(255, 70, 70), (70, 210, 90), (80, 150, 255), (255, 150, 60), (230, 220, 70), (60, 220, 220), (220, 100, 230)]
@@ -71,7 +74,7 @@ def draw_leg(d, ox, oy, path, col, numbers, small, first):
     pts = []
     for a, b in zip(path, path[1:]):
         if abs(a[0] - b[0]) > 1:  # through the tunnel
-            if len(pts) > 1: d.line(pts, fill=col, width=4, joint="curve")
+            if len(pts) > 1: d.line(pts, fill=col, width=LW, joint="curve")
             pts = []
             continue
         key = frozenset((a, b))
@@ -82,7 +85,7 @@ def draw_leg(d, ox, oy, path, col, numbers, small, first):
         (x1, y1), (x2, y2) = centre(a, ox, oy), centre(b, ox, oy)
         if not pts: pts.append((x1 + px, y1 + py))
         pts.append((x2 + px, y2 + py))
-    if len(pts) > 1: d.line(pts, fill=col, width=4, joint="curve")
+    if len(pts) > 1: d.line(pts, fill=col, width=LW, joint="curve")
     # where the leg starts and the way it ends
     if first:
         sx, sy = centre(path[0], ox, oy)
@@ -101,8 +104,33 @@ def draw_leg(d, ox, oy, path, col, numbers, small, first):
         d.text((x, y), str(num), fill=(10, 10, 10), font=small, anchor="mm")
 
 
+def shot_panel(shot, eaten, hide_pac):
+    """The screenshot with the dots already eaten blacked out (and Pac-Man, after the first leg)."""
+    im = shot.copy()
+    d = ImageDraw.Draw(im)
+    for t in eaten:
+        x, y = t[0] * T + T // 2, MY + t[1] * T + T // 2
+        r = 11 if t in maze.ENERGIZERS else 5
+        d.rectangle([x - r, y - r, x + r, y + r], fill=(0, 0, 0))
+    if hide_pac:
+        px = im.load()
+        cx, cy = 14 * T, MY + 23 * T + T // 2  # his start, between tiles 13 and 14
+        for y in range(cy - T, cy + T):
+            for x in range(cx - T, cx + T):
+                rr, gg, bb = px[x, y][:3]
+                if not (bb > 120 and rr < 120 and gg < 120):  # keep the blue walls
+                    px[x, y] = (0, 0, 0)
+    return im
+
+
 def main():
+    global T, PW, PH, MY, LW
     src, out, title = sys.argv[1], sys.argv[2], sys.argv[3]
+    shot = None
+    if len(sys.argv) > 4:
+        shot = Image.open(sys.argv[4]).convert("RGB")
+        T, MY, LW = 24, 3 * 24, 5
+        PW, PH = shot.size
     info = json.load(open(src, encoding="utf-8"))
     route = info["route"]
     tiles, at = walk(route)
@@ -134,11 +162,15 @@ def main():
         d.text((ox, oy + 4), f"Leg {li + 1}: moves {a + 1}-{b}", fill=col, font=f_leg)
         moves = route[a:b]
         d.text((ox, oy + 30), " ".join(moves[i:i + 5] for i in range(0, len(moves), 5)), fill=(230, 230, 230), font=f_moves)
-        draw_maze(d, ox, oy + LEGHEAD, left_dots)
-        draw_leg(d, ox, oy + LEGHEAD, path, col, [(i + 1, tiles[at[i]]) for i in range(a, b)], small, li == 0)
+        if shot:
+            img.paste(shot_panel(shot, maze.DOTS - left_dots, li > 0), (ox, oy + LEGHEAD))
+        else:
+            draw_maze(d, ox, oy + LEGHEAD, left_dots)
+        draw_leg(d, ox, oy + LEGHEAD + MY, path, col, [(i + 1, tiles[at[i]]) for i in range(a, b)], small, li == 0)
         left_dots -= set(path)
     d.text((PAD, H - FOOT + 14), "Each panel shows the dots left when its leg starts. Numbers mark where each move is taken; "
-           "each leg starts where the last one's arrow ends. Maze drawn from harness/maze.txt.", fill=(150, 150, 165), font=f_sub)
+           "each leg starts where the last one's arrow ends. "
+           + ("Screenshots from MAME; Pac-Man is a trademark of Bandai Namco." if shot else "Maze drawn from harness/maze.txt."), fill=(150, 150, 165), font=f_sub)
     img.save(out)
     print(out, len(route), "moves", turns, "turns", len(eaten), "dots eaten")
 
