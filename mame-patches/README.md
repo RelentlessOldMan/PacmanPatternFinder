@@ -36,14 +36,17 @@ The only RAM difference is the interrupt's return address left on the stack belo
 0x2390), which the game never reads; `server.lua`'s `hash` skips that dead stack area
 (0x4F80-0x4FBF) so states still merge. `abtest.py` checks seg results and hashes against stock.
 
-## nosoundstate.patch (MAME 0.289, apply after the others)
+## smallstate.patch (MAME 0.289, apply after the others)
 
-A stock Pac-Man savestate is 783,159 bytes before compression, and about 769,000 of them are the
-sound stream's buffered audio samples. The game never reads them back. With the environment
-variable `PACMAN_NOSOUNDSTATE=1` (set by `harness/worker.py` for every MAME it starts) they are
-left out of savestates: a state shrinks to about 15 KB (1.6 KB as a compressed file). Only the
-audio played right after a load is affected. What's left is about 3 KB of game RAM (video, colour,
-work and sprite RAM), 5 KB of palette tables, 2 KB of tilemap scroll tables, and CPU registers,
+A stock Pac-Man savestate is 783,159 bytes before compression. With the environment variable
+`PACMAN_SMALLSTATE=1` (set by `harness/worker.py` for every MAME it starts) three things the game
+never reads are left out, and a state is 7,859 bytes (1.3 KB as a compressed file):
+- the sound stream's buffered audio samples (~769 KB); only the audio right after a load is wrong
+- the palette colour tables (~5 KB), which Pac-Man sets once from its colour PROMs; they aren't
+  restored on load either, so the palette stays as it was set at startup
+- the tilemap scroll tables (~2 KB); Pac-Man never scrolls
+
+What's left is about 3 KB of game RAM (video, colour, work and sprite RAM) plus CPU registers,
 timers and latches. Files saved this way don't load in stock MAME; `abtest.py` sets the variable
 to 0 for its stock-compatibility check.
 
@@ -57,7 +60,7 @@ to 0 for its stock-compatibility check.
    cd mame-0.289-src
    git apply ../PacmanPatternFinder/mame-patches/memstate.patch
    git apply ../PacmanPatternFinder/mame-patches/idleskip.patch
-   git apply ../PacmanPatternFinder/mame-patches/nosoundstate.patch
+   git apply ../PacmanPatternFinder/mame-patches/smallstate.patch
    ```
 3. Build only the Pac-Man driver (about 30 minutes on 8 cores):
    ```

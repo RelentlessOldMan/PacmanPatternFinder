@@ -1,0 +1,122 @@
+diff --git a/src/emu/dipalette.cpp b/src/emu/dipalette.cpp
+index 9565ce71..37a12da9 100644
+--- a/src/emu/dipalette.cpp
++++ b/src/emu/dipalette.cpp
+@@ -11,6 +11,9 @@
+ #include "emu.h"
+ #include "screen.h"
+ 
++#include <cstdlib>
++#include <cstring>
++
+ #define VERBOSE 0
+ 
+ 
+@@ -94,6 +97,14 @@ void device_palette_interface::interface_post_start()
+ 	// set up save/restore of the palette
+ 	m_save_pen.resize(m_palette->num_colors());
+ 	m_save_contrast.resize(m_palette->num_colors());
++
++	// PACMAN_SMALLSTATE=1 (PacmanPatternFinder): leave the colour tables out of savestates (and don't
++	// restore them on load); Pac-Man sets them once from its colour PROMs and never changes them
++	char const *const small = std::getenv("PACMAN_SMALLSTATE");
++	m_smallstate = small && !std::strcmp(small, "1");
++	if (m_smallstate)
++		return;
++
+ 	device().save_item(NAME(m_save_pen));
+ 	device().save_item(NAME(m_save_contrast));
+ 
+@@ -121,6 +132,9 @@ void device_palette_interface::interface_post_start()
+ 
+ void device_palette_interface::interface_pre_save()
+ {
++	if (m_smallstate)
++		return;
++
+ 	// fill the save arrays with updated pen and contrast information
+ 	int numcolors = m_palette->num_colors();
+ 	for (int index = 0; index < numcolors; index++)
+@@ -138,6 +152,9 @@ void device_palette_interface::interface_pre_save()
+ 
+ void device_palette_interface::interface_post_load()
+ {
++	if (m_smallstate)
++		return;
++
+ 	// reset the pen and contrast for each entry
+ 	int numcolors = m_palette->num_colors();
+ 	for (int index = 0; index < numcolors; index++)
+diff --git a/src/emu/dipalette.h b/src/emu/dipalette.h
+index 268be7ed..6949c84d 100644
+--- a/src/emu/dipalette.h
++++ b/src/emu/dipalette.h
+@@ -136,6 +136,7 @@ private:
+ 	shadow_table_data  m_shadow_tables[MAX_SHADOW_PRESETS]; // array of shadow table data
+ 
+ 	std::vector<pen_t> m_save_pen;               // pens for save/restore
++	bool               m_smallstate = false;     // PACMAN_SMALLSTATE: palette not in savestates
+ 	std::vector<float> m_save_contrast;          // brightness for save/restore
+ 
+ 	std::vector<pen_t> m_pen_array;
+diff --git a/src/emu/sound.cpp b/src/emu/sound.cpp
+index 30f19095..b89eaf68 100644
+--- a/src/emu/sound.cpp
++++ b/src/emu/sound.cpp
+@@ -10,6 +10,9 @@
+ 
+ #include "emu.h"
+ 
++#include <cstdlib>
++#include <cstring>
++
+ #include "audio_effects/aeffect.h"
+ #include "resampler.h"
+ 
+@@ -135,8 +138,13 @@ template<typename S> void emu::detail::output_buffer_flat<S>::register_save_stat
+ {
+ 	auto &save = device.machine().save();
+ 
+-	for(unsigned int i = 0; i != m_buffer.size(); i++)
+-		save.save_item(&device, id1, id2, i, NAME(m_buffer[i]));
++	// PACMAN_SMALLSTATE=1 (PacmanPatternFinder): leave the audio samples out of savestates; they are
++	// ~770 KB of a Pac-Man state, and the game never reads them (only what is heard comes out wrong)
++	char const *const small = std::getenv("PACMAN_SMALLSTATE");
++	bool const smallstate = small && !std::strcmp(small, "1");
++	if(!smallstate)
++		for(unsigned int i = 0; i != m_buffer.size(); i++)
++			save.save_item(&device, id1, id2, i, NAME(m_buffer[i]));
+ 
+ 	save.save_item(&device, id1, id2, 0, NAME(m_sync_sample));
+ 	save.save_item(&device, id1, id2, 0, NAME(m_write_position));
+diff --git a/src/emu/tilemap.cpp b/src/emu/tilemap.cpp
+index 39575ed5..39a211c7 100644
+--- a/src/emu/tilemap.cpp
++++ b/src/emu/tilemap.cpp
+@@ -13,6 +13,9 @@
+ 
+ #include "screen.h"
+ 
++#include <cstdlib>
++#include <cstring>
++
+ 
+ //**************************************************************************
+ //  INLINE FUNCTIONS
+@@ -424,8 +427,14 @@ void tilemap_t::init_common(
+ 	machine().save().save_item(m_device, "tilemap", nullptr, instance, NAME(m_palette_offset));
+ 	machine().save().save_item(m_device, "tilemap", nullptr, instance, NAME(m_scrollrows));
+ 	machine().save().save_item(m_device, "tilemap", nullptr, instance, NAME(m_scrollcols));
+-	machine().save().save_item(m_device, "tilemap", nullptr, instance, NAME(m_rowscroll));
+-	machine().save().save_item(m_device, "tilemap", nullptr, instance, NAME(m_colscroll));
++	// PACMAN_SMALLSTATE=1 (PacmanPatternFinder): leave the scroll tables out of savestates; Pac-Man
++	// never scrolls
++	char const *const small = std::getenv("PACMAN_SMALLSTATE");
++	if (!small || std::strcmp(small, "1"))
++	{
++		machine().save().save_item(m_device, "tilemap", nullptr, instance, NAME(m_rowscroll));
++		machine().save().save_item(m_device, "tilemap", nullptr, instance, NAME(m_colscroll));
++	}
+ 	machine().save().save_item(m_device, "tilemap", nullptr, instance, NAME(m_dx));
+ 	machine().save().save_item(m_device, "tilemap", nullptr, instance, NAME(m_dx_flipped));
+ 	machine().save().save_item(m_device, "tilemap", nullptr, instance, NAME(m_dy));

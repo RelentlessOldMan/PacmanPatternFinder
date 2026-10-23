@@ -112,7 +112,7 @@ def main():
 
     # a state file saved by either build loads in the other (after a game is running, as in a search);
     # the patched build only writes stock-format files with the audio samples kept in
-    os.environ["PACMAN_NOSOUNDSTATE"] = "0"
+    os.environ["PACMAN_SMALLSTATE"] = "0"
     for (a, ai, an), (b, bi, bn) in (((MAME, False, "stock"), (MOD, False, "patched")),
                                      ((MOD, False, "patched"), (MAME, False, "stock")),
                                      ((MAME, False, "stock"), (MOD, True, "patched-idle")),
@@ -127,7 +127,7 @@ def main():
         (ROOT / "state" / "pacman" / "abx.sta").unlink(missing_ok=True)
         print(f"file saved by {an}, loaded by {bn}: {ha} {hb} {'SAME' if ha == hb else 'DIFFERENT'}")
         ok &= ha == hb
-    del os.environ["PACMAN_NOSOUNDSTATE"]
+    del os.environ["PACMAN_SMALLSTATE"]
 
     # slot -> file -> slot round trip at every move of a route: the next move must play the same
     # from the slot, from the file written from it, and from a slot read back from that file
