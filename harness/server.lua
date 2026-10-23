@@ -195,8 +195,9 @@ H.run(function()
       for addr = 0x4C00, 0x4FEF do t[#t + 1] = string.format("%02x", H.rd(addr)) end
       reply("ok " .. table.concat(t))
     elseif cmd == "hash" then
+      local s = H.mem:read_range(0x4000, 0x4FEF, 8)
       local h = 0
-      for addr = 0x4000, 0x4FEF do h = (h * 31 + H.rd(addr)) % 2147483647 end
+      for i = 1, #s do h = (h * 31 + s:byte(i)) % 2147483647 end
       reply(string.format("ok %d f=%d", h, H.frame))
     elseif cmd == "peek" then
       local tc, tr = pac_tile()
