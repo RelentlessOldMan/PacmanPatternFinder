@@ -9,3 +9,7 @@ cfg/
 nvram/
 __pycache__/
 harness/dbg.*
+snap/
+*.ckpt
+*.ckpt.*
+*.sols.jsonl
