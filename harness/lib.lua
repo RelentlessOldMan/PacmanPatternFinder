@@ -38,6 +38,12 @@ function H.save(name) H.machine:save(name); H.wait(1) end
 -- twice has always landed exactly on the saved state.
 function H.load(name) H.machine:load(name); H.wait(1); H.machine:load(name); H.wait(1) end
 
+-- In-memory slots (only in our patched MAME, see mame-patches/): the same scheduled save/load at
+-- the same frame boundary, but into this MAME's RAM, uncompressed, with no file.
+H.has_mem = H.machine.mem_save ~= nil
+function H.msave(slot) H.machine:mem_save(slot); H.wait(1) end
+function H.mload(slot) H.machine:mem_load(slot); H.wait(1); H.machine:mem_load(slot); H.wait(1) end
+
 -- RAM map (verified empirically in probe runs; coordinates are the game's internal ones:
 -- internal X grows to the LEFT on screen, internal Y grows DOWN).
 H.A = {

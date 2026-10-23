@@ -181,6 +181,29 @@ H.run(function()
       local held = b ~= "" and b or nil
       H.joy(held); H.load(a); H.joy(held)
       local tc, tr = pac_tile(); reply(string.format("ok %d %d %d", tc, tr, dots()))
+    elseif cmd:sub(1, 1) == "m" and cmd ~= "mem" and not H.has_mem then
+      reply("err stock MAME has no memory slots")
+    elseif cmd == "msave" then
+      -- memory slot versions of save/load; mload replies like load. A failed save or load (it
+      -- happens at the frame boundary, after the command returns) shows up as "err".
+      local e = H.machine:mem_errors(); H.msave(a)
+      reply(H.machine:mem_errors() == e and "ok" or "err msave " .. a)
+    elseif cmd == "mload" then
+      local held = b ~= "" and b or nil
+      local e = H.machine:mem_errors()
+      H.joy(held); H.mload(a); H.joy(held)
+      local tc, tr = pac_tile()
+      reply(H.machine:mem_errors() == e and string.format("ok %d %d %d", tc, tr, dots()) or "err mload " .. a)
+    elseif cmd == "mdrop" then
+      -- drop slots (space separated, any number)
+      local n = 0
+      for s in line:gmatch("%S+") do if s ~= cmd and H.machine:mem_drop(s) then n = n + 1 end end
+      reply("ok " .. n .. " " .. H.machine:mem_count())
+    elseif cmd == "mcopy" then
+      -- "mcopy <slot> <file>": write a slot out as a state file (another worker can then load it);
+      -- "mcopy <file> <slot> in": the reverse. Leaves the machine in that state.
+      if c == "in" then H.load(a); H.msave(b) else H.mload(a); H.save(b) end
+      reply("ok")
     elseif cmd == "seg" then
       local pol = (b == "E") and "E" or tonumber(b)
       local st, fr, mc, mr, mind, win, fruits, lead = segment(LETTER[a], pol, tonumber(c) or 0, LETTER[d:sub(1, 1)], tonumber(d:sub(2)) or 0)

@@ -1,0 +1,142 @@
+diff --git a/src/emu/machine.cpp b/src/emu/machine.cpp
+index 2298119b..7f1e96c3 100644
+--- a/src/emu/machine.cpp
++++ b/src/emu/machine.cpp
+@@ -713,6 +713,31 @@ void running_machine::schedule_load(std::string &&filename)
+ }
+ 
+ 
++//-------------------------------------------------
++//  schedule_mem_save/schedule_mem_load - like
++//  schedule_save/schedule_load, but to/from an
++//  in-memory slot
++//-------------------------------------------------
++
++void running_machine::schedule_mem_save(std::string &&slot)
++{
++	m_saveload_pending_file.clear();
++	m_saveload_memslot = std::move(slot);
++	m_saveload_schedule = saveload_schedule::SAVE;
++	m_saveload_schedule_time = this->time();
++	resume();
++}
++
++void running_machine::schedule_mem_load(std::string &&slot)
++{
++	m_saveload_pending_file.clear();
++	m_saveload_memslot = std::move(slot);
++	m_saveload_schedule = saveload_schedule::LOAD;
++	m_saveload_schedule_time = this->time();
++	resume();
++}
++
++
+ //-------------------------------------------------
+ //  immediate_load - load state.
+ //-------------------------------------------------
+@@ -944,6 +969,37 @@ void running_machine::call_notifiers(machine_notification which)
+ 
+ void running_machine::handle_saveload()
+ {
++	// in-memory slot: same timing rules as a file, but no file and no compression
++	if (!m_saveload_memslot.empty())
++	{
++		if (!m_scheduler.can_save())
++		{
++			if ((this->time() - m_saveload_schedule_time) <= attotime::from_seconds(1))
++				return; // try again after the next timeslice
++			m_memstate_errors++;
++			popmessage("Error: Unable to save/load memory state %s due to pending anonymous timers.", m_saveload_memslot);
++		}
++		else if (m_saveload_schedule == saveload_schedule::SAVE)
++		{
++			std::vector<u8> &buf = m_memstates[m_saveload_memslot];
++			buf.resize(ram_state::get_size(m_save));
++			if (m_save.write_buffer(buf.data(), buf.size()) != STATERR_NONE)
++			{
++				m_memstates.erase(m_saveload_memslot);
++				m_memstate_errors++;
++			}
++		}
++		else
++		{
++			auto const it = m_memstates.find(m_saveload_memslot);
++			if ((it == m_memstates.end()) || (m_save.read_buffer(it->second.data(), it->second.size()) != STATERR_NONE))
++				m_memstate_errors++;
++		}
++		m_saveload_memslot.clear();
++		m_saveload_schedule = saveload_schedule::NONE;
++		return;
++	}
++
+ 	// if no name, bail
+ 	if (!m_saveload_pending_file.empty())
+ 	{
+diff --git a/src/emu/machine.h b/src/emu/machine.h
+index e75b5a9f..3b9ae012 100644
+--- a/src/emu/machine.h
++++ b/src/emu/machine.h
+@@ -18,6 +18,9 @@
+ #define MAME_EMU_MACHINE_H
+ 
+ #include <functional>
++#include <string>
++#include <unordered_map>
++#include <vector>
+ 
+ #include <ctime>
+ 
+@@ -146,7 +149,7 @@ public:
+ 	bool hard_reset_pending() const { return m_hard_reset_pending; }
+ 	const std::string &basename() const { return m_basename; }
+ 	int sample_rate() const { return m_sample_rate; }
+-	bool save_or_load_pending() const { return !m_saveload_pending_file.empty(); }
++	bool save_or_load_pending() const { return !m_saveload_pending_file.empty() || !m_saveload_memslot.empty(); }
+ 
+ 	// RAII-based side effect disable
+ 	// NOP-ed when passed false, to make it more easily conditional
+@@ -189,6 +192,16 @@ public:
+ 	void schedule_save(std::string &&filename);
+ 	void schedule_load(std::string &&filename);
+ 
++	// in-memory savestate slots: saved/loaded at the same safe point as a scheduled file
++	// save/load, but into RAM (uncompressed) instead of a file
++	void schedule_mem_save(std::string &&slot);
++	void schedule_mem_load(std::string &&slot);
++	bool mem_drop(const std::string &slot) { return m_memstates.erase(slot) != 0; }
++	void mem_clear() { m_memstates.clear(); }
++	bool mem_has(const std::string &slot) const { return m_memstates.count(slot) != 0; }
++	size_t mem_count() const { return m_memstates.size(); }
++	int mem_errors() const { return m_memstate_errors; }
++
+ 	// date & time
+ 	void base_datetime(system_time &systime);
+ 	void current_datetime(system_time &systime);
+@@ -311,6 +324,9 @@ private:
+ 	attotime                m_saveload_schedule_time;
+ 	std::string             m_saveload_pending_file;
+ 	const char *            m_saveload_searchpath;
++	std::string             m_saveload_memslot;     // pending in-memory save/load slot
++	std::unordered_map<std::string, std::vector<u8>> m_memstates;
++	int                     m_memstate_errors = 0;  // failed in-memory saves/loads so far
+ 
+ 	// notifier callbacks
+ 	struct notifier_callback_item
+diff --git a/src/frontend/mame/luaengine.cpp b/src/frontend/mame/luaengine.cpp
+index 87afd02d..9b7fd0f0 100644
+--- a/src/frontend/mame/luaengine.cpp
++++ b/src/frontend/mame/luaengine.cpp
+@@ -1422,6 +1422,13 @@ void lua_engine::initialize()
+ 	machine_type.set_function("soft_reset", &running_machine::schedule_soft_reset);
+ 	machine_type.set_function("save", &running_machine::schedule_save); // TODO: some kind of completion notification?
+ 	machine_type.set_function("load", &running_machine::schedule_load); // TODO: some kind of completion notification?
++	machine_type.set_function("mem_save", &running_machine::schedule_mem_save);
++	machine_type.set_function("mem_load", &running_machine::schedule_mem_load);
++	machine_type.set_function("mem_drop", &running_machine::mem_drop);
++	machine_type.set_function("mem_clear", &running_machine::mem_clear);
++	machine_type.set_function("mem_has", &running_machine::mem_has);
++	machine_type.set_function("mem_count", &running_machine::mem_count);
++	machine_type.set_function("mem_errors", &running_machine::mem_errors);
+ 	machine_type.set_function("buffer_save",
+ 			[] (running_machine &m, sol::this_state s)
+ 			{
