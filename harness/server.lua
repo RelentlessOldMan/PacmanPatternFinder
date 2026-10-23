@@ -189,9 +189,18 @@ local function ram_hash()
   return h
 end
 
+-- fruits this level that have appeared and are gone again (eaten or expired): 0x4E0C/0x4E0D flip
+-- to 1 when the first/second fruit appears, 0x4DD2-3 is its position, nonzero while it's on screen
+local function fruits_gone()
+  local n = (H.rd(0x4E0C) ~= 0 and 1 or 0) + (H.rd(0x4E0D) ~= 0 and 1 or 0)
+  if H.rd(0x4DD2) ~= 0 or H.rd(0x4DD3) ~= 0 then n = n - 1 end
+  return n
+end
+
 local function seg_reply(st, fr, mc, mr, mind, win, fruits, lead)
   local tc, tr = pac_tile()
-  return string.format("%s %d %d %d %d %d %d %d %d %d %d", st, fr, mc, mr, mind, dots(), tc, tr, win, fruits, lead)
+  return string.format("%s %d %d %d %d %d %d %d %d %d %d %d", st, fr, mc, mr, mind, dots(), tc, tr, win, fruits, lead,
+                       fruits_gone())
 end
 
 local function copy(t)
@@ -210,7 +219,7 @@ local function segb(want, policy, names)
   local out = {}
   local g = seg_start(want, policy, 1)
   if not g then
-    for k = 1, #names do out[k] = "nonode 0 0 0 999 0 0 0 0 0 0 0" end
+    for k = 1, #names do out[k] = "nonode 0 0 0 999 0 0 0 0 0 0 0 0" end
     return table.concat(out, " | ")
   end
   local r = { seg_run(g, true) }

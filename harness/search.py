@@ -47,6 +47,7 @@ class Cand:
 RAM = False
 OWNER = {}
 FILED = set()
+RAM_CAP = 4000  # --ram-cap: past this many memory states, new states go to files (~0.78 MB each)
 
 
 def load_state(w, name, held):
@@ -58,13 +59,14 @@ def load_state(w, name, held):
 
 
 def save_state(w, name):
-    if RAM:
+    if RAM and len(OWNER) < RAM_CAP:
         r = w.cmd(f"msave {name}")
         if r != "ok":
             raise RuntimeError(r)
         OWNER[name] = w.idx
     else:
         w.cmd(f"save {name}")
+        FILED.add(name)
 
 
 def owner_of(sims):
@@ -223,9 +225,9 @@ def new_name():
 
 
 def parse_seg(r):
-    st, fr, mc, mr, mind, dots, tc, tr, win, fruits, lead = r.split()
+    st, fr, mc, mr, mind, dots, tc, tr, win, fruits, lead, gone = r.split()
     return dict(st=st, fr=int(fr), node=(int(mc), int(mr)), mind=int(mind), dots=int(dots),
-                tile=(int(tc), int(tr)), win=int(win), fruits=int(fruits), lead=int(lead))
+                tile=(int(tc), int(tr)), win=int(win), fruits=int(fruits), lead=int(lead), gone=int(gone))
 
 
 BADLOADS = []
@@ -349,7 +351,7 @@ def run_child_branch(w, sims, held, opt, minwin, route=(), expect=None):
                 if expect and got != expect:
                     BADLOADS.append((sim, "".join(route), expect, got, load_state(w, base(sim), held)))
                     return fail("badload", i)
-            if k == 1 and RAM:
+            if k == 1 and RAM and len(OWNER) + BRANCH < RAM_CAP:
                 # the late presses share every frame up to the press: one segb plays them
                 names = [new_name() for _ in range(BRANCH)]
                 for j, line in enumerate(w.cmd(f"segb {opt} 4 " + " ".join(names)).split(" | ")):
@@ -366,6 +368,8 @@ def run_child_branch(w, sims, held, opt, minwin, route=(), expect=None):
             if r["st"] not in ("ok", "clear"):
                 return fail(r["st"], i)
             r["fruits"] += fr  # running total for this sim
+            if r["gone"] - r["fruits"] > 2 - NEED_FRUITS:
+                return fail("fruitless", i)  # a fruit it needed came and went uneaten
             on_time = i < n0 and k == 0
             if on_time and opt != held:
                 corner = len(maze.exits(*r["node"])) == 2
@@ -418,6 +422,7 @@ GOAL = maze.DOTS  # --leave-pockets: every dot but the energizer pockets, which 
 AVOID = frozenset()
 
 
+NEED_FRUITS = 0  # --need-fruits (of the level's 2): --branch drops a move as soon as one is missed
 SAFE_AFTER = 0  # --safe-after: moves every sim must survive past the goal before it counts
 
 
@@ -820,6 +825,8 @@ def main():
                     help="write the search state here every 5 moves (default: <out>.ckpt; 'none' = off)")
     ap.add_argument("--resume", action="store_true",
                     help="carry on from --checkpoint (same arguments otherwise; code may have changed)")
+    ap.add_argument("--ram-cap", type=int, default=4000,
+                    help="memory savestates kept at most (~0.78 MB each, plus MAME itself); more go to files")
     ap.add_argument("--no-ram", action="store_true",
                     help="keep every savestate in a file and use stock MAME (default: states live in the "
                          "memory of the worker that made them, in our patched MAME, mame-0.289-mem/)")
@@ -827,12 +834,13 @@ def main():
                     help="with our patched MAME, emulate Pac-Man's idle loop instead of skipping it")
     ap.add_argument("--out", default="result.json")
     args = ap.parse_args()
-    global RAM, CLUSTER_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET
+    global RAM, CLUSTER_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, RAM_CAP
     CLUSTER_COST, CORNER_MINWIN = args.cluster_cost, args.corner_minwin
     LATE_VARIANTS = not args.no_late and not args.jitter_sims and not args.fixed_sims and not args.history_sims
     TURN_COST, JITTER, JITTER_CORNER = args.turn_cost, args.jitter, args.jitter_corner
     LATE_REL = args.late_rel
     BRANCH, BRANCH_CAP = args.branch, args.branch_cap
+    NEED_FRUITS = args.need_fruits
     if args.late_budget is not None:
         LATE_BUDGET = args.late_budget
     if BRANCH:
@@ -842,6 +850,7 @@ def main():
         SAFE_AFTER = args.safe_after
     levels = [int(x) for x in args.levels.split(",")]
     RAM = not args.no_ram
+    RAM_CAP = args.ram_cap
     if RAM and not MAME_MEM.exists():
         raise SystemExit(f"{MAME_MEM} not found: build it (see mame-patches/README.md) or use --no-ram")
     pool = Pool(args.workers, MAME_MEM if RAM else MAME, idle=RAM and not args.no_idle_skip)
