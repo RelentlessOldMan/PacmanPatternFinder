@@ -1,12 +1,31 @@
 # Pac-Man pattern finder: handoff
 
-Goal: find 1–3 **memorable, timing-tolerant** Pac-Man patterns for a MAME-based cabinet
+Goal: find **memorable, timing-tolerant** Pac-Man patterns for a MAME-based cabinet
 (regular Midway Pac-Man). The published arcade patterns do NOT work on MAME (proven by the
 user), so we discover new ones by having MAME play the game headless under Lua control.
 
-Target: pattern A for levels 1..x, B for x..y, C for y..255 (256 not needed).
-Rules: no reversing (double-backing) inside a pattern; on the high-value fruit levels grab both fruits;
-~50 total turns is the memorability target (Procyon pattern ≈ 45–50).
+Rules: no reversing (double-backing) inside a pattern; on the high-value fruit levels grab both fruits.
+
+## Status (2026-10-23): done
+- **Levels 1–4:** played by hand.
+- **5–20:** `best/L5-20_nopockets_99.json`, 99 moves / 67 turns. Leaves the 4 corner pockets, which the
+  user eats by hand (no finisher). The user has it memorized.
+- **21+:** `best/L21_full_118.json`, 118 moves / 88 turns, full clear with both keys, ~48 s. Its first
+  15 moves are the 5–20 route. Found with `l21_sweep.sh` (searches seeded with 5–20 prefixes) and
+  picked with `rank_sols.py`.
+- `best/README.md` has the timing data; `harness/pattern_sheet.py` draws the pattern sheets.
+- Compared with Goodrich's published 9th key pattern (`harness/goodrich.py`, played with the
+  `reverse` server command for its one mid-corridor turnaround): 117 moves / 84 turns, ~53 s; it clears
+  on MAME on time but 131 single late presses kill it, against 31 for ours.
+
+### Tools added since the history below
+- `rank_sols.py`: replays a run's solutions with each turn 1–4 frames past the clean-cornering point,
+  alone and in pairs; sorts by single killers, then all killing mixes, then moves.
+- `search.py` endgame rollouts share the worker queue; segments have a frame cap; states pass between
+  workers over the pipe; RAM is hashed 8 bytes at a time.
+- `server.lua` `reverse D col row`: keep going until Pac-Man is on that tile, then push D.
+
+The sections below are the history up to 2026-10-22.
 
 ## Setup at home (MAME + ROM are not in git)
 1. Download MAME 0.289 (Windows 64-bit) and unpack into `mame-0.289/` in this folder,
