@@ -1,8 +1,8 @@
 diff --git a/src/emu/machine.cpp b/src/emu/machine.cpp
-index 2298119b..7f1e96c3 100644
+index 2298119b..f22e95a1 100644
 --- a/src/emu/machine.cpp
 +++ b/src/emu/machine.cpp
-@@ -713,6 +713,31 @@ void running_machine::schedule_load(std::string &&filename)
+@@ -713,6 +713,55 @@ void running_machine::schedule_load(std::string &&filename)
  }
  
  
@@ -16,6 +16,7 @@ index 2298119b..7f1e96c3 100644
 +{
 +	m_saveload_pending_file.clear();
 +	m_saveload_memslot = std::move(slot);
++	m_memstate_xfer = false;
 +	m_saveload_schedule = saveload_schedule::SAVE;
 +	m_saveload_schedule_time = this->time();
 +	resume();
@@ -25,6 +26,29 @@ index 2298119b..7f1e96c3 100644
 +{
 +	m_saveload_pending_file.clear();
 +	m_saveload_memslot = std::move(slot);
++	m_memstate_xfer = false;
++	m_saveload_schedule = saveload_schedule::LOAD;
++	m_saveload_schedule_time = this->time();
++	resume();
++}
++
++// copy a slot to a state file (export) or a state file to a slot (import) at one frame boundary,
++// with no emulated time in between; the machine is left in that state
++void running_machine::schedule_mem_export(std::string &&slot, std::string &&filename)
++{
++	set_saveload_filename(std::move(filename));
++	m_saveload_memslot = std::move(slot);
++	m_memstate_xfer = true;
++	m_saveload_schedule = saveload_schedule::SAVE;
++	m_saveload_schedule_time = this->time();
++	resume();
++}
++
++void running_machine::schedule_mem_import(std::string &&filename, std::string &&slot)
++{
++	set_saveload_filename(std::move(filename));
++	m_saveload_memslot = std::move(slot);
++	m_memstate_xfer = true;
 +	m_saveload_schedule = saveload_schedule::LOAD;
 +	m_saveload_schedule_time = this->time();
 +	resume();
@@ -34,7 +58,7 @@ index 2298119b..7f1e96c3 100644
  //-------------------------------------------------
  //  immediate_load - load state.
  //-------------------------------------------------
-@@ -944,6 +969,37 @@ void running_machine::call_notifiers(machine_notification which)
+@@ -944,6 +993,67 @@ void running_machine::call_notifiers(machine_notification which)
  
  void running_machine::handle_saveload()
  {
@@ -47,6 +71,33 @@ index 2298119b..7f1e96c3 100644
 +				return; // try again after the next timeslice
 +			m_memstate_errors++;
 +			popmessage("Error: Unable to save/load memory state %s due to pending anonymous timers.", m_saveload_memslot);
++		}
++		else if (m_memstate_xfer)
++		{
++			bool const exporting = m_saveload_schedule == saveload_schedule::SAVE;
++			bool ok = true;
++			if (exporting)
++			{
++				auto const it = m_memstates.find(m_saveload_memslot);
++				ok = (it != m_memstates.end()) && (m_save.read_buffer(it->second.data(), it->second.size()) == STATERR_NONE);
++			}
++			if (ok)
++			{
++				emu_file file(m_saveload_searchpath ? m_saveload_searchpath : "", exporting ? (OPEN_FLAG_WRITE | OPEN_FLAG_CREATE | OPEN_FLAG_CREATE_PATHS) : OPEN_FLAG_READ);
++				ok = !file.open(m_saveload_pending_file) && ((exporting ? m_save.write_file(file) : m_save.read_file(file)) == STATERR_NONE);
++				if (!ok && exporting)
++					file.remove_on_close();
++			}
++			if (ok && !exporting)
++			{
++				std::vector<u8> &buf = m_memstates[m_saveload_memslot];
++				buf.resize(ram_state::get_size(m_save));
++				ok = m_save.write_buffer(buf.data(), buf.size()) == STATERR_NONE;
++				if (!ok)
++					m_memstates.erase(m_saveload_memslot);
++			}
++			if (!ok)
++				m_memstate_errors++;
 +		}
 +		else if (m_saveload_schedule == saveload_schedule::SAVE)
 +		{
@@ -65,6 +116,9 @@ index 2298119b..7f1e96c3 100644
 +				m_memstate_errors++;
 +		}
 +		m_saveload_memslot.clear();
++		m_memstate_xfer = false;
++		m_saveload_pending_file.clear();
++		m_saveload_searchpath = nullptr;
 +		m_saveload_schedule = saveload_schedule::NONE;
 +		return;
 +	}
@@ -73,7 +127,7 @@ index 2298119b..7f1e96c3 100644
  	if (!m_saveload_pending_file.empty())
  	{
 diff --git a/src/emu/machine.h b/src/emu/machine.h
-index e75b5a9f..3b9ae012 100644
+index e75b5a9f..539fb7f4 100644
 --- a/src/emu/machine.h
 +++ b/src/emu/machine.h
 @@ -18,6 +18,9 @@
@@ -95,7 +149,7 @@ index e75b5a9f..3b9ae012 100644
  
  	// RAII-based side effect disable
  	// NOP-ed when passed false, to make it more easily conditional
-@@ -189,6 +192,16 @@ public:
+@@ -189,6 +192,18 @@ public:
  	void schedule_save(std::string &&filename);
  	void schedule_load(std::string &&filename);
  
@@ -103,6 +157,8 @@ index e75b5a9f..3b9ae012 100644
 +	// save/load, but into RAM (uncompressed) instead of a file
 +	void schedule_mem_save(std::string &&slot);
 +	void schedule_mem_load(std::string &&slot);
++	void schedule_mem_export(std::string &&slot, std::string &&filename);
++	void schedule_mem_import(std::string &&filename, std::string &&slot);
 +	bool mem_drop(const std::string &slot) { return m_memstates.erase(slot) != 0; }
 +	void mem_clear() { m_memstates.clear(); }
 +	bool mem_has(const std::string &slot) const { return m_memstates.count(slot) != 0; }
@@ -112,21 +168,22 @@ index e75b5a9f..3b9ae012 100644
  	// date & time
  	void base_datetime(system_time &systime);
  	void current_datetime(system_time &systime);
-@@ -311,6 +324,9 @@ private:
+@@ -311,6 +326,10 @@ private:
  	attotime                m_saveload_schedule_time;
  	std::string             m_saveload_pending_file;
  	const char *            m_saveload_searchpath;
 +	std::string             m_saveload_memslot;     // pending in-memory save/load slot
 +	std::unordered_map<std::string, std::vector<u8>> m_memstates;
 +	int                     m_memstate_errors = 0;  // failed in-memory saves/loads so far
++	bool                    m_memstate_xfer = false; // pending op copies the slot to/from m_saveload_pending_file
  
  	// notifier callbacks
  	struct notifier_callback_item
 diff --git a/src/frontend/mame/luaengine.cpp b/src/frontend/mame/luaengine.cpp
-index 87afd02d..9b7fd0f0 100644
+index 87afd02d..f02a8318 100644
 --- a/src/frontend/mame/luaengine.cpp
 +++ b/src/frontend/mame/luaengine.cpp
-@@ -1422,6 +1422,13 @@ void lua_engine::initialize()
+@@ -1422,6 +1422,15 @@ void lua_engine::initialize()
  	machine_type.set_function("soft_reset", &running_machine::schedule_soft_reset);
  	machine_type.set_function("save", &running_machine::schedule_save); // TODO: some kind of completion notification?
  	machine_type.set_function("load", &running_machine::schedule_load); // TODO: some kind of completion notification?
@@ -137,6 +194,8 @@ index 87afd02d..9b7fd0f0 100644
 +	machine_type.set_function("mem_has", &running_machine::mem_has);
 +	machine_type.set_function("mem_count", &running_machine::mem_count);
 +	machine_type.set_function("mem_errors", &running_machine::mem_errors);
++	machine_type.set_function("mem_export", &running_machine::schedule_mem_export);
++	machine_type.set_function("mem_import", &running_machine::schedule_mem_import);
  	machine_type.set_function("buffer_save",
  			[] (running_machine &m, sol::this_state s)
  			{

@@ -9,6 +9,7 @@ Every candidate move is run from each requested level's start state; a move surv
 it survives on all of them, which is how one route gets shared across a group of levels.
 """
 import argparse
+import collections
 import itertools
 import json
 import os
@@ -17,11 +18,11 @@ import queue
 import random
 import threading
 import time
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass
 
 import maze
-from worker import Worker, STATE_DIR
+from worker import MAME, MAME_MEM, Worker, STATE_DIR
 
 
 @dataclass
@@ -39,26 +40,173 @@ class Cand:
     after: int = -1  # moves played since the goal was reached (-1: not yet)
 
 
-class Pool:
-    def __init__(self, n):
-        self.q = queue.Queue()
-        with ThreadPoolExecutor(n) as ex:
-            for w in ex.map(lambda _: Worker(), range(n)):
-                self.q.put(w)
-        self.ex = ThreadPoolExecutor(n)
+# Savestates live in the RAM of the worker that made them (our patched MAME, mame-patches/) unless
+# --no-ram: OWNER maps a state name to that worker's index. FILED is the states that also exist
+# as files, which any worker can load: the level starts, and states written out for a snapshot
+# (and the checkpoint) or for a job another worker took over.
+RAM = False
+OWNER = {}
+FILED = set()
 
-    def submit(self, fn, *args):
-        def task():
-            w = self.q.get()
-            try:
-                return fn(w, *args)
-            finally:
-                self.q.put(w)
-        return self.ex.submit(task)
+
+def load_state(w, name, held):
+    if OWNER.get(name) == w.idx:
+        return w.cmd(f"mload {name} {held}")
+    if name in OWNER and name not in FILED:
+        raise RuntimeError(f"state {name} is only in worker {OWNER[name]}'s memory, not {w.idx}'s")
+    return w.cmd(f"load {name} {held}")
+
+
+def save_state(w, name):
+    if RAM:
+        r = w.cmd(f"msave {name}")
+        if r != "ok":
+            raise RuntimeError(r)
+        OWNER[name] = w.idx
+    else:
+        w.cmd(f"save {name}")
+
+
+def owner_of(sims):
+    """The worker whose memory holds (some of) these states, if they aren't all files."""
+    owners = {OWNER[base(s)] for s in sims if base(s) in OWNER and base(s) not in FILED}
+    assert len(owners) <= 1, owners  # a candidate's sims all come from one job, on one worker
+    return owners.pop() if owners else None
+
+
+COPY_SECONDS = [0.0]  # time spent writing memory states to files
+
+
+def write_out(w, names):
+    """Write states held in this worker's memory to files."""
+    t = time.perf_counter()
+    for n in names:
+        if n not in FILED and OWNER.get(n) == w.idx:
+            w.cmd(f"mcopy {n} {n}")
+            FILED.add(n)
+    COPY_SECONDS[0] += time.perf_counter() - t
+
+
+def forget(w, sims, keep=()):
+    """Free this worker's memory copies of these sims' states (not those of `keep`)."""
+    if RAM:
+        ks = {base(s) for s in keep}
+        names = [n for n in {base(s) for s in sims} - ks if OWNER.get(n) == w.idx and n not in FILED]
+        for n in names:
+            del OWNER[n]
+        if names:
+            drop(w, names)
+
+
+def drop(w, names):
+    for i in range(0, len(names), 200):
+        w.cmd("mdrop " + " ".join(names[i:i + 200]))
+
+
+class Pool:
+    """Workers with job affinity: a job that needs states held in one worker's memory (need=) is
+    queued for that worker; jobs whose states are all files go to a shared queue that any free
+    worker takes from (after its own). place() decides which jobs to move off their worker."""
+
+    def __init__(self, n, mame=MAME, idle=False):
+        with ThreadPoolExecutor(n) as ex:
+            self.workers = list(ex.map(lambda _: Worker(mame, idle), range(n)))
+        for i, w in enumerate(self.workers):
+            w.idx = i
+        self.n = n
+        self.cv = threading.Condition()
+        self.own = [collections.deque() for _ in range(n)]
+        self.urgent = [collections.deque() for _ in range(n)]
+        self.shared = collections.deque()
+        self.closed = False
+        self.moved = 0
+        self.busy = [0.0] * n  # seconds each worker spent running jobs
+        self.threads = [threading.Thread(target=self._loop, args=(w,), daemon=True) for w in self.workers]
+        for t in self.threads:
+            t.start()
+
+    def _put(self, q, fn, args):
+        fut = Future()
+        with self.cv:
+            q.append((fn, args, fut))
+            self.cv.notify_all()
+        return fut
+
+    def submit(self, fn, *args, need=()):
+        k = owner_of(need)
+        return self._put(self.shared if k is None else self.own[k], fn, args)
+
+    def on(self, k, fn, *args):
+        """Run fn(worker k, *args) on worker k, ahead of its queued jobs."""
+        return self._put(self.urgent[k], fn, args)
+
+    def _loop(self, w):
+        i = w.idx
+        while True:
+            with self.cv:
+                while not (self.closed or self.urgent[i] or self.own[i] or self.shared):
+                    self.cv.wait()
+                if self.closed:
+                    return
+                fn, args, fut = (self.urgent[i] or self.own[i] or self.shared).popleft()
+            if fut.set_running_or_notify_cancel():
+                t = time.perf_counter()
+                try:
+                    fut.set_result(fn(w, *args))
+                except BaseException as e:
+                    fut.set_exception(e)
+                self.busy[i] += time.perf_counter() - t
 
     def close(self):
-        while not self.q.empty():
-            self.q.get().close()
+        with self.cv:
+            self.closed = True
+            self.cv.notify_all()
+        for t in self.threads:
+            t.join()
+        for w in self.workers:
+            w.close()
+
+
+def place(pool, needs):
+    """Before submitting jobs (needs: each job's sims): keep each job with the worker holding its
+    states up to an even share of the work (cost ~ number of sims), and write the states of the
+    rest to files (each owner its own, in parallel, while the workers are idle) so any worker can
+    take them from the shared queue."""
+    cost = [len(n) for n in needs]
+    cap = sum(cost) / pool.n
+    load = [0] * pool.n
+    moving = set()
+    for i in sorted(range(len(needs)), key=lambda i: -cost[i]):
+        k = owner_of(needs[i])
+        if k is None:
+            continue
+        if load[k] == 0 or load[k] + cost[i] <= cap:
+            load[k] += cost[i]
+        else:
+            moving.add(i)
+    pool.moved += len(moving)
+    write_out_all(pool, {base(s) for i in moving for s in needs[i]})
+
+
+def write_out_all(pool, names):
+    """Make sure these states exist as files (each owner writes its own, in parallel)."""
+    by = {}
+    for n in names:
+        if n in OWNER and n not in FILED:
+            by.setdefault(OWNER[n], []).append(n)
+    for f in [pool.on(k, write_out, v) for k, v in by.items()]:
+        f.result()
+
+
+def free_ram(pool, keep):
+    """Drop the memory copies of states outside `keep`."""
+    by = {}
+    for n, k in list(OWNER.items()):
+        if n not in keep:
+            del OWNER[n]
+            by.setdefault(k, []).append(n)
+    for f in [pool.on(k, drop, v) for k, v in by.items()]:
+        f.result()
 
 
 _ids = itertools.count()
@@ -126,14 +274,19 @@ def run_child(w, sims, held, opt, minwin, route=(), expect=None, corner=False):
     if BRANCH:
         return run_child_branch(w, sims, held, opt, minwin, route, expect)
     out, res, spawned = [], [], []
+
+    def fail(st, i):  # free the states this move saved
+        if out or spawned:
+            forget(w, out + spawned)
+        return st, i, None
     for i, sim in enumerate(sims):
         late = sim.endswith("*")
         jit = "~" in sim
         name0 = base(sim)
-        got = w.cmd(f"load {name0} {held}")
+        got = load_state(w, name0, held)
         if expect and got != expect:
-            BADLOADS.append((sim, "".join(route), expect, got, w.cmd(f"load {name0} {held}")))
-            return "badload", i, None
+            BADLOADS.append((sim, "".join(route), expect, got, load_state(w, name0, held)))
+            return fail("badload", i)
         lag = 0
         if opt != held:
             lag = minwin if late else jitter_lag(sim, len(route), corner) if jit else 0
@@ -144,23 +297,23 @@ def run_child(w, sims, held, opt, minwin, route=(), expect=None, corner=False):
         if r["st"] not in ("ok", "clear"):
             if r["st"] == "stuck":
                 print(f"STUCK route={''.join(route)}+{opt} {r}", flush=True)
-            return r["st"], i, None
+            return fail(r["st"], i)
         # a late press at a corner only makes Pac-Man pause there; at a junction it sends him the
         # wrong way, so junctions get the full window and corners a shorter one
         corner = len(maze.exits(*r["node"])) == 2
         if not late and not jit and opt != held and r["win"] < (CORNER_MINWIN if corner else minwin):
-            return "shortwin", i, None
+            return fail("shortwin", i)
         name = new_name()
-        w.cmd(f"save {name}")
+        save_state(w, name)
         out.append(name + ("*" if late else "") + (sim[sim.index("~"):] if jit else ""))
         res.append(r)
         if not late and not jit and corner and opt != held and r["win"] < minwin and LATE_VARIANTS:
-            w.cmd(f"load {name0} {held}")
+            load_state(w, name0, held)
             rl = parse_seg(w.cmd(f"seg {opt} E {stepped_lag(minwin)}"))
             if rl["st"] not in ("ok", "clear"):
-                return "late-" + rl["st"], i, None
+                return fail("late-" + rl["st"], i)
             lname = new_name()
-            w.cmd(f"save {lname}")
+            save_state(w, lname)
             spawned.append(lname + "*")
             res.append(rl)
     return ("clear" if all(r["st"] == "clear" for r in res) else "ok"), out + spawned, res
@@ -179,32 +332,59 @@ def run_child_branch(w, sims, held, opt, minwin, route=(), expect=None):
     level is followed exactly. More than BRANCH_CAP others in a level rejects the move ("toomany")."""
     n0 = len(SIMS0)
     main, extra, res, seen = [None] * n0, {}, [], {}
+    unused = []  # states segb saved that merged away
+    made = []  # states saved for this move, freed again if the move fails
+
+    def fail(st, i):
+        if made or unused:
+            forget(w, made + unused)
+        return st, i, None
     for i, sim in enumerate(sims):
         lv, used, fr = map(int, sim.split("@")[1].split(".")) if "@" in sim else (i, 0, 0)
         lags = range(BRANCH + 1) if opt != held and used < LATE_BUDGET else [0]
+        batch = {}
         for k in lags:
-            got = w.cmd(f"load {base(sim)} {held}")
-            if expect and got != expect:
-                BADLOADS.append((sim, "".join(route), expect, got, w.cmd(f"load {base(sim)} {held}")))
-                return "badload", i, None
-            r = parse_seg(w.cmd(f"seg {opt} 4 {k}" if k else f"seg {opt} E 0"))
+            if not batch:  # segb, once run, has played every late press
+                got = load_state(w, base(sim), held)
+                if expect and got != expect:
+                    BADLOADS.append((sim, "".join(route), expect, got, load_state(w, base(sim), held)))
+                    return fail("badload", i)
+            if k == 1 and RAM:
+                # the late presses share every frame up to the press: one segb plays them
+                names = [new_name() for _ in range(BRANCH)]
+                for j, line in enumerate(w.cmd(f"segb {opt} 4 " + " ".join(names)).split(" | ")):
+                    parts = line.rsplit(" ", 1)
+                    batch[j + 1] = (names[j], parts[0], parts[1])
+                    OWNER[names[j]] = w.idx
+                unused += names
+            if k in batch:
+                name, line, h = batch[k]
+                r = parse_seg(line)
+            else:
+                name, h = None, None
+                r = parse_seg(w.cmd(f"seg {opt} 4 {k}" if k else f"seg {opt} E 0"))
             if r["st"] not in ("ok", "clear"):
-                return r["st"], i, None
+                return fail(r["st"], i)
             r["fruits"] += fr  # running total for this sim
             on_time = i < n0 and k == 0
             if on_time and opt != held:
                 corner = len(maze.exits(*r["node"])) == 2
                 if r["win"] < (CORNER_MINWIN if corner else minwin):
-                    return "shortwin", i, None
-            h = w.cmd("hash").split()[1]
+                    return fail("shortwin", i)
+            if h is None:
+                h = w.cmd("hash").split()[1]
             late = used + (k > 0)
             key = (lv, h)
             if key in seen and not on_time:
                 if seen[key] is not None and late < extra[lv][seen[key]][1]:
                     extra[lv][seen[key]][1] = late
                 continue
-            name = new_name()
-            w.cmd(f"save {name}")
+            if name is None:
+                name = new_name()
+                save_state(w, name)
+            else:
+                unused.remove(name)
+            made.append(name)
             res.append(r)
             if on_time:
                 main[i] = f"{name}@{lv}.0.{r['fruits']}"
@@ -212,9 +392,11 @@ def run_child_branch(w, sims, held, opt, minwin, route=(), expect=None):
             else:
                 seen[key] = len(extra.setdefault(lv, []))
                 extra[lv].append([name, late, r["fruits"]])
+    if unused:
+        forget(w, unused)
     if LATE_BUDGET < 10**9:
         if any(len(v) > BRANCH_CAP for v in extra.values()):
-            return "toomany", 0, None
+            return fail("toomany", 0)
         kept = [f"{n}@{lv}.{late}.{f}" for lv, v in sorted(extra.items()) for n, late, f in v]
     else:
         rng = random.Random("".join(route) + opt)
@@ -277,6 +459,7 @@ def cleanup(keep, pattern="n*"):
         if f.name not in keep:
             try:
                 f.unlink()
+                FILED.discard(f.stem)
             except OSError:
                 pass
 
@@ -287,6 +470,7 @@ def make_starts(pool, levels):
         return w.cmd("peek")
     for lv in levels:
         print("start", lv, pool.submit(mk, lv).result())
+    FILED.update(f"{RUN}start_L{lv}" for lv in levels)
     return [f"{RUN}start_L{lv}" for lv in levels]
 
 
@@ -342,11 +526,15 @@ def plan_moves(tile, heading, left, rng, k=3, cap=80):
 def rollout(w, c, moves, minwin):
     """Play a whole planned move list from candidate c on all its sims.
 
-    Returns (clearing child, None) or (None, (status, failing sim index, dots left))."""
+    Returns (clearing child, None) or (None, (status, failing sim index, dots left)). In memory,
+    each step's states are freed once the next step is made; only a clearing child's are kept."""
+    c0 = c
     for opt in moves:
         node, path = maze.next_node(*c.tile, c.heading)
         st, sims, res = run_child(w, c.sims, c.heading, opt, minwin, c.route,
                                   corner=len(maze.exits(*node)) == 2)
+        if c is not c0:
+            forget(w, c.sims, keep=sims if res is not None else ())
         if res is None:
             return None, (st, sims, len(GOAL - c.eaten))
         c = make_child(c, path, opt, sims, res)
@@ -354,7 +542,10 @@ def rollout(w, c, moves, minwin):
             return c, None
         if c.after >= 0:  # goal reached: any continuation that every sim survives will do
             s = survive(w, c, minwin)
+            if s is not c:
+                forget(w, c.sims)
             return (s, None) if s else (None, ("dead-after-goal", None, 0))
+    forget(w, c.sims if c is not c0 else ())
     return None, ("unfinished", None, len(GOAL - c.eaten))
 
 
@@ -368,7 +559,10 @@ def survive(w, c, minwin):
             st, sims, res = run_child(w, c.sims, c.heading, opt, minwin, c.route,
                                       corner=len(maze.exits(*node)) == 2)
             if res is not None:
-                s = survive(w, make_child(c, path, opt, sims, res), minwin)
+                k = make_child(c, path, opt, sims, res)
+                s = survive(w, k, minwin)
+                if s is not k:
+                    forget(w, sims, keep=s.sims if s else ())
                 if s:
                     return s
     return None
@@ -377,13 +571,16 @@ def survive(w, c, minwin):
 def endgame(pool, beam, args, rng):
     """Try full planned cleanup routes from the best few candidates that have few dots left."""
     cands = [c for c in beam if len(GOAL - c.eaten) <= args.endgame][:args.endgame_cands]
-    jobs, tried = [], set()
+    plans, tried = [], set()
     for c in cands:
         for _ in range(args.endgame_plans):
             mv = plan_moves(c.tile, c.heading, GOAL - c.eaten, rng)
             if mv and (id(c), tuple(mv)) not in tried:
                 tried.add((id(c), tuple(mv)))
-                jobs.append(pool.submit(rollout, c, mv, args.minwin))
+                plans.append((c, mv))
+    if RAM:
+        place(pool, [c.sims for c, _ in plans])
+    jobs = [pool.submit(rollout, c, mv, args.minwin, need=c.sims) for c, mv in plans]
     sols, why = [], {}
     for j in jobs:
         s, fail = j.result()
@@ -436,7 +633,7 @@ def search(pool, sims0, args, log=print, resume=None):
         node, path = maze.next_node(*c.tile, c.heading)
         st, sims, res = pool.submit(run_child, c.sims, c.heading, opt, args.minwin, c.route,
                                     f"ok {c.tile[0]} {c.tile[1]} {len(c.eaten)}" if c.route else None,
-                                    len(maze.exits(*node)) == 2).result()
+                                    len(maze.exits(*node)) == 2, need=c.sims).result()
         if res is None:
             log(f"prefix fails at move {len(c.route)} ({opt} at {node}): {st} on {sim_label(sims0, sims)}")
             break
@@ -449,6 +646,7 @@ def search(pool, sims0, args, log=print, resume=None):
     # dies the search has nothing to fall back on. Keep a beam snapshot every 5 moves; on a dead
     # end, rewind (further each time it fails again) and drop the ancestors of the dead family.
     snapshots, last_beam, backtracks, misses, last_target = [], beam, 0, 0, None
+    peak_ram = 0
     depth = len(beam[0].route) - 1
     if resume:
         (depth, beam, best_partial, best_depth, solution, snapshots, last_beam, backtracks, misses,
@@ -460,19 +658,23 @@ def search(pool, sims0, args, log=print, resume=None):
         depth += 1
         if depth % 5 == 0 and not (snapshots and snapshots[-1][0] == depth):
             snapshots = (snapshots + [(depth, beam)])[-args.snapshots:]
+            write_out_all(pool, {base(s) for c in beam for s in c.sims})
             if args.checkpoint:
                 save_checkpoint(args, sims0, dict(
                     depth=depth, beam=beam, best_partial=best_partial, best_depth=best_depth, solution=solution,
                     snapshots=snapshots, last_beam=last_beam, backtracks=backtracks, misses=misses,
                     last_target=last_target), rng)
         jobs = []
+        if RAM:
+            place(pool, [c.sims for c in beam for opt in maze.exits(*maze.next_node(*c.tile, c.heading)[0])
+                         if allowed(c, maze.next_node(*c.tile, c.heading)[0], opt)])
         for c in beam:
             node, path = maze.next_node(*c.tile, c.heading)
             for opt in maze.exits(*node):
                 if allowed(c, node, opt):
                     jobs.append((c, path, opt, pool.submit(run_child, c.sims, c.heading, opt, args.minwin, c.route,
                                                          f"ok {c.tile[0]} {c.tile[1]} {len(c.eaten)}" if c.route else None,
-                                                         len(maze.exits(*node)) == 2)))
+                                                         len(maze.exits(*node)) == 2, need=c.sims)))
         children, fails, by_sim = {}, {}, {}
         for c, path, opt, fut in jobs:
             st, sims, res = fut.result()
@@ -544,10 +746,16 @@ def search(pool, sims0, args, log=print, resume=None):
                 print("BADLOAD sim=%s route=%s expected=%r got=%r retry=%r" % b, flush=True)
             BADLOADS.clear()
         top = beam[0] if beam else None
+        peak_ram = max(peak_ram, len(OWNER))
+        if RAM:
+            free_ram(pool, {base(s) for c in beam + ([solution] if solution else []) for s in c.sims})
         if depth % 10 == 0 or solution or not beam:
+            ram = (f" ram={len(OWNER)} states (peak {peak_ram} ~{peak_ram * 0.783 / 1024:.1f}GB)"
+                   f" moved={pool.moved}" if RAM else "")
             log(f"d={depth} jobs={len(jobs)} kids={len(children)} fails={fails} on={by_sim} "
                 f"best={len(top.eaten) if top else '-'} fruit={top.fruits if top else '-'} "
-                f"t={time.time() - t0:.0f}s")
+                f"t={time.time() - t0:.0f}s{ram} busy={sum(pool.busy) / max(1e-9, (time.time() - t0) * pool.n):.0%}"
+                + (f" copy={COPY_SECONDS[0]:.0f}s" if RAM else ""))
         keep = ({s for c in beam for s in c.sims} | set(solution.sims if solution else []) | set(sims0)
                 | {s for _, snap in snapshots for c in snap for s in c.sims})
         cleanup(keep)
@@ -612,9 +820,14 @@ def main():
                     help="write the search state here every 5 moves (default: <out>.ckpt; 'none' = off)")
     ap.add_argument("--resume", action="store_true",
                     help="carry on from --checkpoint (same arguments otherwise; code may have changed)")
+    ap.add_argument("--no-ram", action="store_true",
+                    help="keep every savestate in a file and use stock MAME (default: states live in the "
+                         "memory of the worker that made them, in our patched MAME, mame-0.289-mem/)")
+    ap.add_argument("--no-idle-skip", action="store_true",
+                    help="with our patched MAME, emulate Pac-Man's idle loop instead of skipping it")
     ap.add_argument("--out", default="result.json")
     args = ap.parse_args()
-    global CLUSTER_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET
+    global RAM, CLUSTER_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET
     CLUSTER_COST, CORNER_MINWIN = args.cluster_cost, args.corner_minwin
     LATE_VARIANTS = not args.no_late and not args.jitter_sims and not args.fixed_sims and not args.history_sims
     TURN_COST, JITTER, JITTER_CORNER = args.turn_cost, args.jitter, args.jitter_corner
@@ -628,7 +841,10 @@ def main():
         GOAL, AVOID = maze.DOTS - maze.POCKETS, maze.POCKETS
         SAFE_AFTER = args.safe_after
     levels = [int(x) for x in args.levels.split(",")]
-    pool = Pool(args.workers)
+    RAM = not args.no_ram
+    if RAM and not MAME_MEM.exists():
+        raise SystemExit(f"{MAME_MEM} not found: build it (see mame-patches/README.md) or use --no-ram")
+    pool = Pool(args.workers, MAME_MEM if RAM else MAME, idle=RAM and not args.no_idle_skip)
     args.checkpoint = None if args.checkpoint == "none" else args.checkpoint or args.out + ".ckpt"
     resume = None
     if args.resume:

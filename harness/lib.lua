@@ -5,6 +5,7 @@ local H = {}
 H.machine = manager.machine
 H.mem = H.machine.devices[":maincpu"].spaces["program"]
 H.frame = 0
+H.lua_ticks = 0 -- profiling: time spent running this script's frame steps
 
 local fields = {}
 for _, port in pairs(H.machine.ioport.ports) do
@@ -58,7 +59,9 @@ function H.run(fn)
   H.sub = emu.add_machine_frame_notifier(function()
     H.frame = H.frame + 1
     if coroutine.status(co) == "dead" then return end
+    local t = emu.osd_ticks()
     local ok, err = coroutine.resume(co)
+    H.lua_ticks = H.lua_ticks + (emu.osd_ticks() - t)
     if not ok then
       print("LUAERROR " .. tostring(err))
       print(debug.traceback(co))

@@ -43,10 +43,21 @@ local function is_node(c, r)
 end
 
 -- game state -------------------------------------------------------------------------
-local function pac_tile()
-  return 59 - H.rd(0x4D3A), H.rd(0x4D39) - 33
+-- segment() reads everything it checks each frame as two blocks (one call into MAME each)
+-- instead of ~25 single bytes; CM/CE hold them while a segment runs, nil otherwise
+local CM, CE
+local function snap() CM = H.mem:read_range(0x4D00, 0x4DA5, 8); CE = H.mem:read_range(0x4E0E, 0x4E82, 8) end
+local function rd(a)
+  if CM then
+    if a >= 0x4D00 and a <= 0x4DA5 then return CM:byte(a - 0x4CFF) end
+    if a >= 0x4E0E and a <= 0x4E82 then return CE:byte(a - 0x4E0D) end
+  end
+  return H.rd(a)
 end
-local function pac_px() return H.rd(0x4D09), H.rd(0x4D08) end -- internal x (grows left), y
+local function pac_tile()
+  return 59 - rd(0x4D3A), rd(0x4D39) - 33
+end
+local function pac_px() return rd(0x4D09), rd(0x4D08) end -- internal x (grows left), y
 local function center_px(c, r) return (29 - c) * 8 + 4, (r + 1) * 8 + 4 end
 
 -- signed distance (px) of pac-man before the center of tile (c,r) when moving dir d
@@ -65,7 +76,7 @@ local function ghost_min_dist()
   local x, y = pac_px()
   local best = 999
   for g = 0, 3 do
-    local gy, gx = H.rd(0x4D00 + g * 2), H.rd(0x4D01 + g * 2)
+    local gy, gx = rd(0x4D00 + g * 2), rd(0x4D01 + g * 2)
     local dd = math.abs(gx - x) + math.abs(gy - y)
     if dd < best then best = dd end
   end
@@ -73,12 +84,12 @@ local function ghost_min_dist()
 end
 
 local function bcd(v) return (v >> 4) * 10 + (v & 15) end
-local function score() return bcd(H.rd(0x4E80)) + bcd(H.rd(0x4E81)) * 100 + bcd(H.rd(0x4E82)) * 10000 end
-local function dead() return H.rd(0x4DA5) ~= 0 end
+local function score() return bcd(rd(0x4E80)) + bcd(rd(0x4E81)) * 100 + bcd(rd(0x4E82)) * 10000 end
+local function dead() return rd(0x4DA5) ~= 0 end
 -- single-frame score jumps that can only come from a fruit (ghosts are 200/400/800/1600)
 FRUIT_POINTS = { [100] = true, [300] = true, [500] = true, [700] = true, [1000] = true,
   [2000] = true, [3000] = true, [5000] = true }
-local function dots() return H.rd(0x4E0E) end
+local function dots() return rd(0x4E0E) end
 
 -- segment: travel to the next node ahead and leave it heading `want`.
 -- policy "E" = press immediately; integer p = press once within p px of node center.
@@ -86,7 +97,8 @@ local function dots() return H.rd(0x4E0E) end
 -- nxt (optional): press this direction as soon as the turn onto `want` registers, the way a
 -- player presses the next turn as soon as they see Pac-Man come round the corner. `lead` is how
 -- many frames that is before leaving the node tile, i.e. extra window for the next turn.
-local function segment(want, policy, lag, nxt, nxt_delay)
+-- A segment's state lives in a table (n = frames so far) so segb can copy it at the press point.
+local function seg_start(want, policy, lag, nxt, nxt_delay)
   local d = H.rd(0x4D30)
   local c, r = pac_tile()
   -- find next node ahead (the current tile counts)
@@ -95,51 +107,132 @@ local function segment(want, policy, lag, nxt, nxt_delay)
   while not is_node(mc, mr) do
     mc, mr = wrapc(mc + DC[d][1]), mr + DC[d][2]
     guard = guard + 1
-    if guard > 40 then return "nonode", 0, 0, 0, 999, 0, 0 end
+    if guard > 40 then return nil end
   end
   -- pac-man stops dead at a corner's center, so a press "past center" can't happen there
   if policy ~= "E" and not open(mc + DC[d][1], mr + DC[d][2]) and policy < 0 then policy = 0 end
-  local f0 = H.frame
-  local pressed = false
-  local trigger_frame = nil
-  local entered = false
-  local mind = 999
-  local lastx, lasty, still = -1, -1, 0
-  -- win: frames from segment start until the turn is no longer "safe early" (4px before center)
-  local win = (want == d) and 99 or nil
-  local fruits, last_score = 0, score()
-  local lead_at = nil
-  local function done(st)
-    return st, H.frame - f0, mc, mr, mind, win or 0, fruits, lead_at and (H.frame - lead_at) or 0
+  snap()
+  return {
+    want = want, policy = policy, lag = lag, nxt = nxt, nxt_delay = nxt_delay, d = d, mc = mc, mr = mr,
+    n = 0, pressed = false, trigger = nil, entered = false, mind = 999, lastx = -1, lasty = -1, still = 0,
+    -- win: frames from segment start until the turn is no longer "safe early" (4px before center)
+    win = (want == d) and 99 or nil,
+    fruits = 0, last_score = score(), lead_at = nil,
+  }
+end
+
+local function seg_done(g, st)
+  CM, CE = nil, nil
+  return st, g.n, g.mc, g.mr, g.mind, g.win or 0, g.fruits, g.lead_at and (g.n - g.lead_at) or 0
+end
+
+-- the checks and presses before a frame runs
+local function seg_before(g)
+  if not g.win and dist_to(g.mc, g.mr, g.d) <= 4 then g.win = g.n end
+  if not g.pressed then
+    if not g.trigger then
+      if g.policy == "E" or dist_to(g.mc, g.mr, g.d) <= g.policy then g.trigger = g.n end
+    end
+    if g.trigger and g.n - g.trigger >= g.lag then H.joy(NAME[g.want]); g.pressed = true end
   end
+  if g.pressed and not g.lead_at and g.want ~= g.d and rd(0x4D30) == g.want then g.lead_at = g.n end
+  if g.nxt and g.lead_at and g.n - g.lead_at == g.nxt_delay then H.joy(NAME[g.nxt]); g.nxt = nil end
+end
+
+-- after a frame has run: the segment's result if it ended, else nil
+local function seg_after(g)
+  g.n = g.n + 1
+  snap()
+  local s = score()
+  if FRUIT_POINTS[s - g.last_score] then g.fruits = g.fruits + 1 end
+  g.last_score = s
+  if dead() then return "dead" end
+  if dots() >= 244 then return "clear" end
+  local m = ghost_min_dist(); if m < g.mind then g.mind = m end
+  local tc, tr = pac_tile()
+  if tc == g.mc and tr == g.mr then g.entered = true
+  elseif g.entered then
+    if rd(0x4D30) == g.want then return "ok" end
+    return "miss"
+  end
+  local x, y = pac_px()
+  if x == g.lastx and y == g.lasty then g.still = g.still + 1 else g.still = 0 end
+  g.lastx, g.lasty = x, y
+  if g.still > 200 then return "stuck" end
+end
+
+-- run frames until the segment ends (returns seg_done's results), or with `fork`, stop when the
+-- press has just been triggered but not yet made (returns nothing; that frame has not run)
+local function seg_run(g, fork)
   while true do
-    if not win and dist_to(mc, mr, d) <= 4 then win = H.frame - f0 end
-    if not pressed then
-      if not trigger_frame then
-        if policy == "E" or dist_to(mc, mr, d) <= policy then trigger_frame = H.frame end
-      end
-      if trigger_frame and H.frame - trigger_frame >= lag then H.joy(NAME[want]); pressed = true end
-    end
-    if pressed and not lead_at and want ~= d and H.rd(0x4D30) == want then lead_at = H.frame end
-    if nxt and lead_at and H.frame - lead_at == nxt_delay then H.joy(NAME[nxt]); nxt = nil end
+    seg_before(g)
+    if fork and g.trigger and not g.pressed then return end
     H.wait(1)
-    local s = score()
-    if FRUIT_POINTS[s - last_score] then fruits = fruits + 1 end
-    last_score = s
-    if dead() then return done("dead") end
-    if dots() >= 244 then return done("clear") end
-    local g = ghost_min_dist(); if g < mind then mind = g end
-    local tc, tr = pac_tile()
-    if tc == mc and tr == mr then entered = true
-    elseif entered then
-      if H.rd(0x4D30) == want then return done("ok") end
-      return done("miss")
-    end
-    local x, y = pac_px()
-    if x == lastx and y == lasty then still = still + 1 else still = 0 end
-    lastx, lasty = x, y
-    if still > 200 then return done("stuck") end
+    local st = seg_after(g)
+    if st then return seg_done(g, st) end
   end
+end
+
+local function segment(want, policy, lag, nxt, nxt_delay)
+  local g = seg_start(want, policy, lag, nxt, nxt_delay)
+  if not g then return "nonode", 0, 0, 0, 999, 0, 0, 0 end
+  return seg_run(g)
+end
+
+local function ram_hash()
+  -- 0x4F80-0x4FBF is only stack below SP (0x4FC0 between frames; it reaches 0x4FA2 at most):
+  -- stale bytes, like the return address left where the interrupt happened to land, that the
+  -- game never reads, so they must not keep identical game states from merging
+  local s = H.mem:read_range(0x4000, 0x4F7F, 8) .. H.mem:read_range(0x4FC0, 0x4FEF, 8)
+  local h = 0
+  for i = 1, #s do h = (h * 31 + s:byte(i)) % 2147483647 end
+  return h
+end
+
+local function seg_reply(st, fr, mc, mr, mind, win, fruits, lead)
+  local tc, tr = pac_tile()
+  return string.format("%s %d %d %d %d %d %d %d %d %d %d", st, fr, mc, mr, mind, dots(), tc, tr, win, fruits, lead)
+end
+
+local function copy(t)
+  local c = {}
+  for k, v in pairs(t) do c[k] = v end
+  return c
+end
+
+-- segb: the same as "seg <want> <policy> k" then "hash" then "msave <names[k]>", for k = 1..#names,
+-- each from the same starting state -- but the frames up to the press, which those runs share,
+-- are played once: the state there is kept in a slot and each k continues from it. The frame a
+-- save or load lets run is a frame before any k presses, with the joystick as it was, so each k
+-- sees exactly what its own run would. Replies "<seg reply> <hash>" per k, joined by " | ".
+local function segb(want, policy, names)
+  local held = H.joy_dir
+  local out = {}
+  local g = seg_start(want, policy, 1)
+  if not g then
+    for k = 1, #names do out[k] = "nonode 0 0 0 999 0 0 0 0 0 0 0" end
+    return table.concat(out, " | ")
+  end
+  local r = { seg_run(g, true) }
+  if #r > 0 then
+    -- ended before the press point: no k ever presses, so they all play the same
+    local line = seg_reply(table.unpack(r)) .. " " .. ram_hash()
+    for k = 1, #names do out[k] = line; H.msave(names[k]) end
+    return table.concat(out, " | ")
+  end
+  local fork = copy(g)
+  H.msave("segb_fork")  -- the frame this lets run is the fork's next frame (no press yet)
+  for k = 1, #names do
+    if k > 1 then H.joy(held); H.mload("segb_fork") end
+    g = copy(fork)
+    g.lag = k
+    local st = seg_after(g)
+    if st then r = { seg_done(g, st) } else r = { seg_run(g) } end
+    out[k] = seg_reply(table.unpack(r)) .. " " .. ram_hash()
+    H.msave(names[k])
+  end
+  H.machine:mem_drop("segb_fork")
+  return table.concat(out, " | ")
 end
 
 -- reach play start of level n (1-based) by really finishing levels 1..n-1: set the dots-eaten
@@ -176,6 +269,15 @@ H.run(function()
       if a ~= "" then manager.machine.video:begin_recording(a, "avi") else manager.machine.video:end_recording() end
       reply("ok")
     elseif cmd == "wait" then H.wait(tonumber(a)); reply("ok")
+    elseif cmd == "prof" then
+      -- profiling: seconds spent in this script's frame steps since the last "prof"
+      reply(string.format("ok %.6f", H.lua_ticks / emu.osd_ticks_per_second())); H.lua_ticks = 0
+    elseif cmd == "idle" then
+      -- profiling: passes through the main loop's empty-queue wait (it reads 0x4C82 once a pass,
+      -- 37 cycles) over the next N frames
+      local n = 0
+      local tap = H.mem:install_read_tap(0x4C82, 0x4C82, "idle", function(o, d, m) n = n + 1 end)
+      H.wait(tonumber(a)); tap:remove(); reply("ok " .. n)
     elseif cmd == "load" then
       -- savestates don't carry the joystick; restore the direction held when it was saved
       local held = b ~= "" and b or nil
@@ -201,14 +303,20 @@ H.run(function()
       reply("ok " .. n .. " " .. H.machine:mem_count())
     elseif cmd == "mcopy" then
       -- "mcopy <slot> <file>": write a slot out as a state file (another worker can then load it);
-      -- "mcopy <file> <slot> in": the reverse. Leaves the machine in that state.
-      if c == "in" then H.load(a); H.msave(b) else H.mload(a); H.save(b) end
-      reply("ok")
+      -- "mcopy <file> <slot> in": the reverse. Both happen at one frame boundary (a load then a
+      -- save would let a frame run in between); the machine is left in that state.
+      local e = H.machine:mem_errors()
+      if c == "in" then H.machine:mem_import(a, b) else H.machine:mem_export(a, b) end
+      H.wait(1)
+      reply(H.machine:mem_errors() == e and "ok" or "err mcopy " .. a)
     elseif cmd == "seg" then
       local pol = (b == "E") and "E" or tonumber(b)
-      local st, fr, mc, mr, mind, win, fruits, lead = segment(LETTER[a], pol, tonumber(c) or 0, LETTER[d:sub(1, 1)], tonumber(d:sub(2)) or 0)
-      local tc, tr = pac_tile()
-      reply(string.format("%s %d %d %d %d %d %d %d %d %d %d", st, fr, mc, mr, mind, dots(), tc, tr, win, fruits, lead))
+      reply(seg_reply(segment(LETTER[a], pol, tonumber(c) or 0, LETTER[d:sub(1, 1)], tonumber(d:sub(2)) or 0)))
+    elseif cmd == "segb" then
+      -- "segb <want> <policy> <slot1> <slot2> ...": see segb()
+      local names = {}
+      for w in line:gmatch("%S+") do names[#names + 1] = w end
+      reply(segb(LETTER[a], tonumber(b), { table.unpack(names, 4) }))
     elseif cmd == "mem" then
       local t = {}
       for addr = tonumber(a, 16), tonumber(a, 16) + tonumber(b) - 1 do t[#t + 1] = string.format("%02x", H.rd(addr)) end
@@ -218,10 +326,7 @@ H.run(function()
       for addr = 0x4C00, 0x4FEF do t[#t + 1] = string.format("%02x", H.rd(addr)) end
       reply("ok " .. table.concat(t))
     elseif cmd == "hash" then
-      local s = H.mem:read_range(0x4000, 0x4FEF, 8)
-      local h = 0
-      for i = 1, #s do h = (h * 31 + s:byte(i)) % 2147483647 end
-      reply(string.format("ok %d f=%d", h, H.frame))
+      reply(string.format("ok %d f=%d", ram_hash(), H.frame))
     elseif cmd == "peek" then
       local tc, tr = pac_tile()
       reply(string.format("ok f=%d tile=%d,%d dir=%d dots=%d level=%d 4E04=%d score=%d", H.frame, tc, tr, H.rd(0x4D30), dots(), H.rd(0x4E13) + 1, H.rd(0x4E04), score()))

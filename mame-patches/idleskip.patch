@@ -1,0 +1,50 @@
+diff --git a/src/mame/pacman/pacman.cpp b/src/mame/pacman/pacman.cpp
+index d244c168..ce8d84b3 100644
+--- a/src/mame/pacman/pacman.cpp
++++ b/src/mame/pacman/pacman.cpp
+@@ -359,6 +359,32 @@ Boards:
+  *
+  *************************************/
+ 
++// PacmanPatternFinder: with the environment variable PACMAN_IDLESKIP=1, puckman/pacman's main
++// loop (0x238D: LD HL,(4C82); LD A,(HL); AND A; JP M,238D) sleeps until the next interrupt
++// instead of spinning while its task queue is empty. Every game change happens in the interrupt,
++// so nothing the game does differs; only fewer Z80 instructions are emulated.
++void pacman_state::machine_start()
++{
++	driver_device::machine_start();
++	char const *const env = std::getenv("PACMAN_IDLESKIP");
++	if (!env || !*env || *env == '0' || strcmp(machine().system().name, "pacman"))
++		return;
++	address_space &prg = m_maincpu->space(AS_PROGRAM);
++	u8 const *const ram = reinterpret_cast<u8 const *>(prg.get_read_ptr(0x4c00));
++	if (!ram)
++		return;
++	m_idle_tap = prg.install_read_tap(0x4c82, 0x4c82, "idleskip",
++		[this, ram] (offs_t offset, u8 &data, u8 mem_mask)
++		{
++			offs_t const pc = m_maincpu->pc();
++			if (pc < 0x238d || pc > 0x2392)
++				return;
++			offs_t const task = ram[0x82] | (ram[0x83] << 8);
++			if (task >= 0x4cc0 && task <= 0x4cff && (ram[task - 0x4c00] & 0x80))
++				m_maincpu->spin_until_interrupt();
++		});
++}
++
+ void pacman_state::vblank_irq(int state)
+ {
+ 	if (state && m_irq_mask)
+diff --git a/src/mame/pacman/pacman.h b/src/mame/pacman/pacman.h
+index 9b8912ec..af2aeadb 100644
+--- a/src/mame/pacman/pacman.h
++++ b/src/mame/pacman/pacman.h
+@@ -43,6 +43,8 @@ public:
+ 	{ }
+ 
+ protected:
++	virtual void machine_start() override ATTR_COLD;
++	memory_passthrough_handler m_idle_tap;
+ 	void _8bpm_portmap(address_map &map) ATTR_COLD;
+ 	void bigbucks_map(address_map &map) ATTR_COLD;
+ 	void bigbucks_portmap(address_map &map) ATTR_COLD;

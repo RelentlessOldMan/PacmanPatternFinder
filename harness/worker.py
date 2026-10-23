@@ -6,12 +6,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 # MAME_EXE overrides the bundled install; ROMs are read from roms/ next to the exe
 MAME = Path(os.environ.get("MAME_EXE", ROOT / "mame-0.289" / "mame.exe"))
+# our patched build with memory savestate slots (mame-patches/); search.py uses it unless --no-ram
+MAME_MEM = ROOT / "mame-0.289-mem" / "mame.exe"
 STATE_DIR = ROOT / "state"
 
 
 class Worker:
-    def __init__(self, mame=MAME):
-        mame = Path(mame)
+    def __init__(self, mame=MAME, idle=False, script=None, extra=()):
+        """idle: our patched MAME skips Pac-Man's idle loop (see mame-patches/); stock ignores it.
+        script: the Lua server to run (default server.lua beside this file)."""
+        mame = Path(mame).resolve()  # MAME runs from ROOT, so relative paths would break
         # MAME persists toggles/DIPs in cfg; always start from factory defaults
         try:
             (ROOT / "cfg" / "pacman.cfg").unlink(missing_ok=True)
@@ -24,9 +28,10 @@ class Worker:
              "-nvram_directory", str(ROOT / "nvram"),
              "-state_directory", str(STATE_DIR),
              "-video", "none", "-sound", "none", "-nothrottle", "-skip_gameinfo",
-             "-autoboot_script", str(Path(__file__).parent / "server.lua")],
+             "-autoboot_script", str(script or Path(__file__).parent / "server.lua"), *extra],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
             text=True, bufsize=1, cwd=str(ROOT),
+            env={**os.environ, "PACMAN_IDLESKIP": "1" if idle else "0"},
             # searches run 10 unthrottled MAMEs; keep them behind foreground work
             creationflags=getattr(subprocess, "BELOW_NORMAL_PRIORITY_CLASS", 0))
         line = self._readline()
