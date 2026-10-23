@@ -19,7 +19,7 @@ import random
 import threading
 import time
 from concurrent.futures import Future, ThreadPoolExecutor
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 import maze
 from worker import MAME, MAME_MEM, Worker, STATE_DIR
@@ -379,7 +379,7 @@ def run_child_branch(w, sims, held, opt, minwin, route=(), expect=None):
             if r["st"] not in ("ok", "clear"):
                 return fail(r["st"], i)
             r["fruits"] += fr  # running total for this sim
-            if r["gone"] - r["fruits"] > 2 - NEED_FRUITS:
+            if r["gone"] - r["fruits"] > 2 - NEED_FRUITS or (FIRST_FRUIT and r["gone"] and not r["fruits"]):
                 return fail("fruitless", i)  # a fruit it needed came and went uneaten
             on_time = i < n0 and k == 0
             if on_time and opt != held:
@@ -421,6 +421,7 @@ def run_child_branch(w, sims, held, opt, minwin, route=(), expect=None):
 
 
 CLUSTER_COST = 40
+GAP_COST = 0  # --gap-cost: score penalty per empty tile needed to walk between the groups of dots left
 CORNER_MINWIN = 8
 LATE_VARIANTS = True
 TURN_COST = 0.0
@@ -434,6 +435,7 @@ AVOID = frozenset()
 
 
 NEED_FRUITS = 0  # --need-fruits (of the level's 2): --branch drops a move as soon as one is missed
+FIRST_FRUIT = False  # --first-fruit: also drop a move as soon as the first fruit is missed
 SAFE_AFTER = 0  # --safe-after: moves every sim must survive past the goal before it counts
 
 
@@ -457,7 +459,7 @@ def score(c):
     near = maze.bfs_dist(c.tile, left)
     # each stranded pocket of dots costs a long trip back later (with a faster red ghost)
     return (len(c.eaten) * 10 - c.frames * 0.25 - near * 6 - c.risk * 2 + c.fruits * 400
-            - maze.clusters(left) * CLUSTER_COST - n_turns(c) * TURN_COST)
+            - maze.clusters(left) * CLUSTER_COST - n_turns(c) * TURN_COST - (maze.gaps(left) * GAP_COST if GAP_COST else 0))
 
 
 def n_turns(c):
@@ -613,7 +615,7 @@ def endgame(pool, beam, args, rng):
             n, tot = why.get(k, (0, 0))
             why[k] = (n + 1, tot + left)
     summary = {k: f"{n}x avg{tot / n:.0f}left" for k, (n, tot) in sorted(why.items(), key=lambda kv: -kv[1][0])}
-    return min(sols, key=solution_cost) if sols else None, len(jobs), summary
+    return sorted(sols, key=solution_cost), len(jobs), summary
 
 
 SIMS0 = []
@@ -647,20 +649,47 @@ def search(pool, sims0, args, log=print, resume=None):
     t0 = time.time()
     n = len(sims0)
     beam = [Cand([], (13, 23), "L", frozenset(), 0, 0.0, 0, sims0, [])]
-    # --prefix: play a given opening (e.g. a human's, from watch.py) and search on from its end
+    # --prefix: play a given opening (e.g. a human's, from watch.py) and search on from its end.
+    # A late-press variant that dies in the opening is dropped (the player has to avoid that
+    # timing) rather than cutting the opening short; only an on-time death ends it.
+    dropped = 0
     for opt in ("" if resume else args.prefix):
         c = beam[0]
         node, path = maze.next_node(*c.tile, c.heading)
-        st, sims, res = pool.submit(run_child, c.sims, c.heading, opt, args.minwin, c.route,
-                                    f"ok {c.tile[0]} {c.tile[1]} {len(c.eaten)}" if c.route else None,
-                                    len(maze.exits(*node)) == 2, need=c.sims).result()
+        while True:
+            st, sims, res = pool.submit(run_child, c.sims, c.heading, opt, args.minwin, c.route,
+                                        f"ok {c.tile[0]} {c.tile[1]} {len(c.eaten)}" if c.route else None,
+                                        len(maze.exits(*node)) == 2, need=c.sims).result()
+            if res is not None or sims < n:
+                break
+            log(f"prefix move {len(c.route) + 1} ({opt} at {node}): dropping a late variant ({st})")
+            c = replace(c, sims=c.sims[:sims] + c.sims[sims + 1:])
+            dropped += 1
         if res is None:
-            log(f"prefix fails at move {len(c.route)} ({opt} at {node}): {st} on {sim_label(sims0, sims)}")
+            log(f"prefix fails at move {len(c.route) + 1} ({opt} at {node}): {st} on {sim_label(sims0, sims)}")
             break
         beam = [make_child(c, path, opt, sims, res)]
     if args.prefix:
-        log(f"prefix: {len(beam[0].route)}/{len(args.prefix)} moves, {len(beam[0].eaten)} dots")
+        log(f"prefix: {len(beam[0].route)}/{len(args.prefix)} moves, {len(beam[0].eaten)} dots, {dropped} late variants dropped")
     best_partial, best_depth, solution = beam[0], len(beam[0].route), None
+    found = {}  # --solutions: route -> clearing candidate
+
+    def collect(sol):
+        """Record a clearing route; once --solutions of them are found, the best is the answer."""
+        nonlocal solution
+        r = "".join(sol.route)
+        if r in found:
+            return
+        found[r] = sol
+        if args.solutions > 1:
+            out = summarize(sol, args.levels, True)
+            with open(args.out + ".sols.jsonl", "a") as f:
+                f.write(json.dumps({k: out[k] for k in ("route", "n_moves", "n_turns", "frames", "min_window",
+                                                         "fruits", "goal_at")}) + "\n")
+            log(f"d={depth} SOLUTION #{len(found)}: {out['n_moves']} moves {out['n_turns']} turns "
+                f"{out['frames']} frames route={r}")
+        if len(found) >= args.solutions:
+            solution = min(found.values(), key=solution_cost)
     rng = random.Random(args.seed)
     # backtracking: the beam narrows to one family of routes near the end, and when that family
     # dies the search has nothing to fall back on. Keep a beam snapshot every 5 moves; on a dead
@@ -710,27 +739,35 @@ def search(pool, sims0, args, log=print, resume=None):
             if st == "clear" or finished(ch):
                 if ch.fruits < args.need_fruits:
                     fails["nofruit"] = fails.get("nofruit", 0) + 1
-                elif solution is None or solution_cost(ch) < solution_cost(solution):
-                    solution = ch
+                else:
+                    collect(ch)
                 continue
             key = (ch.tile, ch.heading, ch.eaten)
             if key not in children or children[key].score < ch.score:
                 children[key] = ch
         ranked = sorted(children.values(), key=lambda c: -c.score)
-        per, beam = {}, []
+        per, fam, beam, held_back = {}, {}, [], []
         for c in ranked:
             k = (c.tile, c.heading)
+            f = tuple(c.route[:-args.family_depth]) if args.family_depth else None
             if per.get(k, 0) < max(2, args.beam // 8):
+                if f is not None and fam.get(f, 0) >= args.family_cap:
+                    held_back.append(c)  # a big family only fills the slots the others leave
+                    continue
                 per[k] = per.get(k, 0) + 1
+                fam[f] = fam.get(f, 0) + 1
                 beam.append(c)
             if len(beam) >= args.beam:
                 break
+        beam += held_back[:args.beam - len(beam)]
+        beam.sort(key=lambda c: -c.score)
         if args.endgame and solution is None and beam and depth % args.endgame_every == 0:
-            sol, njobs, why = endgame(pool, beam, args, rng)
+            sols, njobs, why = endgame(pool, beam, args, rng)
             if njobs:
-                log(f"d={depth} endgame: {njobs} planned cleanups tried -> {'CLEARED' if sol else 'none cleared'} {why}")
-            if sol:
-                solution = sol
+                log(f"d={depth} endgame: {njobs} planned cleanups tried -> "
+                    f"{f'CLEARED x{len(sols)}' if sols else 'none cleared'} {why}")
+            for sol in sols:
+                collect(sol)
         if beam and len(beam[0].eaten) > len(best_partial.eaten):
             best_partial, best_depth, misses = beam[0], depth, 0
         if beam:
@@ -760,7 +797,7 @@ def search(pool, sims0, args, log=print, resume=None):
                 continue
         if depth - best_depth > args.stall:
             log(f"d={depth} stalled: no progress past {len(best_partial.eaten)} dots for {args.stall} moves")
-            return solution, best_partial
+            return solution or (min(found.values(), key=solution_cost) if found else None), best_partial
         if BADLOADS and args.debug:
             for b in BADLOADS[:3]:
                 print("BADLOAD sim=%s route=%s expected=%r got=%r retry=%r" % b, flush=True)
@@ -780,7 +817,7 @@ def search(pool, sims0, args, log=print, resume=None):
                 | {s for _, snap in snapshots for c in snap for s in c.sims})
         cleanup(keep)
         if solution is not None or not beam:
-            return solution, best_partial
+            return solution or (min(found.values(), key=solution_cost) if found else None), best_partial
 
 
 def summarize(c, levels, cleared):
@@ -799,9 +836,15 @@ def main():
     ap.add_argument("--workers", type=int, default=10)
     ap.add_argument("--minwin", type=int, default=10)
     ap.add_argument("--need-fruits", type=int, default=0)
+    ap.add_argument("--first-fruit", action="store_true", help="the fruit eaten must include the first one")
     ap.add_argument("--stall", type=int, default=30)
     ap.add_argument("--debug", action="store_true")
     ap.add_argument("--cluster-cost", type=float, default=40)
+    ap.add_argument("--gap-cost", type=float, default=0,
+                    help="score penalty per empty tile walked between the groups of dots left (a dot is worth 10)")
+    ap.add_argument("--family-depth", type=int, default=0,
+                    help="with --family-cap: candidates sharing their route up to this many moves ago are a family")
+    ap.add_argument("--family-cap", type=int, default=8, help="--family-depth: most candidates kept per family")
     ap.add_argument("--corner-minwin", type=int, default=5)
     ap.add_argument("--endgame", type=int, default=40, help="plan full cleanups once this few dots are left (0=off)")
     ap.add_argument("--endgame-every", type=int, default=3)
@@ -847,15 +890,19 @@ def main():
                          "memory of the worker that made them, in our patched MAME, mame-0.289-mem/)")
     ap.add_argument("--no-idle-skip", action="store_true",
                     help="with our patched MAME, emulate Pac-Man's idle loop instead of skipping it")
+    ap.add_argument("--solutions", type=int, default=1,
+                    help="keep searching until this many distinct clearing routes are found (each appended "
+                         "to <out>.sols.jsonl as it is found); the best one is the result")
     ap.add_argument("--out", default="result.json")
     args = ap.parse_args()
-    global RAM, CLUSTER_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, RAM_CAP
-    CLUSTER_COST, CORNER_MINWIN = args.cluster_cost, args.corner_minwin
+    global RAM, CLUSTER_COST, GAP_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, FIRST_FRUIT, RAM_CAP
+    CLUSTER_COST, CORNER_MINWIN, GAP_COST = args.cluster_cost, args.corner_minwin, args.gap_cost
     LATE_VARIANTS = not args.no_late and not args.jitter_sims and not args.fixed_sims and not args.history_sims
     TURN_COST, JITTER, JITTER_CORNER = args.turn_cost, args.jitter, args.jitter_corner
     LATE_REL = args.late_rel
     BRANCH, BRANCH_CAP = args.branch, args.branch_cap
     NEED_FRUITS = args.need_fruits
+    FIRST_FRUIT = args.first_fruit
     if args.late_budget is not None:
         LATE_BUDGET = args.late_budget
     if BRANCH:

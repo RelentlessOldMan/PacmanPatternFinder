@@ -97,6 +97,56 @@ def clusters(dots):
     return n
 
 
+def groups(dots):
+    """The separate groups of dots (4-connected along the maze), as lists of tiles."""
+    left, out = set(dots), []
+    while left:
+        g = [left.pop()]
+        stack = list(g)
+        while stack:
+            c, r = stack.pop()
+            for d in DIRS:
+                nb = step(c, r, d)
+                if nb in left:
+                    left.remove(nb); stack.append(nb); g.append(nb)
+        out.append(g)
+    return out
+
+
+def gaps(dots):
+    """Empty tiles walked joining the groups of dots into one tour: the total length of a minimum
+    spanning tree over the groups, each edge the walking distance between them minus the 1 step
+    from a dot onto its neighbour. A few dots stranded far from the rest cost a long trip."""
+    gs = groups(dots)
+    if len(gs) < 2:
+        return 0
+    from collections import deque
+    owner = {t: i for i, g in enumerate(gs) for t in g}
+    dist = [[0] * len(gs) for _ in gs]
+    for i, g in enumerate(gs):  # one BFS from each whole group finds its distance to every other
+        seen, q, todo = {t: 0 for t in g}, deque(g), len(gs) - 1
+        found = {i}
+        while q and todo:
+            t = q.popleft()
+            for d in DIRS:
+                n = step(*t, d)
+                if n in seen or not is_open(*n):
+                    continue
+                seen[n] = seen[t] + 1
+                j = owner.get(n)
+                if j is not None and j not in found:
+                    found.add(j); todo -= 1; dist[i][j] = seen[n] - 1
+                q.append(n)
+    best = {j: dist[0][j] for j in range(1, len(gs))}  # Prim
+    total = 0
+    while best:
+        j = min(best, key=best.get)
+        total += best.pop(j)
+        for k in best:
+            best[k] = min(best[k], dist[j][k])
+    return total
+
+
 def _pockets():
     """Tiles that can only be reached through an energizer without reversing: from each energizer,
     walk both ways along the corridor (through corners) up to the first junction."""
