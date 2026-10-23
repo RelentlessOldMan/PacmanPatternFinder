@@ -113,7 +113,13 @@ def main():
         jobs = [(s["route"], lv) for s in good for lv in late_levels]
         # longest routes first so the pool doesn't end waiting on one
         order = sorted(range(len(jobs)), key=lambda i: -len(jobs[i][0]))
-        out = dict(zip(order, ex.map(lambda i: late_mixes(*jobs[i], args.budget), order)))
+        done = iter(range(1, len(jobs) + 1))  # next() on a shared iterator is atomic under the GIL
+
+        def run(i):
+            ds = late_mixes(*jobs[i], args.budget)
+            print(f"late presses: {next(done)}/{len(jobs)} route-levels done", flush=True)
+            return ds
+        out = dict(zip(order, ex.map(run, order)))
     rows = []
     for j, s in enumerate(good):
         ds = [(lv, m, mix) for k, lv in enumerate(late_levels) for m, mix in out[j * len(late_levels) + k]]
