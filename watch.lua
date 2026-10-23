@@ -15,7 +15,9 @@ log("WATCH target_level=" .. target)
 
 local frame, last, was_dead, last_level, skipping = 0, nil, false, nil, false
 local function level() return rd(0x4E13) + 1 end
-local function playing() return rd(0x4E04) == 3 end
+-- 4E00 = 3 is game mode; without it the boot RAM test's patterns can look like play, and writing
+-- the dot counter then fails the test and resets the machine over and over
+local function playing() return rd(0x4E00) == 3 and rd(0x4E04) == 3 end
 
 sub = emu.add_machine_frame_notifier(function()
   frame = frame + 1
