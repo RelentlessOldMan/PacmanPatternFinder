@@ -13,4 +13,7 @@ snap/
 *.ckpt
 *.ckpt.*
 *.sols.jsonl
-videos/
+videos/*
+!videos/L5-20_99_level5.mp4
+!videos/L5-20_99_level20.mp4
+!videos/L21_118_level21.mp4

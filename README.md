@@ -17,6 +17,10 @@ heading left. Details, timing data and older patterns are in [`best/`](best/READ
 | 5–20 | `best/L5-20_nopockets_99.json` | 99 / 67 | leaves the 4 corner pockets to eat by hand |
 | 21+ | `best/L21_full_118.json` | 118 / 88 | full clear, both fruits, ~48 s; starts like 5–20 |
 
+Videos (played by MAME exactly on time): 5–20 on [level 5](videos/L5-20_99_level5.mp4) and
+[level 20](videos/L5-20_99_level20.mp4) (the corner dots are left to eat by hand), and 21+ on
+[level 21](videos/L21_118_level21.mp4).
+
 For comparison, Don Goodrich's well-known level 21+ "9th key" pattern
 ([StrategyWiki](https://strategywiki.org/wiki/Pac-Man/Walkthrough)) is 117 moves / 84 turns with one
 reverse and takes ~53 s. It clears on MAME when played exactly on time, but 131 single late presses
