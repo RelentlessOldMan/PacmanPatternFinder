@@ -36,6 +36,17 @@ The only RAM difference is the interrupt's return address left on the stack belo
 0x2390), which the game never reads; `server.lua`'s `hash` skips that dead stack area
 (0x4F80-0x4FBF) so states still merge. `abtest.py` checks seg results and hashes against stock.
 
+## nosoundstate.patch (MAME 0.289, apply after the others)
+
+A stock Pac-Man savestate is 783,159 bytes before compression, and about 769,000 of them are the
+sound stream's buffered audio samples. The game never reads them back. With the environment
+variable `PACMAN_NOSOUNDSTATE=1` (set by `harness/worker.py` for every MAME it starts) they are
+left out of savestates: a state shrinks to about 15 KB (1.6 KB as a compressed file). Only the
+audio played right after a load is affected. What's left is about 3 KB of game RAM (video, colour,
+work and sprite RAM), 5 KB of palette tables, 2 KB of tilemap scroll tables, and CPU registers,
+timers and latches. Files saved this way don't load in stock MAME; `abtest.py` sets the variable
+to 0 for its stock-compatibility check.
+
 ### Build (Windows)
 
 1. Install MSYS2 (`winget install MSYS2.MSYS2`), then in an MSYS2 shell:
@@ -46,6 +57,7 @@ The only RAM difference is the interrupt's return address left on the stack belo
    cd mame-0.289-src
    git apply ../PacmanPatternFinder/mame-patches/memstate.patch
    git apply ../PacmanPatternFinder/mame-patches/idleskip.patch
+   git apply ../PacmanPatternFinder/mame-patches/nosoundstate.patch
    ```
 3. Build only the Pac-Man driver (about 30 minutes on 8 cores):
    ```

@@ -31,7 +31,7 @@ class Worker:
              "-autoboot_script", str(script or Path(__file__).parent / "server.lua"), *extra],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
             text=True, bufsize=1, cwd=str(ROOT),
-            env={**os.environ, "PACMAN_IDLESKIP": "1" if idle else "0"},
+            env={**os.environ, "PACMAN_IDLESKIP": "1" if idle else "0", "PACMAN_NOSOUNDSTATE": os.environ.get("PACMAN_NOSOUNDSTATE", "1")},
             # searches run 10 unthrottled MAMEs; keep them behind foreground work
             creationflags=getattr(subprocess, "BELOW_NORMAL_PRIORITY_CLASS", 0))
         line = self._readline()

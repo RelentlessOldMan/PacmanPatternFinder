@@ -47,7 +47,7 @@ class Cand:
 RAM = False
 OWNER = {}
 FILED = set()
-RAM_CAP = 4000  # --ram-cap: past this many memory states, new states go to files (~0.78 MB each)
+RAM_CAP = 200000  # --ram-cap: past this many memory states, new states go to files (~15 KB each)
 
 
 def load_state(w, name, held):
@@ -755,7 +755,7 @@ def search(pool, sims0, args, log=print, resume=None):
         if RAM:
             free_ram(pool, {base(s) for c in beam + ([solution] if solution else []) for s in c.sims})
         if depth % 10 == 0 or solution or not beam:
-            ram = (f" ram={len(OWNER)} states (peak {peak_ram} ~{peak_ram * 0.783 / 1024:.1f}GB)"
+            ram = (f" ram={len(OWNER)} states (peak {peak_ram} ~{peak_ram * 0.0148 / 1024:.1f}GB)"
                    f" moved={pool.moved}" if RAM else "")
             log(f"d={depth} jobs={len(jobs)} kids={len(children)} fails={fails} on={by_sim} "
                 f"best={len(top.eaten) if top else '-'} fruit={top.fruits if top else '-'} "
@@ -825,8 +825,8 @@ def main():
                     help="write the search state here every 5 moves (default: <out>.ckpt; 'none' = off)")
     ap.add_argument("--resume", action="store_true",
                     help="carry on from --checkpoint (same arguments otherwise; code may have changed)")
-    ap.add_argument("--ram-cap", type=int, default=4000,
-                    help="memory savestates kept at most (~0.78 MB each, plus MAME itself); more go to files")
+    ap.add_argument("--ram-cap", type=int, default=200000,
+                    help="memory savestates kept at most (~15 KB each, plus MAME itself); more go to files")
     ap.add_argument("--no-ram", action="store_true",
                     help="keep every savestate in a file and use stock MAME (default: states live in the "
                          "memory of the worker that made them, in our patched MAME, mame-0.289-mem/)")
