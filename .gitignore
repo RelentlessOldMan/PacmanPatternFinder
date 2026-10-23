@@ -16,3 +16,5 @@ snap/
 videos/*
 !videos/L5-20_99_level5.mp4
 !videos/L21_118_level21.mp4
+# game logs written by pacman.bat / watch.lua
+logs/
