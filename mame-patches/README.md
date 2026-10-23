@@ -50,6 +50,15 @@ What's left is about 3 KB of game RAM (video, colour, work and sprite RAM) plus 
 timers and latches. Files saved this way don't load in stock MAME; `abtest.py` sets the variable
 to 0 for its stock-compatibility check.
 
+## norender.patch (MAME 0.289, apply after the others)
+
+Even with `-video none -sound none` MAME draws every frame and generates the sound chip's audio.
+`PACMAN_NORENDER=1` marks every frame as skipped so the screen is never drawn, and
+`PACMAN_NOAUDIO=1` makes the Namco WSG produce silence. `harness/worker.py` sets both by default;
+set `PACMAN_NORENDER=0` in the environment to record video. With idle skip on, a frame takes 0.052
+ms instead of 0.087, and a search child (load, seg, hash, save) 4.8 ms instead of 7.1.
+`abtest.py` ALL OK.
+
 ### Build (Windows)
 
 1. Install MSYS2 (`winget install MSYS2.MSYS2`), then in an MSYS2 shell:
@@ -61,6 +70,7 @@ to 0 for its stock-compatibility check.
    git apply ../PacmanPatternFinder/mame-patches/memstate.patch
    git apply ../PacmanPatternFinder/mame-patches/idleskip.patch
    git apply ../PacmanPatternFinder/mame-patches/smallstate.patch
+   git apply ../PacmanPatternFinder/mame-patches/norender.patch
    ```
 3. Build only the Pac-Man driver (about 30 minutes on 8 cores):
    ```

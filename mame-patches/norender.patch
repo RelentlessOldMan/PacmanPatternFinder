@@ -1,0 +1,51 @@
+diff --git a/src/devices/sound/namco.cpp b/src/devices/sound/namco.cpp
+index dad6578d..329979d3 100644
+--- a/src/devices/sound/namco.cpp
++++ b/src/devices/sound/namco.cpp
+@@ -27,6 +27,9 @@
+ ***************************************************************************/
+ 
+ #include "emu.h"
++
++#include <cstdlib>
++#include <cstring>
+ #include "namco.h"
+ 
+ #include <algorithm>
+@@ -612,6 +615,10 @@ void namco_audio_device<Voices, Packed>::sound_stream_update(sound_stream &strea
+ 
+ void namco_wsg_device::sound_stream_update(sound_stream &stream)
+ {
++	// PACMAN_NOAUDIO=1 (PacmanPatternFinder): don't generate audio; the game never reads it back
++	static bool const noaudio = [] { char const *const s = std::getenv("PACMAN_NOAUDIO"); return s && !std::strcmp(s, "1"); }();
++	if (noaudio)
++		return;
+ 	namco_audio_device::sound_stream_update(stream);
+ }
+ 
+diff --git a/src/emu/video.cpp b/src/emu/video.cpp
+index f93ea6d4..2ec2917f 100644
+--- a/src/emu/video.cpp
++++ b/src/emu/video.cpp
+@@ -10,6 +10,9 @@
+ 
+ #include "emu.h"
+ 
++#include <cstdlib>
++#include <cstring>
++
+ #include "crsshair.h"
+ #include "debugger.h"
+ #include "emuopts.h"
+@@ -893,6 +896,11 @@ void video_manager::update_frameskip()
+ 	// increment the frameskip counter and determine if we will skip the next frame
+ 	m_frameskip_counter = (m_frameskip_counter + 1) % FRAMESKIP_LEVELS;
+ 	m_skipping_this_frame = s_skiptable[effective_frameskip()][m_frameskip_counter];
++
++	// PACMAN_NORENDER=1 (PacmanPatternFinder): never draw the screen; the game never reads it back
++	static bool const norender = [] { char const *const s = std::getenv("PACMAN_NORENDER"); return s && !std::strcmp(s, "1"); }();
++	if (norender)
++		m_skipping_this_frame = true;
+ }
+ 
+ 

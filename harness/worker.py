@@ -31,7 +31,9 @@ class Worker:
              "-autoboot_script", str(script or Path(__file__).parent / "server.lua"), *extra],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
             text=True, bufsize=1, cwd=str(ROOT),
-            env={**os.environ, "PACMAN_IDLESKIP": "1" if idle else "0", "PACMAN_SMALLSTATE": os.environ.get("PACMAN_SMALLSTATE", "1")},
+            # the patched build's speed/size switches (see mame-patches/); set PACMAN_NORENDER=0 to record video
+            env={**os.environ, "PACMAN_IDLESKIP": "1" if idle else "0",
+                 **{k: os.environ.get(k, "1") for k in ("PACMAN_SMALLSTATE", "PACMAN_NOAUDIO", "PACMAN_NORENDER")}},
             # searches run 10 unthrottled MAMEs; keep them behind foreground work
             creationflags=getattr(subprocess, "BELOW_NORMAL_PRIORITY_CLASS", 0))
         line = self._readline()
