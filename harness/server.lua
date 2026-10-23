@@ -159,6 +159,8 @@ local function seg_after(g)
   if x == g.lastx and y == g.lasty then g.still = g.still + 1 else g.still = 0 end
   g.lastx, g.lasty = x, y
   if g.still > 200 then return "stuck" end
+  -- a safety net: a segment that somehow never ends any of those ways can't hang its worker
+  if g.n > 3600 then return "timeout" end
 end
 
 -- run frames until the segment ends (returns seg_done's results), or with `fork`, stop when the

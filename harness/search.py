@@ -598,8 +598,8 @@ def endgame(pool, beam, args, rng):
             if mv and (id(c), tuple(mv)) not in tried:
                 tried.add((id(c), tuple(mv)))
                 plans.append((c, mv))
-    if RAM:
-        place(pool, [c.sims for c, _ in plans])
+    if RAM:  # all on the shared queue: rollouts vary a lot in length, so any free worker takes the next
+        write_out_all(pool, {base(s) for c, _ in plans for s in c.sims})
     jobs = [pool.submit(rollout, c, mv, args.minwin, need=c.sims) for c, mv in plans]
     sols, why = [], {}
     for j in jobs:
