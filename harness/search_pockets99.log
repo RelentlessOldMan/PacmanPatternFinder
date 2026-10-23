@@ -1,0 +1,24 @@
+[cw] Started pid 63188 (full).
+start 5 ok f=2984 tile=13,23 dir=2 dots=0 level=5 4E04=3 score=0
+start 6 ok f=3848 tile=13,23 dir=2 dots=0 level=6 4E04=3 score=0
+start 7 ok f=4880 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=70
+start 8 ok f=5234 tile=13,23 dir=2 dots=0 level=8 4E04=3 score=70
+start 9 ok f=6266 tile=13,23 dir=2 dots=0 level=9 4E04=3 score=140
+start 10 ok f=5786 tile=13,23 dir=2 dots=0 level=10 4E04=3 score=0
+start 11 ok f=7496 tile=13,23 dir=2 dots=0 level=11 4E04=3 score=140
+start 12 ok f=13988 tile=13,23 dir=2 dots=0 level=12 4E04=3 score=0
+start 13 ok f=15020 tile=13,23 dir=2 dots=0 level=13 4E04=3 score=70
+start 14 ok f=8402 tile=13,23 dir=2 dots=0 level=14 4E04=3 score=70
+start 15 ok f=16928 tile=13,23 dir=2 dots=0 level=15 4E04=3 score=140
+start 16 ok f=8432 tile=13,23 dir=2 dots=0 level=16 4E04=3 score=0
+start 17 ok f=8786 tile=13,23 dir=2 dots=0 level=17 4E04=3 score=0
+start 18 ok f=26588 tile=13,23 dir=2 dots=0 level=18 4E04=3 score=0
+start 19 ok f=27620 tile=13,23 dir=2 dots=0 level=19 4E04=3 score=70
+start 20 ok f=28652 tile=13,23 dir=2 dots=0 level=20 4E04=3 score=140
+prefix: 99/99 moves, 204 dots, 0 late variants dropped
+d=99 endgame: 12 planned cleanups tried -> none cleared {'shortwin:L5': '9x avg40left', 'dead:L19': '3x avg31left'}
+d=100 jobs=2 kids=2 fails={} on={} best=205 fruit=1 t=6s ram=32 states (peak 1600 ~0.0GB) moved=0 busy=17% copy=0s
+d=102 endgame: 12 planned cleanups tried -> none cleared {'dead:L19': '12x avg31left'}
+d=104 jobs=3 kids=0 fails={'dead': 3} on={'L19': 3} best=- fruit=- t=8s ram=0 states (peak 1600 ~0.0GB) moved=2 busy=18% copy=0s
+RESULT cleared=False dots=213 frames=2528 fruits=1 moves=104 turns=72 minwin=5 route=LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLUUULDRUURDLDRDLDDDRDRRRDRRDLLULURRRRULULDLULURULLLURDDDDDDRURUL
+[cw] Exited with code 0.

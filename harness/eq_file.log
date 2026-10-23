@@ -1,0 +1,7 @@
+start 7 ok f=4202 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} on={'L7': 1} best=2 fruit=0 t=0s
+d=10 jobs=19 kids=15 fails={'dead': 4} on={'L7': 4} best=47 fruit=0 t=7s
+d=20 jobs=20 kids=18 fails={'dead': 2} on={'L7': 2} best=72 fruit=0 t=24s
+d=30 jobs=21 kids=15 fails={'dead': 6} on={'L7': 3, 'late': 3} best=114 fruit=0 t=48s
+d=40 jobs=19 kids=16 fails={'dead': 3} on={'L7': 3} best=132 fruit=0 t=79s
+d=50 jobs=20 kids=20 fails={} on={} best=156 fruit=1 t=122s

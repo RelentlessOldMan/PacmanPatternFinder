@@ -1,0 +1,16 @@
+[cw] Started pid 66196 (throttled).
+[cw] Throttled to 1 core at below-normal priority: Overwatch (Overwatch.exe) is running.
+start 7 ok f=4202 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} on={'L7': 1} best=2 fruit=0 t=0s ram=1 states (peak 1 ~0.0GB) moved=0 busy=377% copy=0s
+d=10 jobs=50 kids=46 fails={'dead': 4} on={'L7': 4} best=47 fruit=0 t=83s ram=920 states (peak 2335 ~1.8GB) moved=20 busy=77% copy=64s
+d=20 jobs=51 kids=38 fails={'dead': 13} on={'late': 5, 'L7': 8} best=73 fruit=0 t=419s ram=1746 states (peak 4111 ~3.1GB) moved=156 busy=81% copy=265s
+[cw] Full speed again.
+[cw] Throttled to 1 core at below-normal priority: Overwatch (Overwatch.exe) is running.
+[cw] Started pid 39496 (throttled).
+[cw] Throttled to 1 core at below-normal priority: Overwatch (Overwatch.exe) is running.
+resumed at d=30 from result_pk3_L7.json.ckpt
+d=30 jobs=49 kids=37 fails={'dead': 12} on={'L7': 9, 'late': 3} best=98 fruit=0 t=123s ram=4314 states (peak 5874 ~4.5GB) moved=0 busy=92% copy=0s
+[cw] Started pid 69316 (throttled).
+[cw] Throttled to 1 core at below-normal priority: Overwatch (Overwatch.exe) is running.
+resumed at d=30 from result_pk3_L7.json.ckpt
+d=30 jobs=49 kids=37 fails={'dead': 12} on={'L7': 9, 'late': 3} best=98 fruit=0 t=69s ram=4314 states (peak 5874 ~4.5GB) moved=0 busy=92% copy=0s

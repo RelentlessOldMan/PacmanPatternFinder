@@ -1,0 +1,14 @@
+[cw] Started pid 37924 (full).
+start 7 ok f=4202 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=0
+prefix move 28 (L at (12, 11)): dropping a late variant (dead)
+prefix move 29 (D at (9, 11)): dropping a late variant (dead)
+prefix move 29 (D at (9, 11)): dropping a late variant (dead)
+prefix: 32/32 moves, 94 dots, 3 late variants dropped
+d=40 jobs=12 kids=9 fails={'dead': 3} on={'late': 1, 'L7': 2} best=120 fruit=0 t=23s ram=1075 states (peak 2462 ~0.0GB) moved=19 busy=29% copy=1s
+d=45 beam died: backtrack #1 to d=40, 8/9 candidates left after dropping the dead family
+d=40 jobs=10 kids=8 fails={'dead': 2} on={'L7': 2} best=120 fruit=0 t=33s ram=948 states (peak 2462 ~0.0GB) moved=28 busy=29% copy=2s
+d=42 beam died: backtrack #2 to d=35, 3/4 candidates left after dropping the dead family
+d=40 jobs=5 kids=4 fails={'dead': 1} on={'late': 1} best=120 fruit=0 t=44s ram=551 states (peak 2462 ~0.0GB) moved=35 busy=28% copy=2s
+d=45 jobs=5 kids=0 fails={'fruitless': 5} on={'L7': 3, 'late': 2} best=- fruit=- t=51s ram=0 states (peak 2462 ~0.0GB) moved=42 busy=27% copy=3s
+RESULT cleared=False dots=120 frames=1150 fruits=0 moves=41 turns=28 minwin=6 route=LLDLLDRRURULURRURUURRRRDLDLLDLDDRDRDRRULL
+[cw] Exited with code 0.

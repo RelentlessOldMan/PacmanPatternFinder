@@ -1,0 +1,5 @@
+[cw] Started pid 78332 (full).
+start 7 ok f=4202 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} on={'L7': 1} best=2 fruit=0 t=0s
+d=10 jobs=50 kids=46 fails={'dead': 4} on={'L7': 4} best=47 fruit=0 t=72s
+d=20 jobs=51 kids=38 fails={'dead': 13} on={'late': 5, 'L7': 8} best=73 fruit=0 t=345s

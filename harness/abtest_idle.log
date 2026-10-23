@@ -1,0 +1,16 @@
+[cw] Started pid 71636 (full).
+stock C:\Playground\PacmanPatternFinder\mame-0.289\mame.exe
+patched ..\mame-0.289-mem\mame_idle.exe
+16 level runs from best/*.json
+straight: 2607 moves x 3 (stock, patched, patched-idle): IDENTICAL
+straight (random late presses): 340 moves x 3 (stock, patched, patched-idle): IDENTICAL
+stepped (search-style): 2607 moves x 4 (stock-file, patched-file, patched-mem, patched-mem-idle): IDENTICAL
+file saved by stock, loaded by patched: 1268961048 1268961048 SAME
+file saved by patched, loaded by stock: 1268961048 1268961048 SAME
+file saved by stock, loaded by patched-idle: 1268961048 1268961048 SAME
+file saved by patched-idle, loaded by stock: 1268961048 1268961048 SAME
+slot->file->slot, L15-20 L15, 171 moves: SAME
+memory load+seg+hash+save, ms per child per 300-child block: 52.6 27.2 15.4 17.7 23.9 8.9 9.4 8.9 9.3 8.9
+memory load+seg+hash+save (idle skip), ms per child per 300-child block: 7.7 7.5 7.1 7.1 7.3 7.1 6.9 6.9 7.1 7.0
+ALL OK
+[cw] Exited with code 0.

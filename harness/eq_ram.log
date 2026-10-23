@@ -1,0 +1,9 @@
+start 7 ok f=4202 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} on={'L7': 1} best=2 fruit=0 t=0s ram=1 states (peak 1 ~0.0GB) moved=0
+d=10 jobs=19 kids=15 fails={'dead': 4} on={'L7': 4} best=47 fruit=0 t=6s ram=101 states (peak 242 ~0.2GB) moved=22
+d=20 jobs=20 kids=18 fails={'dead': 2} on={'L7': 2} best=72 fruit=0 t=17s ram=143 states (peak 342 ~0.3GB) moved=62
+d=30 jobs=21 kids=15 fails={'dead': 6} on={'L7': 3, 'late': 3} best=114 fruit=0 t=35s ram=165 states (peak 503 ~0.4GB) moved=98
+d=40 jobs=19 kids=16 fails={'dead': 3} on={'L7': 3} best=132 fruit=0 t=57s ram=251 states (peak 672 ~0.5GB) moved=133
+d=50 jobs=20 kids=20 fails={} on={} best=156 fruit=1 t=88s ram=338 states (peak 896 ~0.7GB) moved=178
+d=60 endgame: 60 planned cleanups tried -> none cleared {'dead:late': '42x avg29left', 'dead:L7': '16x avg26left', 'shortwin:L7': '2x avg30left'}
+d=60 jobs=20 kids=18 fails={'dead': 2} on={'late': 2} best=168 fruit=1 t=191s ram=392 states (peak 1926 ~1.5GB) moved=242

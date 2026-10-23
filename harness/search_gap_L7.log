@@ -1,0 +1,10 @@
+[cw] Started pid 57408 (full).
+start 7 ok f=4202 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=0
+prefix: 30/30 moves, 87 dots, 0 late variants dropped
+d=30 jobs=3 kids=3 fails={} on={} best=88 fruit=0 t=3s ram=138 states (peak 739 ~0.0GB) moved=0 busy=13% copy=0s
+d=40 jobs=45 kids=21 fails={'dead': 20, 'fruitless': 4} on={'L7': 18, 'late': 6} best=120 fruit=0 t=20s ram=1251 states (peak 2694 ~0.0GB) moved=58 busy=49% copy=2s
+d=50 jobs=39 kids=35 fails={'dead': 4} on={'L7': 4} best=112 fruit=1 t=37s ram=1421 states (peak 2694 ~0.0GB) moved=113 busy=53% copy=5s
+d=60 jobs=48 kids=45 fails={'dead': 3} on={'late': 1, 'L7': 2} best=132 fruit=1 t=97s ram=3651 states (peak 9221 ~0.1GB) moved=223 busy=69% copy=13s
+d=70 jobs=62 kids=53 fails={'dead': 6} on={'late': 3, 'L7': 3} best=150 fruit=1 t=204s ram=5387 states (peak 13872 ~0.1GB) moved=339 busy=74% copy=23s
+d=72 endgame: 11 planned cleanups tried -> none cleared {'dead:L7': '11x avg33left'}
+[cw] Exited with code -1.

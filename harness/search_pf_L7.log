@@ -1,0 +1,8 @@
+[cw] Started pid 35052 (full).
+start 7 ok f=4202 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=0
+prefix fails at move 27 (L at (12, 11)): dead on late
+prefix: 27/40 moves, 87 dots
+d=30 jobs=2 kids=2 fails={} on={} best=93 fruit=0 t=7s ram=141 states (peak 769 ~0.0GB) moved=1 busy=10% copy=0s
+d=34 jobs=3 kids=0 fails={'dead': 3} on={'late': 3} best=- fruit=- t=11s ram=0 states (peak 769 ~0.0GB) moved=8 busy=12% copy=0s
+RESULT cleared=False dots=102 frames=941 fruits=0 moves=34 turns=24 minwin=6 route=LLDLLDRRURULURRURUURRRRDLDLULULLDR
+[cw] Exited with code 0.

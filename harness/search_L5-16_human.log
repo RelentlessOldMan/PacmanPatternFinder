@@ -1,0 +1,31 @@
+﻿cw : [cw] Started pid 73112 (full).
+At line:1 char:398
++ ... ring(0,30); cw run --estimate 240m --owner "Claude Code (PacmanPatter ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([cw] Started pid 73112 (full).:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+start 5 ok f=2984 tile=13,23 dir=2 dots=0 level=5 4E04=3 score=0
+start 7 ok f=4202 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=0
+start 10 ok f=5786 tile=13,23 dir=2 dots=0 level=10 4E04=3 score=0
+start 13 ok f=6848 tile=13,23 dir=2 dots=0 level=13 4E04=3 score=0
+start 16 ok f=8432 tile=13,23 dir=2 dots=0 level=16 4E04=3 score=0
+prefix: 30/30 moves, 87 dots
+d=30 jobs=3 kids=3 fails={} on={} best=88 fruit=0 t=7s
+d=40 jobs=170 kids=110 fails={'dead': 57, 'shortwin': 2} on={'L5': 32, 'L13': 7, 'late': 20} best=97 fruit=1 t=69s
+d=50 jobs=164 kids=148 fails={'shortwin': 1, 'dead': 13} on={'L5': 9, 'L13': 3, 'late': 2} best=130 fruit=1 t=243s
+d=60 jobs=174 kids=144 fails={'dead': 28} on={'L13': 4, 'L5': 7, 'L16': 9, 'late': 8} best=160 fruit=1 t=397s
+d=70 jobs=189 kids=144 fails={'shortwin': 1, 'dead': 31} on={'L5': 1, 'L13': 12, 'late': 14, 'L16': 5} best=192 fruit=1 t=556s
+d=80 jobs=167 kids=89 fails={'dead': 76, 'shortwin': 1} on={'L13': 9, 'L16': 4, 'late': 39, 'L5': 18, 'L7': 2, 'L10': 5} best=185 fruit=2 t=696s
+d=84 endgame: 24 planned cleanups tried -> none cleared {'dead:L13': '12x avg40left', 'dead:late': '10x avg39left', 'dead:L10': '1x avg38left', 'dead:L5': '1x avg38left'}
+d=90 endgame: 48 planned cleanups tried -> none cleared {'dead:late': '24x avg39left', 'dead:L5': '12x avg39left', 'dead:L13': '12x avg39left'}
+d=90 jobs=173 kids=119 fails={'dead': 48, 'shortwin': 1} on={'late': 13, 'L16': 9, 'L13': 17, 'L5': 10} best=202 fruit=2 t=850s
+d=93 endgame: 144 planned cleanups tried -> none cleared {'dead:late': '68x avg37left', 'dead:L5': '54x avg38left', 'dead:L16': '11x avg33left', 'dead:L13': '8x avg26left', 'dead:L10': '1x avg28left', 'shortwin:L10': '1x avg32left', 'shortwin:L5': '1x avg32left'}
+d=96 endgame: 143 planned cleanups tried -> none cleared {'dead:late': '41x avg35left', 'dead:L5': '40x avg36left', 'dead:L13': '34x avg34left', 'dead:L7': '13x avg33left', 'dead:L16': '13x avg35left', 'dead:L10': '2x avg28left'}
+d=99 endgame: 144 planned cleanups tried -> none cleared {'dead:late': '43x avg28left', 'dead:L16': '43x avg32left', 'dead:L13': '24x avg29left', 'dead:L5': '20x avg29left', 'dead:L7': '10x avg28left', 'shortwin:L5': '3x avg19left', 'dead:L10': '1x avg30left'}
+d=100 jobs=181 kids=137 fails={'dead': 34} on={'late': 11, 'L16': 6, 'L5': 7, 'L13': 10} best=211 fruit=2 t=1228s
+d=102 endgame: 142 planned cleanups tried -> none cleared {'dead:late': '47x avg25left', 'dead:L5': '43x avg27left', 'dead:L13': '40x avg27left', 'dead:L16': '7x avg23left', 'dead:L7': '5x avg26left'}
+d=105 endgame: 143 planned cleanups tried -> none cleared {'dead:late': '70x avg23left', 'shortwin:L5': '30x avg20left', 'dead:L13': '22x avg23left', 'dead:L16': '14x avg24left', 'dead:L5': '6x avg18left', 'dead:L7': '1x avg26left'}
+d=108 endgame: 138 planned cleanups tried -> none cleared {'dead:late': '45x avg19left', 'shortwin:L5': '37x avg20left', 'dead:L16': '27x avg22left', 'dead:L13': '19x avg18left', 'dead:L5': '10x avg18left'}
+d=110 jobs=172 kids=125 fails={'dead': 37} on={'late': 12, 'L16': 7, 'L5': 9, 'L13': 9} best=227 fruit=2 t=1594s
+[cw] Exited with code -1.

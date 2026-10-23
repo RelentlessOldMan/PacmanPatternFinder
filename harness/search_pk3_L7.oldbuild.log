@@ -1,0 +1,49 @@
+[cw] Started pid 60592 (throttled).
+[cw] Throttled to 1 core at below-normal priority: Overwatch (Overwatch.exe) is running.
+start 7 ok f=4202 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} on={'L7': 1} best=2 fruit=0 t=0s ram=1 states (peak 1 ~0.0GB) moved=0 busy=428% copy=0s
+d=10 jobs=50 kids=46 fails={'dead': 4} on={'L7': 4} best=47 fruit=0 t=73s ram=920 states (peak 2335 ~1.8GB) moved=19 busy=78% copy=62s
+d=20 jobs=51 kids=38 fails={'dead': 13} on={'late': 5, 'L7': 8} best=73 fruit=0 t=365s ram=1746 states (peak 4111 ~3.1GB) moved=161 busy=81% copy=244s
+d=30 jobs=49 kids=37 fails={'dead': 12} on={'L7': 9, 'late': 3} best=98 fruit=0 t=1040s ram=4314 states (peak 9329 ~7.1GB) moved=259 busy=83% copy=788s
+d=40 jobs=52 kids=42 fails={'dead': 10} on={'late': 9, 'L7': 1} best=130 fruit=0 t=2216s ram=6031 states (peak 13418 ~10.3GB) moved=380 busy=81% copy=1525s
+Traceback (most recent call last):
+  File "C:\Playground\PacmanPatternFinder\harness\search.py", line 885, in <module>
+    main()
+  File "C:\Playground\PacmanPatternFinder\harness\search.py", line 868, in main
+    solution, partial = search(pool, sims0, args, log=lambda s: print(s, flush=True), resume=resume)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Playground\PacmanPatternFinder\harness\search.py", line 683, in search
+    st, sims, res = fut.result()
+                    ^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Playground\PacmanPatternFinder\harness\search.py", line 155, in _loop
+    fut.set_result(fn(w, *args))
+                   ^^^^^^^^^^^^
+  File "C:\Playground\PacmanPatternFinder\harness\search.py", line 275, in run_child
+    return run_child_branch(w, sims, held, opt, minwin, route, expect)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Playground\PacmanPatternFinder\harness\search.py", line 348, in run_child_branch
+    got = load_state(w, base(sim), held)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Playground\PacmanPatternFinder\harness\search.py", line 57, in load_state
+    return w.cmd(f"load {name} {held}")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Playground\PacmanPatternFinder\harness\worker.py", line 51, in cmd
+    self.p.stdin.write(s + "\n")
+OSError: [Errno 22] Invalid argument
+[cw] Exited with code 1.
+[cw] Started pid 16508 (throttled).
+[cw] Throttled to 1 core at below-normal priority: Overwatch (Overwatch.exe) is running.
+resumed at d=40 from result_pk3_L7.json.ckpt
+[cw] Full speed again.
+d=40 jobs=52 kids=42 fails={'dead': 10} on={'late': 9, 'L7': 1} best=130 fruit=0 t=160s ram=3829 states (peak 4000 ~3.1GB) moved=0 busy=95% copy=0s
+[cw] Started pid 47400 (full).
+resumed at d=45 from result_pk3_L7.json.ckpt
+d=50 jobs=45 kids=38 fails={'dead': 7} on={'L7': 5, 'late': 2} best=125 fruit=1 t=561s ram=4646 states (peak 12000 ~9.2GB) moved=46 busy=75% copy=260s
+[cw] Started pid 60572 (full).
+resumed at d=50 from result_pk3_L7.json.ckpt
+d=50 jobs=45 kids=38 fails={'dead': 7} on={'L7': 5, 'late': 2} best=125 fruit=1 t=41s ram=13125 states (peak 16862 ~12.9GB) moved=0 busy=86% copy=0s

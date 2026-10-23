@@ -1,0 +1,21 @@
+[cw] Started pid 70548 (full).
+start 7 ok f=4202 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} on={'L7': 1} best=2 fruit=0 t=0s
+d=10 jobs=50 kids=46 fails={'dead': 4} on={'L7': 4} best=47 fruit=0 t=27s
+d=20 jobs=79 kids=45 fails={'dead': 34} on={'late': 24, 'L7': 10} best=73 fruit=0 t=165s
+d=30 jobs=85 kids=57 fails={'dead': 28} on={'L7': 8, 'late': 20} best=80 fruit=1 t=279s
+d=40 jobs=72 kids=50 fails={'dead': 22} on={'L7': 5, 'late': 17} best=116 fruit=1 t=422s
+d=50 jobs=83 kids=70 fails={'dead': 13} on={'late': 6, 'L7': 7} best=125 fruit=1 t=564s
+d=57 endgame: 12 planned cleanups tried -> none cleared {'dead:late': '12x avg39left'}
+d=60 endgame: 24 planned cleanups tried -> none cleared {'dead:late': '15x avg33left', 'dead:L7': '9x avg33left'}
+d=60 jobs=91 kids=64 fails={'dead': 19} on={'L7': 5, 'late': 14} best=164 fruit=1 t=731s
+d=63 endgame: 144 planned cleanups tried -> none cleared {'dead:late': '105x avg32left', 'dead:L7': '38x avg33left', 'shortwin:L7': '1x avg38left'}
+d=66 endgame: 144 planned cleanups tried -> none cleared {'dead:late': '81x avg28left', 'dead:L7': '63x avg26left'}
+d=69 endgame: 143 planned cleanups tried -> none cleared {'dead:late': '102x avg18left', 'dead:L7': '41x avg16left'}
+d=70 jobs=85 kids=70 fails={'dead': 15} on={'L7': 3, 'late': 12} best=178 fruit=1 t=1513s
+d=72 endgame: 143 planned cleanups tried -> none cleared {'dead:late': '116x avg17left', 'dead:L7': '27x avg29left'}
+d=75 endgame: 142 planned cleanups tried -> none cleared {'dead:late': '91x avg15left', 'dead:L7': '51x avg14left'}
+d=78 endgame: 138 planned cleanups tried -> CLEARED {'dead:late': '88x avg13left', 'dead:L7': '43x avg15left', 'dead-after-goal:-': '5x avg0left'}
+d=78 jobs=90 kids=60 fails={'dead': 28} on={'L7': 8, 'late': 20} best=192 fruit=2 t=1971s
+RESULT cleared=True dots=204 frames=2942 fruits=2 moves=110 turns=76 minwin=6 route=LLDLLDRULURULURDLDRRUUUULDLDRDDLDLUULURURDLLDDDDRDRDRRULLUUUURULULDLLDRDRRDDLDRDRRRULUURUULLLLLDDDRRDRRDLDLLUR
+[cw] Exited with code 0.

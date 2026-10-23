@@ -1,0 +1,130 @@
+﻿cw : [cw] Started pid 26784 (full).
+At line:1 char:454
++ ... ring(0,30); cw run --estimate 180m --owner "Claude Code (PacmanPatter ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([cw] Started pid 26784 (full).:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+start 2 ok f=1286 tile=13,23 dir=2 dots=0 level=2 4E04=3 score=0
+start 3 ok f=2276 tile=13,23 dir=2 dots=0 level=3 4E04=3 score=0
+start 4 ok f=2630 tile=13,23 dir=2 dots=0 level=4 4E04=3 score=0
+prefix: 30/30 moves, 87 dots
+d=30 jobs=3 kids=3 fails={} on={} best=88 fruit=0 t=10s
+d=40 jobs=234 kids=190 fails={'dead': 30, 'shortwin': 1} on={'L2~': 5, 'L2': 11, 'L4': 10, 'L4~': 5} best=93 fruit=1 t=94s
+d=50 jobs=228 kids=195 fails={'dead': 25} on={'L2': 17, 'L2~': 3, 'L4~': 3, 'L3': 1, 'L3~': 1} best=125 fruit=1 t=295s
+d=60 jobs=230 kids=197 fails={'dead': 19} on={'L4': 9, 'L4~': 7, 'L3': 2, 'L3~': 1} best=156 fruit=1 t=491s
+d=70 jobs=226 kids=178 fails={'dead': 40, 'shortwin': 1} on={'L4': 11, 'L2': 2, 'L4~': 10, 'L3': 13, 'L3~': 5} best=171 fruit=2 t=671s
+d=78 endgame: 70 planned cleanups tried -> none cleared {'dead:L4~': '33x avg36left', 'dead:L4': '19x avg29left', 'dead:L2': '6x avg30left', 'dead:L3~': '5x avg33left', 'dead:L3': '5x avg31left', 'dead:L2~': '2x avg24left'}
+d=80 jobs=216 kids=175 fails={'dead': 38, 'shortwin': 1} on={'L4': 7, 'L3~': 7, 'L4~': 6, 'L2~': 8, 'L3': 2, 'L2': 9} best=191 fruit=2 t=888s
+d=81 endgame: 144 planned cleanups tried -> none cleared {'dead:L4~': '58x avg35left', 'dead:L4': '37x avg32left', 'dead:L2': '22x avg35left', 'dead:L3~': '18x avg33left', 'dead:L3': '6x avg34left', 'dead:L2~': '2x avg24left', 'shortwin:L2': '1x avg30left'}
+d=84 endgame: 96 planned cleanups tried -> none cleared {'dead:L4': '25x avg33left', 'dead:L3~': '20x avg37left', 'dead:L4~': '16x avg23left', 'dead:L3': '13x avg35left', 'shortwin:L2': '10x avg34left', 'dead:L2': '9x avg30left', 'dead:L2~': '3x avg26left'}
+d=87 endgame: 144 planned cleanups tried -> none cleared {'dead:L3~': '45x avg31left', 'dead:L4~': '25x avg26left', 'dead:L2': '19x avg31left', 'dead:L4': '18x avg29left', 'dead:L2~': '17x avg32left', 'shortwin:L2': '14x avg26left', 'dead:L3': '6x avg23left'}
+d=90 endgame: 144 planned cleanups tried -> none cleared {'dead:L2~': '39x avg32left', 'dead:L3': '25x avg28left', 'dead:L4~': '23x avg38left', 'dead:L4': '22x avg35left', 'dead:L3~': '17x avg30left', 'shortwin:L2': '10x avg25left', 'dead:L2': '8x avg33left'}
+d=90 jobs=223 kids=168 fails={'dead': 50, 'shortwin': 3} on={'L3~': 10, 'L2': 9, 'L4~': 14, 'L4': 8, 'L2~': 7, 'L3': 5} best=219 fruit=2 t=1227s
+d=93 endgame: 144 planned cleanups tried -> none cleared {'dead:L4~': '78x avg35left', 'dead:L2~': '22x avg31left', 'dead:L4': '15x avg36left', 'dead:L3~': '15x avg31left', 'dead:L3': '9x avg34left', 'dead:L2': '5x avg36left'}
+d=96 endgame: 144 planned cleanups tried -> none cleared {'dead:L3~': '41x avg34left', 'dead:L4~': '38x avg35left', 'dead:L3': '27x avg33left', 'dead:L4': '21x avg32left', 'shortwin:L2': '14x avg39left', 'dead:L2': '2x avg32left', 'dead:L2~': '1x avg35left'}
+d=99 endgame: 144 planned cleanups tried -> none cleared {'dead:L4': '40x avg35left', 'dead:L3': '40x avg36left', 'dead:L4~': '34x avg33left', 'dead:L3~': '20x avg35left', 'dead:L2~': '8x avg32left', 'dead:L2': '2x avg30left'}
+d=100 jobs=223 kids=165 fails={'dead': 55} on={'L3': 10, 'L3~': 3, 'L4': 18, 'L4~': 16, 'L2': 6, 'L2~': 2} best=201 fruit=2 t=1548s
+d=102 endgame: 144 planned cleanups tried -> none cleared {'dead:L4~': '55x avg33left', 'dead:L3~': '27x avg35left', 'dead:L4': '25x avg36left', 'dead:L3': '22x avg36left', 'dead:L2~': '12x avg36left', 'dead:L2': '3x avg30left'}
+d=105 endgame: 144 planned cleanups tried -> none cleared {'dead:L4~': '59x avg30left', 'dead:L3~': '32x avg29left', 'dead:L4': '21x avg29left', 'dead:L3': '16x avg27left', 'dead:L2': '10x avg30left', 'dead:L2~': '6x avg28left'}
+d=108 endgame: 144 planned cleanups tried -> none cleared {'dead:L4~': '61x avg26left', 'dead:L4': '28x avg30left', 'dead:L3': '20x avg32left', 'dead:L2': '14x avg28left', 'dead:L2~': '11x avg27left', 'dead:L3~': '10x avg23left'}
+d=110 jobs=228 kids=131 fails={'dead': 96} on={'L3': 19, 'L4~': 37, 'L4': 17, 'L2~': 14, 'L3~': 6, 'L2': 3} best=215 fruit=2 t=1850s
+d=111 endgame: 144 planned cleanups tried -> none cleared {'dead:L4~': '41x avg23left', 'dead:L3': '39x avg25left', 'dead:L4': '30x avg23left', 'dead:L3~': '21x avg24left', 'dead:L2': '11x avg23left', 'dead:L2~': '2x avg17left'}
+d=114 endgame: 144 planned cleanups tried -> none cleared {'dead:L4~': '42x avg20left', 'dead:L4': '30x avg20left', 'dead:L2': '30x avg29left', 'dead:L3': '26x avg19left', 'dead:L2~': '11x avg25left', 'dead:L3~': '4x avg18left', 'shortwin:L2': '1x avg18left'}
+d=117 endgame: 143 planned cleanups tried -> none cleared {'dead:L4~': '43x avg18left', 'dead:L3': '26x avg9left', 'dead:L2': '24x avg25left', 'dead:L3~': '23x avg8left', 'dead:L4': '16x avg7left', 'dead:L2~': '4x avg10left', 'shortwin:L3': '4x avg7left', 'shortwin:L2': '2x avg5left', 'shortwin:L4': '1x avg19left'}
+d=120 endgame: 144 planned cleanups tried -> none cleared {'dead:L4~': '40x avg10left', 'dead:L3~': '33x avg8left', 'dead:L4': '30x avg8left', 'dead:L3': '30x avg11left', 'dead:L2': '5x avg8left', 'dead:L2~': '5x avg4left', 'shortwin:L2': '1x avg2left'}
+d=120 jobs=210 kids=178 fails={'dead': 29, 'shortwin': 1} on={'L3': 7, 'L2': 9, 'L4~': 5, 'L2~': 6, 'L4': 1, 'L3~': 2} best=220 fruit=2 t=2313s
+d=123 endgame: 141 planned cleanups tried -> none cleared {'dead:L3~': '55x avg6left', 'dead:L4~': '42x avg8left', 'dead:L4': '33x avg7left', 'dead:L3': '6x avg6left', 'dead:L2': '3x avg7left', 'dead:L2~': '2x avg5left'}
+d=126 endgame: 135 planned cleanups tried -> none cleared {'dead:L3~': '51x avg10left', 'dead:L4': '42x avg14left', 'dead:L4~': '35x avg14left', 'shortwin:L2': '4x avg9left', 'dead:L3': '3x avg24left'}
+d=129 endgame: 142 planned cleanups tried -> none cleared {'dead:L4': '61x avg26left', 'dead:L4~': '31x avg25left', 'dead:L3~': '18x avg14left', 'shortwin:L2': '16x avg18left', 'dead:L3': '11x avg15left', 'dead:L2~': '3x avg18left', 'dead:L2': '2x avg23left'}
+d=130 jobs=224 kids=165 fails={'dead': 47} on={'L4': 9, 'L4~': 20, 'L3': 5, 'L2': 6, 'L2~': 2, 'L3~': 5} best=211 fruit=2 t=2732s
+d=132 endgame: 144 planned cleanups tried -> none cleared {'dead:L4~': '59x avg30left', 'dead:L4': '45x avg30left', 'dead:L2': '14x avg31left', 'dead:L3~': '13x avg26left', 'dead:L2~': '8x avg32left', 'dead:L3': '3x avg22left', 'shortwin:L2': '2x avg14left'}
+d=135 endgame: 144 planned cleanups tried -> none cleared {'dead:L4~': '60x avg27left', 'dead:L4': '41x avg25left', 'dead:L3~': '21x avg21left', 'dead:L3': '12x avg22left', 'dead:L2~': '9x avg27left', 'dead:L2': '1x avg12left'}
+d=138 endgame: 144 planned cleanups tried -> none cleared {'dead:L4': '47x avg24left', 'dead:L3~': '32x avg20left', 'dead:L4~': '31x avg19left', 'shortwin:L2': '12x avg14left', 'dead:L3': '11x avg18left', 'dead:L2~': '6x avg8left', 'dead:L2': '5x avg11left'}
+d=140 jobs=238 kids=144 fails={'dead': 80, 'shortwin': 1} on={'L4': 28, 'L2': 2, 'L4~': 18, 'L3': 14, 'L3~': 15, 'L2~': 4} best=220 fruit=2 t=3066s
+d=141 endgame: 143 planned cleanups tried -> none cleared {'dead:L4': '54x avg23left', 'dead:L3~': '24x avg20left', 'dead:L4~': '22x avg16left', 'dead:L2~': '21x avg21left', 'dead:L3': '17x avg23left', 'dead:L2': '5x avg18left'}
+d=144 endgame: 144 planned cleanups tried -> none cleared {'dead:L3~': '49x avg27left', 'dead:L3': '29x avg14left', 'dead:L2~': '22x avg25left', 'dead:L2': '20x avg23left', 'dead:L4~': '12x avg12left', 'dead:L4': '12x avg28left'}
+d=147 endgame: 138 planned cleanups tried -> none cleared {'dead:L2': '45x avg14left', 'dead:L3~': '35x avg24left', 'dead:L3': '27x avg7left', 'dead:L4': '19x avg23left', 'dead:L2~': '12x avg13left'}
+d=150 endgame: 136 planned cleanups tried -> none cleared {'dead:L3~': '33x avg15left', 'dead:L2~': '26x avg17left', 'dead:L4': '25x avg20left', 'dead:L3': '18x avg6left', 'dead:L2': '18x avg5left', 'dead:L4~': '16x avg26left'}
+d=150 jobs=173 kids=81 fails={'dead': 92} on={'L2': 23, 'L2~': 26, 'L4': 12, 'L3~': 10, 'L3': 9, 'L4~': 12} best=239 fruit=2 t=3278s
+d=153 endgame: 141 planned cleanups tried -> none cleared {'dead:L3~': '43x avg13left', 'dead:L4~': '38x avg25left', 'dead:L2~': '24x avg20left', 'dead:L2': '24x avg25left', 'dead:L3': '12x avg14left'}
+d=156 endgame: 144 planned cleanups tried -> none cleared {'dead:L2~': '36x avg28left', 'dead:L3': '32x avg27left', 'dead:L4': '27x avg26left', 'dead:L3~': '24x avg23left', 'dead:L2': '15x avg27left', 'dead:L4~': '10x avg24left'}
+d=159 endgame: 143 planned cleanups tried -> none cleared {'dead:L2~': '36x avg29left', 'dead:L3': '32x avg26left', 'dead:L2': '28x avg25left', 'dead:L4~': '20x avg27left', 'dead:L4': '16x avg23left', 'dead:L3~': '11x avg25left'}
+d=160 jobs=34 kids=9 fails={'dead': 25} on={'L3': 3, 'L2': 8, 'L3~': 4, 'L4': 4, 'L2~': 3, 'L4~': 3} best=219 fruit=2 t=3376s
+d=162 endgame: 60 planned cleanups tried -> none cleared {'dead:L2': '28x avg25left', 'dead:L3': '24x avg27left', 'dead:L4~': '5x avg25left', 'dead:L2~': '3x avg25left'}
+d=165 endgame: 24 planned cleanups tried -> none cleared {'dead:L2': '16x avg25left', 'dead:L3': '6x avg25left', 'dead:L2~': '2x avg25left'}
+d=168 endgame: 12 planned cleanups tried -> none cleared {'dead:L2~': '10x avg25left', 'dead:L2': '2x avg25left'}
+d=170 beam died: backtrack #1 to d=165, 2/3 candidates left after dropping the dead family
+d=165 beam died: backtrack #2 to d=160, 17/18 candidates left after dropping the dead family
+d=160 jobs=32 kids=7 fails={'dead': 25} on={'L3': 3, 'L2': 8, 'L3~': 4, 'L4': 4, 'L2~': 3, 'L4~': 3} best=219 fruit=2 t=3402s
+d=162 endgame: 12 planned cleanups tried -> none cleared {'dead:L3': '12x avg29left'}
+d=163 beam died: backtrack #3 to d=155, 15/16 candidates left after dropping the dead family
+d=156 endgame: 107 planned cleanups tried -> none cleared {'dead:L2~': '23x avg16left', 'dead:L2': '22x avg13left', 'dead:L3~': '21x avg22left', 'dead:L3': '21x avg18left', 'dead:L4~': '11x avg24left', 'dead:L4': '9x avg21left'}
+d=159 endgame: 96 planned cleanups tried -> none cleared {'dead:L2': '40x avg15left', 'dead:L3': '24x avg25left', 'dead:L3~': '12x avg25left', 'dead:L4': '12x avg21left', 'dead:L4~': '8x avg25left'}
+d=160 jobs=15 kids=4 fails={'dead': 11} on={'L3': 2, 'L2': 6, 'L3~': 2, 'L4': 1} best=219 fruit=2 t=3439s
+d=162 endgame: 48 planned cleanups tried -> none cleared {'dead:L2': '27x avg25left', 'dead:L3': '12x avg25left', 'dead:L2~': '6x avg25left', 'dead:L4~': '3x avg25left'}
+d=165 endgame: 24 planned cleanups tried -> none cleared {'dead:L2': '16x avg25left', 'dead:L3': '5x avg25left', 'dead:L2~': '3x avg25left'}
+d=168 endgame: 12 planned cleanups tried -> none cleared {'dead:L2~': '8x avg25left', 'dead:L2': '4x avg25left'}
+d=170 beam died: backtrack #4 to d=150, 95/96 candidates left after dropping the dead family
+d=150 endgame: 135 planned cleanups tried -> none cleared {'dead:L2~': '52x avg17left', 'dead:L3~': '33x avg14left', 'dead:L3': '23x avg11left', 'dead:L2': '16x avg5left', 'dead:L4~': '6x avg27left', 'dead:L4': '5x avg4left'}
+d=150 jobs=171 kids=79 fails={'dead': 92} on={'L2': 23, 'L2~': 26, 'L4': 12, 'L3~': 10, 'L3': 9, 'L4~': 12} best=239 fruit=2 t=3478s
+d=153 endgame: 144 planned cleanups tried -> none cleared {'dead:L4~': '45x avg20left', 'dead:L3~': '41x avg13left', 'dead:L2~': '33x avg12left', 'dead:L3': '25x avg15left'}
+d=156 endgame: 144 planned cleanups tried -> none cleared {'dead:L2': '36x avg20left', 'dead:L2~': '36x avg22left', 'dead:L3': '29x avg22left', 'dead:L4': '22x avg26left', 'dead:L3~': '21x avg22left'}
+d=159 endgame: 144 planned cleanups tried -> none cleared {'dead:L4': '39x avg27left', 'dead:L2~': '36x avg29left', 'dead:L2': '24x avg16left', 'dead:L4~': '24x avg29left', 'dead:L3': '17x avg29left', 'dead:L3~': '4x avg29left'}
+d=160 jobs=24 kids=5 fails={'dead': 19} on={'L2': 6, 'L4': 4, 'L2~': 3, 'L4~': 3, 'L3~': 2, 'L3': 1} best=215 fruit=2 t=3550s
+d=162 endgame: 12 planned cleanups tried -> none cleared {'dead:L3': '12x avg29left'}
+d=163 beam died: backtrack #5 to d=145, 117/118 candidates left after dropping the dead family
+d=147 endgame: 137 planned cleanups tried -> none cleared {'dead:L2': '44x avg14left', 'dead:L3~': '36x avg24left', 'dead:L3': '24x avg7left', 'dead:L4': '19x avg23left', 'dead:L2~': '14x avg11left'}
+d=150 endgame: 130 planned cleanups tried -> none cleared {'dead:L2~': '30x avg18left', 'dead:L4': '26x avg20left', 'dead:L3~': '25x avg15left', 'dead:L3': '21x avg12left', 'dead:L2': '18x avg5left', 'dead:L4~': '10x avg26left'}
+d=150 jobs=172 kids=80 fails={'dead': 92} on={'L2': 23, 'L2~': 26, 'L4': 12, 'L3~': 10, 'L3': 9, 'L4~': 12} best=239 fruit=2 t=3651s
+d=153 endgame: 142 planned cleanups tried -> none cleared {'dead:L2~': '40x avg19left', 'dead:L4~': '34x avg19left', 'dead:L3~': '31x avg7left', 'dead:L2': '24x avg25left', 'dead:L3': '13x avg15left'}
+d=156 endgame: 84 planned cleanups tried -> none cleared {'dead:L3': '24x avg17left', 'dead:L2': '24x avg16left', 'dead:L2~': '24x avg16left', 'dead:L3~': '6x avg25left', 'dead:L4~': '6x avg24left'}
+d=159 endgame: 84 planned cleanups tried -> none cleared {'dead:L2': '42x avg15left', 'dead:L3': '24x avg25left', 'dead:L3~': '12x avg25left', 'dead:L4~': '6x avg25left'}
+d=160 jobs=14 kids=4 fails={'dead': 10} on={'L3': 2, 'L2': 6, 'L3~': 2} best=219 fruit=2 t=3713s
+d=162 endgame: 48 planned cleanups tried -> none cleared {'dead:L2': '29x avg25left', 'dead:L3': '13x avg25left', 'dead:L4~': '4x avg25left', 'dead:L2~': '2x avg25left'}
+d=165 endgame: 24 planned cleanups tried -> none cleared {'dead:L2': '17x avg25left', 'dead:L3': '4x avg25left', 'dead:L2~': '3x avg25left'}
+d=168 endgame: 12 planned cleanups tried -> none cleared {'dead:L2~': '8x avg25left', 'dead:L2': '4x avg25left'}
+d=170 beam died: backtrack #6 to d=140, 127/128 candidates left after dropping the dead family
+d=140 jobs=237 kids=143 fails={'dead': 80, 'shortwin': 1} on={'L4': 28, 'L2': 2, 'L4~': 18, 'L3': 14, 'L3~': 15, 'L2~': 4} best=220 fruit=2 t=3748s
+d=141 endgame: 144 planned cleanups tried -> none cleared {'dead:L4': '56x avg24left', 'dead:L4~': '24x avg15left', 'dead:L3': '23x avg20left', 'dead:L2~': '19x avg22left', 'dead:L3~': '17x avg20left', 'dead:L2': '5x avg15left'}
+d=144 endgame: 143 planned cleanups tried -> none cleared {'dead:L3~': '36x avg26left', 'dead:L3': '34x avg14left', 'dead:L4~': '25x avg15left', 'dead:L2': '24x avg20left', 'dead:L4': '24x avg31left'}
+d=147 endgame: 132 planned cleanups tried -> none cleared {'dead:L2': '49x avg8left', 'dead:L4': '25x avg23left', 'dead:L3': '23x avg7left', 'dead:L2~': '21x avg15left', 'dead:L3~': '14x avg24left'}
+d=150 endgame: 128 planned cleanups tried -> none cleared {'dead:L2~': '45x avg14left', 'dead:L2': '29x avg9left', 'dead:L3~': '20x avg10left', 'dead:L3': '15x avg13left', 'dead:L4~': '11x avg28left', 'dead:L4': '8x avg4left'}
+d=150 jobs=172 kids=79 fails={'dead': 93} on={'L2': 23, 'L2~': 26, 'L4': 13, 'L3~': 10, 'L3': 9, 'L4~': 12} best=239 fruit=2 t=3914s
+d=153 endgame: 144 planned cleanups tried -> none cleared {'dead:L3~': '63x avg16left', 'dead:L2': '26x avg25left', 'dead:L2~': '24x avg17left', 'dead:L4~': '18x avg23left', 'dead:L3': '12x avg14left', 'dead:L4': '1x avg17left'}
+d=156 endgame: 143 planned cleanups tried -> none cleared {'dead:L4': '38x avg22left', 'dead:L3': '26x avg24left', 'dead:L3~': '24x avg22left', 'dead:L2~': '24x avg29left', 'dead:L2': '23x avg28left', 'dead:L4~': '8x avg5left'}
+d=159 endgame: 142 planned cleanups tried -> none cleared {'dead:L4': '51x avg17left', 'dead:L4~': '25x avg17left', 'dead:L2~': '25x avg29left', 'dead:L2': '24x avg20left', 'dead:L3': '17x avg23left'}
+d=160 jobs=32 kids=11 fails={'dead': 21} on={'L2': 6, 'L4': 6, 'L2~': 3, 'L4~': 3, 'L3~': 2, 'L3': 1} best=237 fruit=2 t=3989s
+d=162 endgame: 113 planned cleanups tried -> none cleared {'dead:L4~': '48x avg5left', 'dead:L3': '34x avg18left', 'dead:L4': '26x avg11left', 'dead:L3~': '2x avg3left', 'dead:L2': '2x avg5left', 'dead:L2~': '1x avg3left'}
+d=165 endgame: 118 planned cleanups tried -> none cleared {'dead:L4~': '61x avg5left', 'dead:L3~': '25x avg6left', 'dead:L3': '17x avg5left', 'dead:L4': '12x avg5left', 'shortwin:L2': '2x avg2left', 'dead:L2': '1x avg5left'}
+d=168 endgame: 121 planned cleanups tried -> none cleared {'dead:L4~': '52x avg5left', 'dead:L3~': '32x avg7left', 'dead:L3': '15x avg3left', 'dead:L4': '12x avg5left', 'dead:L2': '8x avg7left', 'dead:L2~': '2x avg4left'}
+d=170 jobs=134 kids=86 fails={'dead': 46} on={'L3': 8, 'L4~': 22, 'L3~': 5, 'L4': 7, 'L2~': 2, 'L2': 2} best=240 fruit=2 t=4111s
+d=171 endgame: 120 planned cleanups tried -> none cleared {'dead:L4': '33x avg6left', 'dead:L4~': '30x avg5left', 'dead:L2': '23x avg7left', 'dead:L2~': '13x avg6left', 'dead:L3': '12x avg5left', 'dead:L3~': '7x avg5left', 'shortwin:L2': '2x avg2left'}
+d=174 endgame: 122 planned cleanups tried -> none cleared {'dead:L4~': '39x avg6left', 'dead:L2~': '23x avg6left', 'dead:L4': '22x avg6left', 'dead:L3': '14x avg4left', 'dead:L2': '12x avg7left', 'dead:L3~': '12x avg4left'}
+d=177 endgame: 141 planned cleanups tried -> none cleared {'dead:L3': '38x avg7left', 'dead:L3~': '31x avg7left', 'dead:L2': '26x avg7left', 'dead:L2~': '16x avg7left', 'dead:L4': '16x avg7left', 'dead:L4~': '14x avg6left'}
+d=180 endgame: 136 planned cleanups tried -> none cleared {'dead:L4~': '37x avg6left', 'dead:L3~': '31x avg7left', 'dead:L3': '19x avg6left', 'dead:L4': '19x avg7left', 'dead:L2~': '19x avg7left', 'dead:L2': '11x avg7left'}
+d=180 jobs=65 kids=28 fails={'dead': 37} on={'L3': 8, 'L3~': 12, 'L4~': 7, 'L4': 7, 'L2': 3} best=237 fruit=2 t=4212s
+d=182 no progress past 240 dots: backtrack #7 to d=180, 29/37 candidates left after dropping the dead family
+d=180 endgame: 102 planned cleanups tried -> none cleared {'dead:L3': '27x avg4left', 'dead:L4~': '25x avg5left', 'dead:L3~': '23x avg6left', 'dead:L4': '17x avg5left', 'dead:L2~': '5x avg2left', 'dead:L2': '5x avg3left'}
+d=180 jobs=48 kids=12 fails={'dead': 36} on={'L3': 8, 'L3~': 12, 'L4~': 7, 'L4': 6, 'L2': 3} best=237 fruit=2 t=4225s
+d=182 beam died: backtrack #8 to d=175, 47/52 candidates left after dropping the dead family
+d=177 endgame: 107 planned cleanups tried -> none cleared {'dead:L3': '39x avg6left', 'dead:L4~': '22x avg5left', 'dead:L2~': '17x avg7left', 'dead:L4': '17x avg3left', 'dead:L2': '9x avg4left', 'dead:L3~': '3x avg7left'}
+d=180 endgame: 112 planned cleanups tried -> none cleared {'dead:L4~': '35x avg6left', 'dead:L3': '25x avg6left', 'dead:L2~': '18x avg7left', 'dead:L3~': '13x avg7left', 'dead:L2': '12x avg7left', 'dead:L4': '9x avg7left'}
+d=180 jobs=33 kids=10 fails={'dead': 23} on={'L3': 8, 'L3~': 3, 'L4~': 3, 'L4': 6, 'L2': 3} best=237 fruit=2 t=4267s
+d=183 endgame: 139 planned cleanups tried -> none cleared {'dead:L3': '48x avg7left', 'dead:L4': '38x avg6left', 'dead:L2~': '23x avg5left', 'dead:L4~': '18x avg7left', 'dead:L3~': '12x avg7left'}
+d=186 endgame: 106 planned cleanups tried -> none cleared {'dead:L4': '30x avg7left', 'dead:L2~': '18x avg5left', 'dead:L3~': '18x avg7left', 'dead:L4~': '17x avg5left', 'dead:L2': '12x avg7left', 'dead:L3': '11x avg7left'}
+d=189 endgame: 117 planned cleanups tried -> none cleared {'dead:L2': '37x avg7left', 'dead:L3~': '27x avg7left', 'dead:L2~': '26x avg4left', 'dead:L3': '11x avg7left', 'dead:L4~': '10x avg7left', 'dead:L4': '6x avg6left'}
+d=190 jobs=22 kids=10 fails={'dead': 12} on={'L2~': 6, 'L3': 2, 'L3~': 2, 'L2': 2} best=237 fruit=2 t=4324s
+d=192 endgame: 143 planned cleanups tried -> none cleared {'dead:L4~': '42x avg6left', 'dead:L2': '40x avg7left', 'dead:L3': '24x avg7left', 'dead:L3~': '17x avg7left', 'dead:L2~': '11x avg5left', 'dead:L4': '9x avg5left'}
+d=195 endgame: 142 planned cleanups tried -> none cleared {'dead:L3': '59x avg7left', 'dead:L2': '30x avg6left', 'dead:L4~': '19x avg7left', 'dead:L3~': '15x avg7left', 'dead:L4': '12x avg7left', 'dead:L2~': '7x avg7left'}
+d=198 endgame: 134 planned cleanups tried -> none cleared {'dead:L2': '41x avg5left', 'dead:L4~': '32x avg7left', 'dead:L3': '30x avg6left', 'dead:L3~': '16x avg7left', 'dead:L4': '11x avg7left', 'dead:L2~': '4x avg4left'}
+d=200 jobs=42 kids=18 fails={'dead': 24} on={'L3~': 6, 'L2': 5, 'L2~': 1, 'L3': 7, 'L4': 2, 'L4~': 3} best=240 fruit=2 t=4409s
+d=201 endgame: 135 planned cleanups tried -> none cleared {'dead:L4': '39x avg7left', 'dead:L2': '30x avg6left', 'dead:L3~': '24x avg6left', 'dead:L4~': '22x avg6left', 'dead:L3': '18x avg5left', 'dead:L2~': '2x avg4left'}
+d=204 endgame: 138 planned cleanups tried -> none cleared {'dead:L3': '53x avg4left', 'dead:L2': '34x avg6left', 'dead:L4~': '33x avg5left', 'dead:L3~': '10x avg5left', 'dead:L2~': '8x avg4left'}
+d=207 endgame: 136 planned cleanups tried -> none cleared {'dead:L3': '35x avg5left', 'dead:L3~': '33x avg5left', 'dead:L4': '26x avg5left', 'dead:L2': '24x avg4left', 'dead:L4~': '15x avg5left', 'dead:L2~': '3x avg7left'}
+d=210 endgame: 127 planned cleanups tried -> none cleared {'dead:L2~': '43x avg6left', 'dead:L4~': '26x avg5left', 'dead:L3~': '22x avg5left', 'dead:L2': '21x avg4left', 'dead:L3': '15x avg6left'}
+d=210 jobs=88 kids=60 fails={'dead': 24} on={'L2': 9, 'L3': 4, 'L4': 6, 'L3~': 2, 'L2~': 3} best=239 fruit=2 t=4514s
+d=213 endgame: 131 planned cleanups tried -> none cleared {'dead:L3~': '45x avg5left', 'dead:L2': '33x avg5left', 'dead:L4': '29x avg5left', 'dead:L4~': '23x avg6left', 'dead:L2~': '1x avg5left'}
+d=213 stalled: no progress past 240 dots for 30 moves
+RESULT cleared=False dots=240 frames=4181 fruits=2 moves=152 turns=114 minwin=6 route=LLDLLDRRURULURRURUURRRRDLDLLDLUURDRDLDDRURRULURURDRURRDDLDDRDLDLUULLDLULURDRDDRRDLLULURULUULUUURDRRDLDRDDDLDLLDRDRURURUURDLDRDRUUUUUULDRRRRURRDLDRULURDL
+[cw] Exited with code 0.

@@ -1,0 +1,39 @@
+[cw] Started pid 21720 (full).
+start 7 ok f=4202 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=0
+L7:
+  move 0 L: 1 states
+  move 2 D: 5 states
+  move 3 L: 15 states
+  move 5 D: 24 states
+  move 6 R: 40 states
+  move 7 U: 55 states
+  move 8 L: 66 states
+  move 9 U: 80 states
+  move 10 R: 225 states
+  move 11 U: 106 states
+  move 12 L: 120 states
+  move 13 U: 381 states
+  move 14 R: 790 states
+  move 15 D: 1401 states
+  move 16 L: 244 states
+  move 17 D: 300 states
+  move 18 R: 378 states
+  move 20 U: 410 states
+  move 21 U: 238 states  FAIL ['dead']
+    fewest late presses that die here: 9  {3: 4, 9: 4, 10: 4, 11: 4, 13: 4, 14: 4, 17: 3, 18: 4, 20: 4}
+  move 22 U: 189 states  FAIL ['dead']
+    fewest late presses that die here: 8  {3: 4, 9: 4, 10: 4, 11: 4, 13: 4, 14: 4, 18: 3, 20: 4}
+  move 23 U: 154 states  FAIL ['dead']
+    fewest late presses that die here: 7  {3: 4, 9: 4, 10: 4, 11: 4, 13: 4, 14: 4, 20: 4}
+  move 24 L: 360 states  FAIL ['dead']
+    fewest late presses that die here: 7  {3: 4, 9: 4, 10: 4, 11: 4, 13: 4, 14: 4, 24: 4}
+  move 25 D: 524 states  FAIL ['dead']
+    fewest late presses that die here: 7  {3: 4, 9: 4, 10: 4, 11: 4, 13: 4, 14: 4, 25: 4}
+  move 26 L: 715 states  FAIL ['dead']
+    fewest late presses that die here: 8  {3: 4, 9: 4, 10: 4, 11: 4, 13: 4, 14: 4, 25: 1, 26: 4}
+  move 27 D: 2424 states  FAIL ['dead']
+    fewest late presses that die here: 7  {3: 4, 9: 4, 10: 4, 11: 4, 13: 4, 14: 4, 26: 3}
+  move 28 R: 5731 states  FAIL ['dead']
+    fewest late presses that die here: 9  {3: 4, 9: 4, 10: 4, 11: 4, 13: 4, 14: 4, 26: 1, 27: 4, 28: 4}
+L7: too many states (5731) at move 28; peak 5731 states; 400s
+[cw] Exited with code 0.

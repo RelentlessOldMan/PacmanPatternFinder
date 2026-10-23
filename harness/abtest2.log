@@ -1,0 +1,14 @@
+[cw] Started pid 67384 (throttled).
+[cw] Throttled to 1 core at below-normal priority: StepMania (StepMania.exe) is running.
+stock C:\Playground\PacmanPatternFinder\mame-0.289\mame.exe
+patched C:\Playground\PacmanPatternFinder\mame-0.289-mem\mame.exe
+16 level runs from best/*.json
+straight: 2607 moves x 2 (stock, patched): IDENTICAL
+straight (random late presses): 340 moves x 2 (stock, patched): IDENTICAL
+stepped (search-style): 2607 moves x 3 (stock-file, patched-file, patched-mem): IDENTICAL
+file saved by stock, loaded by patched: 620054565 620054565 SAME
+file saved by patched, loaded by stock: 620054565 620054565 SAME
+slot->file->slot, L15-20 L15, 171 moves: SAME
+memory load+seg+hash+save, ms per child per 300-child block: 1.8 1.8 1.8 1.7 1.7 1.7 1.7 1.7 1.7 1.7
+ALL OK
+[cw] Exited with code 0.

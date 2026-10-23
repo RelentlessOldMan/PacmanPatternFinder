@@ -1,0 +1,4 @@
+start 21 ok f=10724 tile=13,23 dir=2 dots=0 level=21 4E04=3 score=0
+prefix: 16/16 moves, 54 dots, 0 late variants dropped
+d=16 jobs=3 kids=0 fails={'dead': 3} on={'L21': 3} best=- fruit=- t=0s ram=0 states (peak 16 ~0.0GB) moved=2 busy=72% copy=0s
+RESULT cleared=False dots=54 frames=389 fruits=0 moves=16 turns=11 minwin=7 route=LLDLLDRRURULURRU
