@@ -41,12 +41,13 @@ class Cand:
 
 
 # Savestates live in the RAM of the worker that made them (our patched MAME, mame-patches/) unless
-# --no-ram: OWNER maps a state name to that worker's index. FILED is the states that also exist
-# as files, which any worker can load: the level starts, and states written out for a snapshot
-# (and the checkpoint) or for a job another worker took over.
+# --no-ram: OWNER maps a state name to that worker's index. FILED is the states any worker can
+# load: the level starts (files), and states whose bytes this process holds in SHARED (fetched with
+# mget for a snapshot, the checkpoint or a job another worker took over; handed over with mset).
 RAM = False
 OWNER = {}
 FILED = set()
+SHARED = {}  # state name -> its memory slot's bytes
 RAM_CAP = 200000  # --ram-cap: past this many memory states, new states go to files (~8 KB each)
 
 
@@ -55,6 +56,13 @@ def load_state(w, name, held):
         return w.cmd(f"mload {name} {held}")
     if name in OWNER and name not in FILED:
         raise RuntimeError(f"state {name} is only in worker {OWNER[name]}'s memory, not {w.idx}'s")
+    if name in SHARED:
+        if getattr(w, "shared", None) != name:  # slot "_sh" holds the last shared state it was given
+            r = w.cmd(f"mset _sh {SHARED[name].hex()}")
+            if r != "ok":
+                raise RuntimeError(r)
+            w.shared = name
+        return w.cmd(f"mload _sh {held}")
     return w.cmd(f"load {name} {held}")
 
 
@@ -76,15 +84,18 @@ def owner_of(sims):
     return owners.pop() if owners else None
 
 
-COPY_SECONDS = [0.0]  # time spent writing memory states to files
+COPY_SECONDS = [0.0]  # time spent fetching memory states into SHARED
 
 
 def write_out(w, names):
-    """Write states held in this worker's memory to files."""
+    """Fetch the bytes of states held in this worker's memory into SHARED, so any worker can load them."""
     t = time.perf_counter()
     for n in names:
         if n not in FILED and OWNER.get(n) == w.idx:
-            w.cmd(f"mcopy {n} {n}")
+            r = w.cmd(f"mget {n}")
+            if not r.startswith("ok "):
+                raise RuntimeError(r)
+            SHARED[n] = bytes.fromhex(r[3:])
             FILED.add(n)
     COPY_SECONDS[0] += time.perf_counter() - t
 
@@ -459,7 +470,11 @@ def solution_cost(c):
 
 
 def cleanup(keep, pattern="n*"):
-    keep = {f"{base(k)}.sta" for k in keep}
+    names = {base(k) for k in keep}
+    for n in [n for n in SHARED if n not in names]:
+        del SHARED[n]
+        FILED.discard(n)
+    keep = {f"{n}.sta" for n in names}
     for f in (STATE_DIR / "pacman").glob(f"{RUN}{pattern}.sta"):
         if f.name not in keep:
             try:
@@ -618,9 +633,9 @@ CKPT_KEYS = ("depth", "beam", "best_partial", "best_depth", "solution", "snapsho
 
 
 def save_checkpoint(args, sims0, state, rng):
-    """Everything the search loop needs to carry on (--resume), written atomically. The savestates
-    it refers to stay on disk: the beam and snapshots are never cleaned up while they're live."""
-    state = dict(state, rng=rng.getstate(), sims0=sims0, histories=HISTORIES, run=RUN)
+    """Everything the search loop needs to carry on (--resume), written atomically, with the bytes
+    of the savestates it refers to (SHARED: the beam and snapshots were just fetched)."""
+    state = dict(state, rng=rng.getstate(), sims0=sims0, histories=HISTORIES, run=RUN, shared=SHARED)
     tmp = args.checkpoint + ".tmp"
     with open(tmp, "wb") as f:
         pickle.dump(state, f)
@@ -859,6 +874,8 @@ def main():
     if args.resume:
         resume = pickle.load(open(args.checkpoint, "rb"))
         HISTORIES.update(resume["histories"])
+        SHARED.update(resume.get("shared", {}))
+        FILED.update(SHARED)
     sims0 = resume["sims0"] if resume else args.starts.split(",") if args.starts else make_starts(pool, levels)
     fixed = [int(k) for k in args.fixed_sims.split(",") if k]
     sims0 += [] if resume else ([f"{s}~{100 * (j + 1) + k}" for k in range(args.jitter_sims) for j, s in enumerate(sims0)]

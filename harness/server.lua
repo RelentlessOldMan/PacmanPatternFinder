@@ -323,6 +323,13 @@ H.run(function()
       if c == "in" then H.machine:mem_import(a, b) else H.machine:mem_export(a, b) end
       H.wait(1)
       reply(H.machine:mem_errors() == e and "ok" or "err mcopy " .. a)
+    elseif cmd == "mget" then
+      -- "mget <slot>": the slot's bytes as hex (Python hands them to another worker with mset)
+      local hx = H.machine:mem_get_hex(a)
+      reply(hx ~= "" and "ok " .. hx or "err mget " .. a)
+    elseif cmd == "mset" then
+      -- "mset <slot> <hex>": make a slot from mget's bytes (no frame runs)
+      reply(H.machine:mem_set_hex(a, b) and "ok" or "err mset " .. a)
     elseif cmd == "seg" then
       local pol = (b == "E") and "E" or tonumber(b)
       reply(seg_reply(segment(LETTER[a], pol, tonumber(c) or 0, LETTER[d:sub(1, 1)], tonumber(d:sub(2)) or 0)))

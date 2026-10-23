@@ -9,6 +9,9 @@ Adds in-memory savestate slots to the Lua API: `machine:mem_save(slot)`, `mem_lo
 `mem_export(slot, file)` / `mem_import(file, slot)`, which copy a slot to a normal state file or
 back at one frame boundary (a load followed by a save would let a frame run in between, so the
 file would be one frame later than the slot).
+`mem_get_hex(slot)` / `mem_set_hex(slot, hex)` read a slot's bytes as hex and make a slot from
+them (no frame runs), so the search hands states between MAME processes over the pipe instead
+of through files (~1.8 ms per hand-over vs ~3.7 ms for a file write).
 
 They are saved and loaded at the same safe point between frames as MAME's normal (scheduled)
 file save/load, but into the MAME process's RAM, uncompressed. MAME's own `buffer_save` /
