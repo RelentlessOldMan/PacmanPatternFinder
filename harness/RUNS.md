@@ -21,6 +21,11 @@ The 99 route (5-20 final, corners by hand) =
   K=26 was stopped (user: keeping under 35 moves isn't worth it, start from their route instead).
 - From the user's 50 moves: `result_L2-4_2fruit_late1_user50_ot26` (late presses tested from move 27; if the prefix
   fails, `..._ot50` plays all 50 on time). Same flags as the 5-20 runs, `--levels 2,3,4`.
+  Result: the 50 moves survive late presses from 27 on, but every way on dies by move 56 (ghosts close).
+  On time the route eats the upper-left energizer at move 45 and only 1 ghost (L3/L4, move 49; none on L2);
+  the user's 4 came from their own timing (scratchpad ghosts.py).
+- Probe (2 min each, scratchpad u<K>.log): keeping 48/46/44/42 of the user's moves dead-ends by d=44-64;
+  40/38/36 still alive. Full search from 40: `result_L2-4_2fruit_late1_user40`, log `search_L2-4_2fruit_late1_user40.log`.
 
 ### Compare 100/67 vs keep70 115/78 (timing), and videos of both
 - Narrowest press window over L5-20, on time: 100 has one 7-frame turn, the rest 10+; 115 has one 6- and one

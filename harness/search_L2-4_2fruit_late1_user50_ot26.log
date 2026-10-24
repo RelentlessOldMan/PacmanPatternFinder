@@ -1,0 +1,9 @@
+[cw] Started pid 60360 (full).
+start 2 ok f=1286 tile=13,23 dir=2 dots=0 level=2 4E04=3 score=0
+start 3 ok f=2276 tile=13,23 dir=2 dots=0 level=3 4E04=3 score=0
+start 4 ok f=2630 tile=13,23 dir=2 dots=0 level=4 4E04=3 score=0
+prefix: 50/50 moves, 132 dots, 0 late variants dropped
+d=50 jobs=1 kids=1 fails={} on={} best=132 fruit=1 t=1s ram=56 states (peak 891 ~0.0GB) moved=0 busy=10% copy=0s
+d=56 jobs=3 kids=0 fails={'dead': 3} on={'L4': 1, 'late': 2} best=- fruit=- t=1s ram=0 states (peak 891 ~0.0GB) moved=1 busy=12% copy=0s
+RESULT cleared=False dots=133 frames=1822 fruits=1 moves=55 turns=35 minwin=5 route=LLDLLDRRURULURRURUUURDRRDLDLLDDRURUULLLLLULDRDDDDDLLDRU
+[cw] Exited with code 0.
