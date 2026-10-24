@@ -4,7 +4,10 @@ Finds memorable, timing-tolerant Pac-Man patterns by letting MAME play the game 
 Lua control: a beam search over routes (junction to junction, no reversing), then every route is
 replayed with each turn pressed 1–4 frames late to find the ones that forgive sloppy timing.
 
-Published arcade patterns often fail on MAME, so these were found and checked on MAME 0.289.
+The point is not "perfect" frame-exact routes for a real arcade cabinet. It is routes that survive
+crappy or emulated machines: input lag, a mushy stick or keyboard, presses that land a few frames
+late. A route is only kept if it forgives that. Published arcade patterns often fail on MAME, so
+these were found and checked on MAME 0.289.
 
 ## The patterns
 
