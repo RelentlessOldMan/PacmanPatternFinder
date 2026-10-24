@@ -12,6 +12,14 @@ The 99 route (5-20 final, corners by hand) =
 
 ## 2026-10-24
 
+### Keep more of the 99: force its first K moves (`--prefix-on-time 26`, late-tested from move 27)
+Same flags as the p26 run, `--prefix <first K moves of the 99>`. Out `result_L5-20_2fruit_late1_keepK.json`,
+log `search_L5-20_2fruit_late1_keepK.log`.
+| K | result |
+|---|---|
+| 83 | impossible: with move 27 pressed 4 late, both ways at move 84 die |
+| 70 | CLEARED, 51 routes, 13 min; ranked (`..._keep70.ranked.json`, `rank_..._keep70.log`): all 0 single killers on L5-20. Best 115/78 -> `harness/best_L5-20_2fruit_keep70_115.json` |
+
 ### L5-20, 2 fruits, corners left, survives 1 late, only 26 moves on time - CLEARED, 0 killers
 - out: `result_L5-20_2fruit_late1_p26.json` (+ `.sols.jsonl`, 55 routes), log `search_L5-20_2fruit_late1_p26.log`
 - same flags as the L7-20 run below but `--levels 5..20 --prefix <first 26 moves of the 99>`; 35 min (1 core, throttled).

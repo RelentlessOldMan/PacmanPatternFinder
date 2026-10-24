@@ -1,0 +1,21 @@
+[cw] Started pid 72728 (full).
+start 5 ok f=2984 tile=13,23 dir=2 dots=0 level=5 4E04=3 score=0
+start 6 ok f=3848 tile=13,23 dir=2 dots=0 level=6 4E04=3 score=0
+start 7 ok f=4202 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=0
+start 8 ok f=4556 tile=13,23 dir=2 dots=0 level=8 4E04=3 score=0
+start 9 ok f=4910 tile=13,23 dir=2 dots=0 level=9 4E04=3 score=0
+start 10 ok f=5786 tile=13,23 dir=2 dots=0 level=10 4E04=3 score=0
+start 11 ok f=6818 tile=13,23 dir=2 dots=0 level=11 4E04=3 score=70
+start 12 ok f=6494 tile=13,23 dir=2 dots=0 level=12 4E04=3 score=0
+start 13 ok f=7526 tile=13,23 dir=2 dots=0 level=13 4E04=3 score=70
+start 14 ok f=8402 tile=13,23 dir=2 dots=0 level=14 4E04=3 score=70
+start 15 ok f=8756 tile=13,23 dir=2 dots=0 level=15 4E04=3 score=70
+start 16 ok f=9788 tile=13,23 dir=2 dots=0 level=16 4E04=3 score=140
+start 17 ok f=9464 tile=13,23 dir=2 dots=0 level=17 4E04=3 score=70
+start 18 ok f=11018 tile=13,23 dir=2 dots=0 level=18 4E04=3 score=140
+start 19 ok f=10694 tile=13,23 dir=2 dots=0 level=19 4E04=3 score=70
+start 20 ok f=10370 tile=13,23 dir=2 dots=0 level=20 4E04=3 score=0
+prefix: 83/83 moves, 168 dots, 0 late variants dropped
+d=83 jobs=2 kids=0 fails={'dead': 2} on={'late': 2} best=- fruit=- t=7s ram=0 states (peak 14099 ~0.1GB) moved=1 busy=11% copy=0s
+RESULT cleared=False dots=168 frames=2104 fruits=1 moves=83 turns=58 minwin=5 route=LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLUUULDRUURDLDRDLDDDRDRRRDRRDLLULURRRRULULDL
+[cw] Exited with code 0.
