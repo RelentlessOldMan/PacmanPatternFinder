@@ -1,0 +1,821 @@
+[
+ {
+  "route": "LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLDRDRDRRULLUUUUULLLULDLDRURDRDLDDRURRDRRDRRRUULULURURRDLUULDLLDR",
+  "n_moves": 104,
+  "n_turns": 74,
+  "frames": 2697,
+  "fruits": 2,
+  "killers": 2,
+  "killers1": 2,
+  "weak_moves": [
+   76
+  ],
+  "deaths_by_move": {
+   "76": 2
+  },
+  "deaths_by_level": {
+   "19": 1,
+   "20": 1
+  },
+  "single_killers": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ],
+  "killer_mixes": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "route": "LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLDRDRDRRULLUUUUULLLULDLDRURDRDLDDRURRDRRDRRRUULULURURRDLUULDRDLD",
+  "n_moves": 104,
+  "n_turns": 75,
+  "frames": 2699,
+  "fruits": 2,
+  "killers": 2,
+  "killers1": 2,
+  "weak_moves": [
+   76
+  ],
+  "deaths_by_move": {
+   "76": 2
+  },
+  "deaths_by_level": {
+   "19": 1,
+   "20": 1
+  },
+  "single_killers": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ],
+  "killer_mixes": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "route": "LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLDRDRDRRULLUUUUULLLULDLDRURDRDLDDRURRDRRDRRRUULULURURRDLUULDRRRD",
+  "n_moves": 104,
+  "n_turns": 73,
+  "frames": 2708,
+  "fruits": 2,
+  "killers": 2,
+  "killers1": 2,
+  "weak_moves": [
+   76
+  ],
+  "deaths_by_move": {
+   "76": 2
+  },
+  "deaths_by_level": {
+   "19": 1,
+   "20": 1
+  },
+  "single_killers": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ],
+  "killer_mixes": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "route": "LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLDRDRDRRULLUUUUULLLULDLDRURDRDLDDRURRDRRDRRRUULULURURRDLUULDRRRU",
+  "n_moves": 104,
+  "n_turns": 73,
+  "frames": 2709,
+  "fruits": 2,
+  "killers": 2,
+  "killers1": 2,
+  "weak_moves": [
+   76
+  ],
+  "deaths_by_move": {
+   "76": 2
+  },
+  "deaths_by_level": {
+   "19": 1,
+   "20": 1
+  },
+  "single_killers": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ],
+  "killer_mixes": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "route": "LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLDRDRDRRULLUUUUULLLULDLDRURDRDLDDRURRDRRDRRRUULULURURRDLUULDRRDR",
+  "n_moves": 104,
+  "n_turns": 74,
+  "frames": 2697,
+  "fruits": 2,
+  "killers": 2,
+  "killers1": 2,
+  "weak_moves": [
+   76
+  ],
+  "deaths_by_move": {
+   "76": 2
+  },
+  "deaths_by_level": {
+   "19": 1,
+   "20": 1
+  },
+  "single_killers": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ],
+  "killer_mixes": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "route": "LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLDRDRDRRULLUUUUULLLULDLDRURDRDLDDRURRDRRDRRRUULULURURRDLUULDRRDD",
+  "n_moves": 104,
+  "n_turns": 73,
+  "frames": 2695,
+  "fruits": 2,
+  "killers": 2,
+  "killers1": 2,
+  "weak_moves": [
+   76
+  ],
+  "deaths_by_move": {
+   "76": 2
+  },
+  "deaths_by_level": {
+   "19": 1,
+   "20": 1
+  },
+  "single_killers": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ],
+  "killer_mixes": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "route": "LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLDRDRDRRULLUUUUULLLULDLDRURDRDLDDRURRDRRDRRRUULULURURRDLUULDRRUR",
+  "n_moves": 104,
+  "n_turns": 74,
+  "frames": 2703,
+  "fruits": 2,
+  "killers": 2,
+  "killers1": 2,
+  "weak_moves": [
+   76
+  ],
+  "deaths_by_move": {
+   "76": 2
+  },
+  "deaths_by_level": {
+   "19": 1,
+   "20": 1
+  },
+  "single_killers": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ],
+  "killer_mixes": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "route": "LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLDRDRDRRULLUUUUULLLULDLDRURDRDLDDRURRDRRDRRRUULULURURRDLUULDRRUL",
+  "n_moves": 104,
+  "n_turns": 74,
+  "frames": 2702,
+  "fruits": 2,
+  "killers": 2,
+  "killers1": 2,
+  "weak_moves": [
+   76
+  ],
+  "deaths_by_move": {
+   "76": 2
+  },
+  "deaths_by_level": {
+   "19": 1,
+   "20": 1
+  },
+  "single_killers": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ],
+  "killer_mixes": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "route": "LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLDRDRDRRULLUUUUULLLULDLDRURDRDLDDRURRDDRDRDRURURULULULLURULULDLLLDDLDDLLLULLDRR",
+  "n_moves": 119,
+  "n_turns": 86,
+  "frames": 3245,
+  "fruits": 2,
+  "killers": 2,
+  "killers1": 2,
+  "weak_moves": [
+   76
+  ],
+  "deaths_by_move": {
+   "76": 2
+  },
+  "deaths_by_level": {
+   "19": 1,
+   "20": 1
+  },
+  "single_killers": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ],
+  "killer_mixes": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "route": "LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLDRDRDRRULLUUUUULLLULDLDRURDRDLDDRURRDDRDRDRURURULULULLURULULDLLLDDLDDLLLULLLDR",
+  "n_moves": 119,
+  "n_turns": 86,
+  "frames": 3265,
+  "fruits": 2,
+  "killers": 2,
+  "killers1": 2,
+  "weak_moves": [
+   76
+  ],
+  "deaths_by_move": {
+   "76": 2
+  },
+  "deaths_by_level": {
+   "19": 1,
+   "20": 1
+  },
+  "single_killers": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ],
+  "killer_mixes": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "route": "LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLDRDRDRRULLUUUUULLLULDLDRURDRDLDDRURRDDRDRDRURURULULULLURULULDLLLDDLDDLLLULLDDL",
+  "n_moves": 119,
+  "n_turns": 86,
+  "frames": 3245,
+  "fruits": 2,
+  "killers": 2,
+  "killers1": 2,
+  "weak_moves": [
+   76
+  ],
+  "deaths_by_move": {
+   "76": 2
+  },
+  "deaths_by_level": {
+   "19": 1,
+   "20": 1
+  },
+  "single_killers": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ],
+  "killer_mixes": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "route": "LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLDRDRDRRULLUUUUULLLULDLDRURDRDLDDRURRDDRDRDRURURULULULLURULULDLLLDDLDDLLLULLDRD",
+  "n_moves": 119,
+  "n_turns": 87,
+  "frames": 3245,
+  "fruits": 2,
+  "killers": 2,
+  "killers1": 2,
+  "weak_moves": [
+   76
+  ],
+  "deaths_by_move": {
+   "76": 2
+  },
+  "deaths_by_level": {
+   "19": 1,
+   "20": 1
+  },
+  "single_killers": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ],
+  "killer_mixes": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ]
+ },
+ {
+  "route": "LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLDRDRDRRULLUUUUULLLULDLDRURDRDLDDRURRDDRDRDRURURULULULLURULULDLLLDDDDRRRRDLDLULURULLLDR",
+  "n_moves": 127,
+  "n_turns": 92,
+  "frames": 3334,
+  "fruits": 2,
+  "killers": 2,
+  "killers1": 2,
+  "weak_moves": [
+   76
+  ],
+  "deaths_by_move": {
+   "76": 2
+  },
+  "deaths_by_level": {
+   "19": 1,
+   "20": 1
+  },
+  "single_killers": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ],
+  "killer_mixes": [
+   [
+    19,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ],
+   [
+    20,
+    76,
+    [
+     [
+      27,
+      4
+     ]
+    ]
+   ]
+  ]
+ }
+]

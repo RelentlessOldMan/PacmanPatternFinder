@@ -12,6 +12,15 @@ The 99 route (5-20 final, corners by hand) =
 
 ## 2026-10-24
 
+### Rank the 50 L7-20 2-fruit routes on L5-6, then on L7-20 (whole route)
+- `rank_sols.py result_L7-20_2fruit_late1.json.sols.jsonl --levels 5-20 --late-levels 5,6 --budget 1 --need-fruits 2`
+  -> `result_L7-20_2fruit_late1.L56.ranked.json`, log `rank_L7-20_2fruit_late1_L56.log`.
+  All 50 clear L5-20 on time with both fruits. 13 have no single late killer on L5-6 (eight 104-move ones, 73-75 turns).
+- Those 13 (`result_L7-20_2fruit_late1.L56zero.sols.jsonl`), late presses on L7-20 over the whole route
+  (incl. the opening the search played on time) -> `result_L7-20_2fruit_late1.L56zero.L7-20.ranked.json`,
+  log `rank_L7-20_2fruit_late1_L56zero_L7-20.log`. Each has exactly 2 killers: move 27 pressed 4 frames late
+  dies at move 76 on L19 and L20. Next: search 5-20 with only 26 moves played on time.
+
 ### L7-20, 2 fruits, corners left, survives 1 late - CLEARED
 - out: `result_L7-20_2fruit_late1.json` (+ `.sols.jsonl`, 50 routes), log `search_L7-20_2fruit_late1.log`
 - `--levels 7..20 --leave-pockets --need-fruits 2 --branch 4 --late-budget 1 --branch-cap 64 --prefix-on-time
