@@ -28,6 +28,8 @@ log `search_L5-20_2fruit_late1_keepK.log`.
 |---|---|
 | 83 | impossible: with move 27 pressed 4 late, both ways at move 84 die |
 | 70 | CLEARED, 51 routes, 13 min; ranked (`..._keep70.ranked.json`, `rank_..._keep70.log`): all 0 single killers on L5-20. Best 115/78 -> `harness/best_L5-20_2fruit_keep70_115.json` |
+| 76 | CLEARED, 52 routes, 27 min (not ranked). Best 128/89 |
+| 79 | stopped by the user (keep-70 chosen), 0 routes yet; log partial |
 
 ### L5-20, 2 fruits, corners left, survives 1 late, only 26 moves on time - CLEARED, 0 killers
 - out: `result_L5-20_2fruit_late1_p26.json` (+ `.sols.jsonl`, 55 routes), log `search_L5-20_2fruit_late1_p26.log`

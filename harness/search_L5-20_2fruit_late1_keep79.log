@@ -1,0 +1,24 @@
+[cw] Started pid 50164 (full).
+start 5 ok f=2984 tile=13,23 dir=2 dots=0 level=5 4E04=3 score=0
+start 6 ok f=3848 tile=13,23 dir=2 dots=0 level=6 4E04=3 score=0
+start 7 ok f=4880 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=70
+start 8 ok f=4556 tile=13,23 dir=2 dots=0 level=8 4E04=3 score=0
+start 9 ok f=4910 tile=13,23 dir=2 dots=0 level=9 4E04=3 score=0
+start 10 ok f=5786 tile=13,23 dir=2 dots=0 level=10 4E04=3 score=0
+start 11 ok f=6140 tile=13,23 dir=2 dots=0 level=11 4E04=3 score=0
+start 12 ok f=7172 tile=13,23 dir=2 dots=0 level=12 4E04=3 score=70
+start 13 ok f=6848 tile=13,23 dir=2 dots=0 level=13 4E04=3 score=0
+start 14 ok f=7724 tile=13,23 dir=2 dots=0 level=14 4E04=3 score=0
+start 15 ok f=8756 tile=13,23 dir=2 dots=0 level=15 4E04=3 score=70
+start 16 ok f=9110 tile=13,23 dir=2 dots=0 level=16 4E04=3 score=70
+start 17 ok f=10142 tile=13,23 dir=2 dots=0 level=17 4E04=3 score=140
+start 18 ok f=11018 tile=13,23 dir=2 dots=0 level=18 4E04=3 score=140
+start 19 ok f=10694 tile=13,23 dir=2 dots=0 level=19 4E04=3 score=70
+start 20 ok f=11048 tile=13,23 dir=2 dots=0 level=20 4E04=3 score=70
+prefix: 79/79 moves, 168 dots, 0 late variants dropped
+d=80 jobs=3 kids=3 fails={} on={} best=168 fruit=1 t=7s ram=1100 states (peak 13211 ~0.1GB) moved=1 busy=11% copy=0s
+d=81 endgame: 24 planned cleanups tried -> none cleared {'dead:late': '9x avg34left', 'dead:L15': '6x avg36left', 'dead:L19': '6x avg31left', 'dead:L5': '3x avg13left'}
+d=84 endgame: 96 planned cleanups tried -> none cleared {'dead:L5': '51x avg31left', 'dead:late': '17x avg33left', 'dead:L19': '14x avg32left', 'dead:L12': '8x avg29left', 'dead:L15': '6x avg24left'}
+d=87 endgame: 139 planned cleanups tried -> none cleared {'dead:L5': '86x avg27left', 'dead:late': '28x avg26left', 'dead:L12': '10x avg23left', 'dead:L19': '10x avg22left', 'dead:L15': '5x avg21left'}
+d=90 endgame: 135 planned cleanups tried -> none cleared {'dead:L5': '50x avg18left', 'dead:L12': '33x avg23left', 'dead:late': '32x avg26left', 'dead:L19': '19x avg27left', 'dead:L9': '1x avg21left'}
+d=90 jobs=50 kids=38 fails={'dead': 11} on={'L15': 1, 'late': 4, 'L19': 4, 'L5': 1, 'L12': 1} best=198 fruit=1 t=85s ram=13907 states (peak 25669 ~0.2GB) moved=37 busy=84% copy=0s
