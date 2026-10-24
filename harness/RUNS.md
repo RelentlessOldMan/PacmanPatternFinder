@@ -12,6 +12,15 @@ The 99 route (5-20 final, corners by hand) =
 
 ## 2026-10-24
 
+### Compare 100/67 vs keep70 115/78 (timing), and videos of both
+- Narrowest press window over L5-20, on time: 100 has one 7-frame turn, the rest 10+; 115 has one 6- and one
+  7-frame turn, the rest 10+ (scratchpad windows.py).
+- `rank_sols.py cmp_100_vs_keep70.sols.jsonl --levels 5-20 --budget 2 --need-fruits 2` ->
+  `cmp_100_vs_keep70.b2.ranked.json`, log `rank_cmp_100_vs_keep70_b2.log`. Both: 0 single killers.
+  Killing pairs of late presses: 100 -> 892 (585 die at move 90, worst L6-8); 115 -> 532 (worst L15-18).
+- Videos (on time, MAME): `videos/L5-20_100_level5.mp4`, `..._level20.mp4`,
+  `videos/L5-20_keep70_115_level5.mp4`, `..._level20.mp4` (scratchpad video_route.py).
+
 ### Keep more of the 99: force its first K moves (`--prefix-on-time 26`, late-tested from move 27)
 Same flags as the p26 run, `--prefix <first K moves of the 99>`. Out `result_L5-20_2fruit_late1_keepK.json`,
 log `search_L5-20_2fruit_late1_keepK.log`.
