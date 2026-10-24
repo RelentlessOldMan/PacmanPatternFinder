@@ -1,0 +1,17 @@
+[cw] Started pid 68424 (full).
+3/3 live on time on every level 2-4
+late presses: 1/9 route-levels done
+late presses: 2/9 route-levels done
+late presses: 3/9 route-levels done
+late presses: 4/9 route-levels done
+late presses: 5/9 route-levels done
+late presses: 6/9 route-levels done
+late presses: 7/9 route-levels done
+late presses: 8/9 route-levels done
+late presses: 9/9 route-levels done
+
+Up to 2 late presses, on levels 2-4 (killer mixes summed):
+  0 single late presses kill,   224 mixes in all,  6 moves die (worst L4:85, L3:76, L2:63)  97 moves 61 turns  LDLURRRRURDDDDDDRRDLLULURRRRULULULDDRRULLULURULLLLLDRDLDD
+  0 single late presses kill,   224 mixes in all,  6 moves die (worst L4:85, L3:76, L2:63)  97 moves 62 turns  LDLURRRRURDDDDDDRRDLLULURRRRULULULDDRRULLULURULLLLLDRDLDL
+  0 single late presses kill,   279 mixes in all,  7 moves die (worst L4:112, L3:103, L2:64)  97 moves 61 turns  LDLURRRRURDDDDDDRRDLLULURRRRULULULDDRRULLULURULLLLLDRDRRD
+[cw] Exited with code 0.

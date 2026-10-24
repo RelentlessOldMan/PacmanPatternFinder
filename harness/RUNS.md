@@ -26,6 +26,11 @@ The 99 route (5-20 final, corners by hand) =
   the user's 4 came from their own timing (scratchpad ghosts.py).
 - Probe (2 min each, scratchpad u<K>.log): keeping 48/46/44/42 of the user's moves dead-ends by d=44-64;
   40/38/36 still alive. Full search from 40: `result_L2-4_2fruit_late1_user40`, log `search_L2-4_2fruit_late1_user40.log`.
+  CLEARED in 3 min, 58 routes, best 97/61. Ranked (`rank_sols.py --levels 2-4 --budget 1 --need-fruits 2`,
+  whole route) -> `result_L2-4_2fruit_late1_user40.ranked.json`, log `rank_L2-4_2fruit_late1_user40.log`:
+  28 routes with 0 single killers, incl. three 97-move ones. Those three with `--budget 2`
+  (`..._user40.97.b2.ranked.json`, log `rank_L2-4_2fruit_late1_user40_97_b2.log`): best 97/61 with 224 killing
+  pairs -> `harness/best_L2-4_2fruit_97.json`. Videos (on time, MAME): `videos/L2-4_97_level2.mp4`, `..._level4.mp4`.
 
 ### Compare 100/67 vs keep70 115/78 (timing), and videos of both
 - Narrowest press window over L5-20, on time: 100 has one 7-frame turn, the rest 10+; 115 has one 6- and one
