@@ -12,10 +12,11 @@ harness/dbg.*
 snap/
 *.ckpt
 *.ckpt.*
-*.sols.jsonl
 videos/*
 !videos/L5-20_99_level5.mp4
 !videos/L21_118_level21.mp4
+!videos/L5-20_131_fullclear_level5.mp4
+!videos/L5-20_131_fullclear_level12.mp4
 # game logs written by pacman.bat / watch.lua
 logs/
 # pacemu build output, MAME traces, and the MAME sources kept locally for reference

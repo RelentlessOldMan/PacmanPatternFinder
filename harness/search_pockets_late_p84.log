@@ -1,0 +1,46 @@
+[cw] Started pid 69304 (full).
+start 5 ok f=2984 tile=13,23 dir=2 dots=0 level=5 4E04=3 score=0
+start 6 ok f=3848 tile=13,23 dir=2 dots=0 level=6 4E04=3 score=0
+start 7 ok f=4202 tile=13,23 dir=2 dots=0 level=7 4E04=3 score=0
+start 8 ok f=4556 tile=13,23 dir=2 dots=0 level=8 4E04=3 score=0
+start 9 ok f=4910 tile=13,23 dir=2 dots=0 level=9 4E04=3 score=0
+start 10 ok f=5786 tile=13,23 dir=2 dots=0 level=10 4E04=3 score=0
+start 11 ok f=6140 tile=13,23 dir=2 dots=0 level=11 4E04=3 score=0
+start 12 ok f=6494 tile=13,23 dir=2 dots=0 level=12 4E04=3 score=0
+start 13 ok f=7526 tile=13,23 dir=2 dots=0 level=13 4E04=3 score=70
+start 14 ok f=8402 tile=13,23 dir=2 dots=0 level=14 4E04=3 score=70
+start 15 ok f=8756 tile=13,23 dir=2 dots=0 level=15 4E04=3 score=70
+start 16 ok f=9788 tile=13,23 dir=2 dots=0 level=16 4E04=3 score=140
+start 17 ok f=8786 tile=13,23 dir=2 dots=0 level=17 4E04=3 score=0
+start 18 ok f=10340 tile=13,23 dir=2 dots=0 level=18 4E04=3 score=70
+start 19 ok f=11372 tile=13,23 dir=2 dots=0 level=19 4E04=3 score=140
+start 20 ok f=11048 tile=13,23 dir=2 dots=0 level=20 4E04=3 score=70
+prefix: 84/84 moves, 168 dots, 0 late variants dropped
+d=90 jobs=22 kids=13 fails={'toomany': 3, 'shortwin': 1, 'dead': 5} on={'L5': 8, 'late': 1} best=179 fruit=0 t=5s ram=3113 states (peak 6600 ~0.0GB) moved=32 busy=54% copy=0s
+d=100 jobs=63 kids=48 fails={'toomany': 3, 'dead': 7} on={'L5': 6, 'late': 3, 'L19': 1} best=174 fruit=0 t=23s ram=15034 states (peak 26797 ~0.2GB) moved=118 busy=73% copy=0s
+d=110 jobs=89 kids=56 fails={'toomany': 15, 'dead': 12} on={'L5': 19, 'L15': 3, 'late': 5} best=183 fruit=0 t=73s ram=16525 states (peak 36583 ~0.3GB) moved=258 busy=81% copy=2s
+d=119 no progress past 183 dots: backtrack #1 to d=115, 48/64 candidates left after dropping the dead family
+d=120 jobs=51 kids=34 fails={'toomany': 11, 'dead': 3, 'shortwin': 1} on={'L5': 12, 'late': 1, 'L19': 1, 'L15': 1} best=179 fruit=0 t=170s ram=11391 states (peak 50117 ~0.4GB) moved=472 busy=82% copy=3s
+d=130 jobs=60 kids=24 fails={'dead': 8, 'toomany': 27} on={'late': 3, 'L19': 3, 'L5': 27, 'L12': 2} best=179 fruit=0 t=221s ram=8263 states (peak 50117 ~0.4GB) moved=578 busy=82% copy=4s
+d=140 beam died: backtrack #2 to d=135, 16/17 candidates left after dropping the dead family
+d=139 beam died: backtrack #3 to d=130, 31/32 candidates left after dropping the dead family
+d=130 jobs=58 kids=22 fails={'dead': 8, 'toomany': 27} on={'late': 3, 'L19': 3, 'L5': 27, 'L12': 2} best=179 fruit=0 t=255s ram=7480 states (peak 50117 ~0.4GB) moved=665 busy=81% copy=4s
+d=140 beam died: backtrack #4 to d=125, 51/52 candidates left after dropping the dead family
+d=130 jobs=53 kids=18 fails={'dead': 8, 'toomany': 26} on={'late': 3, 'L19': 3, 'L5': 26, 'L12': 2} best=179 fruit=0 t=306s ram=5985 states (peak 50117 ~0.4GB) moved=796 busy=81% copy=5s
+d=138 beam died: backtrack #5 to d=120, 27/28 candidates left after dropping the dead family
+d=120 jobs=48 kids=31 fails={'toomany': 11, 'dead': 3, 'shortwin': 1} on={'L5': 12, 'late': 1, 'L19': 1, 'L15': 1} best=179 fruit=0 t=322s ram=10521 states (peak 50117 ~0.4GB) moved=852 busy=81% copy=5s
+d=130 jobs=41 kids=13 fails={'dead': 7, 'toomany': 21} on={'late': 2, 'L19': 3, 'L5': 21, 'L12': 2} best=179 fruit=0 t=362s ram=4179 states (peak 50117 ~0.4GB) moved=981 busy=81% copy=6s
+d=137 beam died: backtrack #6 to d=115, 47/48 candidates left after dropping the dead family
+d=120 jobs=25 kids=14 fails={'toomany': 8, 'shortwin': 1, 'dead': 2} on={'L5': 9, 'L19': 1, 'L15': 1} best=179 fruit=0 t=392s ram=5009 states (peak 50117 ~0.4GB) moved=1064 busy=81% copy=6s
+d=130 jobs=37 kids=19 fails={'toomany': 17, 'dead': 1} on={'L5': 17, 'late': 1} best=180 fruit=0 t=417s ram=6588 states (peak 50117 ~0.4GB) moved=1143 busy=81% copy=6s
+d=140 beam died: backtrack #7 to d=110, 47/48 candidates left after dropping the dead family
+d=110 jobs=87 kids=54 fails={'toomany': 15, 'dead': 12} on={'L5': 19, 'L15': 3, 'late': 5} best=183 fruit=0 t=445s ram=16013 states (peak 50117 ~0.4GB) moved=1207 busy=81% copy=7s
+d=120 jobs=91 kids=51 fails={'toomany': 23, 'dead': 15} on={'L5': 28, 'late': 5, 'L19': 4, 'L15': 1} best=180 fruit=0 t=529s ram=16380 states (peak 50117 ~0.4GB) moved=1356 busy=81% copy=8s
+d=130 jobs=121 kids=68 fails={'toomany': 33, 'dead': 15} on={'L5': 38, 'late': 5, 'L12': 1, 'L19': 4} best=183 fruit=0 t=611s ram=19985 states (peak 50117 ~0.4GB) moved=1528 busy=82% copy=9s
+d=140 jobs=113 kids=69 fails={'toomany': 28, 'dead': 5} on={'L5': 28, 'late': 5} best=176 fruit=0 t=698s ram=18531 states (peak 50117 ~0.4GB) moved=1686 busy=82% copy=11s
+d=150 jobs=107 kids=66 fails={'toomany': 18, 'dead': 17} on={'L5': 22, 'late': 13} best=180 fruit=0 t=785s ram=20382 states (peak 50117 ~0.4GB) moved=1845 busy=83% copy=12s
+d=160 jobs=40 kids=25 fails={'toomany': 10, 'dead': 5} on={'L5': 12, 'late': 1, 'L12': 2} best=180 fruit=0 t=847s ram=8196 states (peak 50117 ~0.4GB) moved=1978 busy=82% copy=13s
+d=170 jobs=39 kids=19 fails={'toomany': 9, 'dead': 11} on={'L5': 14, 'late': 2, 'L12': 3, 'L15': 1} best=179 fruit=0 t=876s ram=6233 states (peak 50117 ~0.4GB) moved=2081 busy=82% copy=14s
+d=171 stalled: no progress past 190 dots for 30 moves
+RESULT cleared=False dots=190 frames=3102 fruits=0 moves=130 turns=85 minwin=5 route=LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLUUULDRUURDLDRDLDDDRDRRRDRRDLLULURRRRULULDLUUUURDRRDLDLLDDRDRDLLLLLUURDRUULLLDLUURRRURDDDD
+[cw] Exited with code 0.
