@@ -12,6 +12,12 @@ The 99 route (5-20 final, corners by hand) =
 
 ## 2026-10-24
 
+### Videos and critical-move image of the 104/73 candidate
+- Route: `harness/best_L5-20_2fruit_104.json` (104 moves / 73 turns, from the L56zero ranking).
+- `videos/L5-20_104_level5.mp4`, `..._level19.mp4` (on time, MAME, both clear), `..._level19_move27_4late.mp4`
+  (move 27 pressed 4 frames late: dies between moves 75 and 76, right of the ghost house).
+- `best/L5-20_104_move27.png` (made by `harness/critical_move_104.py`).
+
 ### Rank the 50 L7-20 2-fruit routes on L5-6, then on L7-20 (whole route)
 - `rank_sols.py result_L7-20_2fruit_late1.json.sols.jsonl --levels 5-20 --late-levels 5,6 --budget 1 --need-fruits 2`
   -> `result_L7-20_2fruit_late1.L56.ranked.json`, log `rank_L7-20_2fruit_late1_L56.log`.
