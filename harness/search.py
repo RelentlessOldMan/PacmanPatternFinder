@@ -656,6 +656,10 @@ def search(pool, sims0, args, log=print, resume=None):
     # A late-press variant that dies in the opening is dropped (the player has to avoid that
     # timing) rather than cutting the opening short; only an on-time death ends it.
     dropped = 0
+    global LATE_BUDGET
+    budget = LATE_BUDGET
+    if args.prefix_on_time:  # no late presses yet; BRANCH stays on so the sims keep their fruit counts
+        LATE_BUDGET = 0
     for opt in ("" if resume else args.prefix):
         c = beam[0]
         node, path = maze.next_node(*c.tile, c.heading)
@@ -672,6 +676,7 @@ def search(pool, sims0, args, log=print, resume=None):
             log(f"prefix fails at move {len(c.route) + 1} ({opt} at {node}): {st} on {sim_label(sims0, sims)}")
             break
         beam = [make_child(c, path, opt, sims, res)]
+    LATE_BUDGET = budget
     if args.prefix:
         log(f"prefix: {len(beam[0].route)}/{len(args.prefix)} moves, {len(beam[0].eaten)} dots, {dropped} late variants dropped")
     best_partial, best_depth, solution = beam[0], len(beam[0].route), None
@@ -876,6 +881,8 @@ def main():
                          "point); identical states merge")
     ap.add_argument("--branch-cap", type=int, default=8,
                     help="--branch: max extra sims kept per level (with --late-budget: more rejects the move)")
+    ap.add_argument("--prefix-on-time", action="store_true",
+                    help="--branch: play --prefix on time only; late presses are branched from its end on")
     ap.add_argument("--late-budget", type=int, default=None,
                     help="--branch: follow every combination of up to K late presses per level exactly")
     ap.add_argument("--leave-pockets", action="store_true",
