@@ -6,10 +6,11 @@ user), so we discover new ones by having MAME play the game headless under Lua c
 
 Rules: no reversing (double-backing) inside a pattern; on the high-value fruit levels grab both fruits.
 
-## Status (2026-10-23): done
+## Status (2026-10-24)
 - **Levels 1–4:** played by hand.
-- **5–20:** `best/L5-20_nopockets_99.json`, 99 moves / 67 turns. Leaves the 4 corner pockets, which the
-  user eats by hand (no finisher). The user has it memorized.
+- **5–20:** `best/L5-20_keep70_115.json`, 115 moves / 78 turns: the user's memorized 99/67
+  (`best/L5-20_nopockets_99.json`) for 70 moves, then new. Eats both fruits, leaves the corner pockets to eat by
+  hand, and survives any single press 1-4 frames late on every level 5-20. How it was found: `harness/RUNS.md`.
 - **21+:** `best/L21_full_118.json`, 118 moves / 88 turns, full clear with both keys, ~48 s. Its first
   15 moves are the 5–20 route. Found with `l21_sweep.sh` (searches seeded with 5–20 prefixes) and
   picked with `rank_sols.py`.
