@@ -5,6 +5,10 @@
 #define Z80_READ(u, a) z->read_byte(u, a)
 #define Z80_WRITE(u, a, v) z->write_byte(u, a, v)
 #endif
+// pacemu: forces inlining (the helpers are small once memory access is inline)
+#ifndef Z80_INLINE
+#define Z80_INLINE inline
+#endif
 
 // MARK: timings
 static const uint8_t cyc_00[256] = {4, 10, 7, 6, 4, 4, 7, 4, 4, 11, 7, 6, 4, 4,
@@ -51,71 +55,71 @@ static const uint8_t cyc_ddfd[256] = {4, 4, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4,
 // get bit "n" of number "val"
 #define GET_BIT(n, val) (((val) >> (n)) & 1)
 
-static inline uint8_t rb(z80* const z, uint16_t addr) {
+static Z80_INLINE uint8_t rb(z80* const z, uint16_t addr) {
   return Z80_READ(z->userdata, addr);
 }
 
-static inline void wb(z80* const z, uint16_t addr, uint8_t val) {
+static Z80_INLINE void wb(z80* const z, uint16_t addr, uint8_t val) {
   Z80_WRITE(z->userdata, addr, val);
 }
 
-static inline uint16_t rw(z80* const z, uint16_t addr) {
+static Z80_INLINE uint16_t rw(z80* const z, uint16_t addr) {
   return (Z80_READ(z->userdata, addr + 1) << 8) |
          Z80_READ(z->userdata, addr);
 }
 
-static inline void ww(z80* const z, uint16_t addr, uint16_t val) {
+static Z80_INLINE void ww(z80* const z, uint16_t addr, uint16_t val) {
   Z80_WRITE(z->userdata, addr, val & 0xFF);
   Z80_WRITE(z->userdata, addr + 1, val >> 8);
 }
 
-static inline void pushw(z80* const z, uint16_t val) {
+static Z80_INLINE void pushw(z80* const z, uint16_t val) {
   z->sp -= 2;
   ww(z, z->sp, val);
 }
 
-static inline uint16_t popw(z80* const z) {
+static Z80_INLINE uint16_t popw(z80* const z) {
   z->sp += 2;
   return rw(z, z->sp - 2);
 }
 
-static inline uint8_t nextb(z80* const z) {
+static Z80_INLINE uint8_t nextb(z80* const z) {
   return rb(z, z->pc++);
 }
 
-static inline uint16_t nextw(z80* const z) {
+static Z80_INLINE uint16_t nextw(z80* const z) {
   z->pc += 2;
   return rw(z, z->pc - 2);
 }
 
-static inline uint16_t get_bc(z80* const z) {
+static Z80_INLINE uint16_t get_bc(z80* const z) {
   return (z->b << 8) | z->c;
 }
 
-static inline uint16_t get_de(z80* const z) {
+static Z80_INLINE uint16_t get_de(z80* const z) {
   return (z->d << 8) | z->e;
 }
 
-static inline uint16_t get_hl(z80* const z) {
+static Z80_INLINE uint16_t get_hl(z80* const z) {
   return (z->h << 8) | z->l;
 }
 
-static inline void set_bc(z80* const z, uint16_t val) {
+static Z80_INLINE void set_bc(z80* const z, uint16_t val) {
   z->b = val >> 8;
   z->c = val & 0xFF;
 }
 
-static inline void set_de(z80* const z, uint16_t val) {
+static Z80_INLINE void set_de(z80* const z, uint16_t val) {
   z->d = val >> 8;
   z->e = val & 0xFF;
 }
 
-static inline void set_hl(z80* const z, uint16_t val) {
+static Z80_INLINE void set_hl(z80* const z, uint16_t val) {
   z->h = val >> 8;
   z->l = val & 0xFF;
 }
 
-static inline uint8_t get_f(z80* const z) {
+static Z80_INLINE uint8_t get_f(z80* const z) {
   uint8_t val = 0;
   val |= z->cf << 0;
   val |= z->nf << 1;
@@ -128,7 +132,7 @@ static inline uint8_t get_f(z80* const z) {
   return val;
 }
 
-static inline void set_f(z80* const z, uint8_t val) {
+static Z80_INLINE void set_f(z80* const z, uint8_t val) {
   z->cf = (val >> 0) & 1;
   z->nf = (val >> 1) & 1;
   z->pf = (val >> 2) & 1;
@@ -140,20 +144,20 @@ static inline void set_f(z80* const z, uint8_t val) {
 }
 
 // increments R, keeping the highest byte intact
-static inline void inc_r(z80* const z) {
+static Z80_INLINE void inc_r(z80* const z) {
   z->r = (z->r & 0x80) | ((z->r + 1) & 0x7f);
 }
 
 // returns if there was a carry between bit "bit_no" and "bit_no - 1" when
 // executing "a + b + cy"
-static inline bool carry(int bit_no, uint16_t a, uint16_t b, bool cy) {
+static Z80_INLINE bool carry(int bit_no, uint16_t a, uint16_t b, bool cy) {
   int32_t result = a + b + cy;
   int32_t carry = result ^ a ^ b;
   return carry & (1 << bit_no);
 }
 
 // returns the parity of byte: 0 if number of 1 bits in `val` is odd, else 1
-static inline bool parity(uint8_t val) {
+static Z80_INLINE bool parity(uint8_t val) {
   val ^= val >> 4;
   return (0x9669 >> (val & 15)) & 1; // pacemu: was a bit-counting loop
 }
@@ -167,13 +171,13 @@ static void exec_opcode_ddfd(z80* const z, uint8_t opcode, uint16_t* const iz);
 
 // MARK: opcodes
 // jumps to an address
-static inline void jump(z80* const z, uint16_t addr) {
+static Z80_INLINE void jump(z80* const z, uint16_t addr) {
   z->pc = addr;
   z->mem_ptr = addr;
 }
 
 // jumps to next word in memory if condition is true
-static inline void cond_jump(z80* const z, bool condition) {
+static Z80_INLINE void cond_jump(z80* const z, bool condition) {
   const uint16_t addr = nextw(z);
   if (condition) {
     jump(z, addr);
@@ -182,14 +186,14 @@ static inline void cond_jump(z80* const z, bool condition) {
 }
 
 // calls to next word in memory
-static inline void call(z80* const z, uint16_t addr) {
+static Z80_INLINE void call(z80* const z, uint16_t addr) {
   pushw(z, z->pc);
   z->pc = addr;
   z->mem_ptr = addr;
 }
 
 // calls to next word in memory if condition is true
-static inline void cond_call(z80* const z, bool condition) {
+static Z80_INLINE void cond_call(z80* const z, bool condition) {
   const uint16_t addr = nextw(z);
   if (condition) {
     call(z, addr);
@@ -199,25 +203,25 @@ static inline void cond_call(z80* const z, bool condition) {
 }
 
 // returns from subroutine
-static inline void ret(z80* const z) {
+static Z80_INLINE void ret(z80* const z) {
   z->pc = popw(z);
   z->mem_ptr = z->pc;
 }
 
 // returns from subroutine if condition is true
-static inline void cond_ret(z80* const z, bool condition) {
+static Z80_INLINE void cond_ret(z80* const z, bool condition) {
   if (condition) {
     ret(z);
     z->cyc += 6;
   }
 }
 
-static inline void jr(z80* const z, int8_t displacement) {
+static Z80_INLINE void jr(z80* const z, int8_t displacement) {
   z->pc += displacement;
   z->mem_ptr = z->pc;
 }
 
-static inline void cond_jr(z80* const z, bool condition) {
+static Z80_INLINE void cond_jr(z80* const z, bool condition) {
   const int8_t b = nextb(z);
   if (condition) {
     jr(z, b);
@@ -226,7 +230,7 @@ static inline void cond_jr(z80* const z, bool condition) {
 }
 
 // ADD Byte: adds two bytes together
-static inline uint8_t addb(z80* const z, uint8_t a, uint8_t b, bool cy) {
+static Z80_INLINE uint8_t addb(z80* const z, uint8_t a, uint8_t b, bool cy) {
   const uint8_t result = a + b + cy;
   z->sf = result >> 7;
   z->zf = result == 0;
@@ -240,7 +244,7 @@ static inline uint8_t addb(z80* const z, uint8_t a, uint8_t b, bool cy) {
 }
 
 // SUBstract Byte: substracts two bytes (with optional carry)
-static inline uint8_t subb(z80* const z, uint8_t a, uint8_t b, bool cy) {
+static Z80_INLINE uint8_t subb(z80* const z, uint8_t a, uint8_t b, bool cy) {
   uint8_t val = addb(z, a, ~b, !cy);
   z->cf = !z->cf;
   z->hf = !z->hf;
@@ -249,7 +253,7 @@ static inline uint8_t subb(z80* const z, uint8_t a, uint8_t b, bool cy) {
 }
 
 // ADD Word: adds two words together
-static inline uint16_t addw(z80* const z, uint16_t a, uint16_t b, bool cy) {
+static Z80_INLINE uint16_t addw(z80* const z, uint16_t a, uint16_t b, bool cy) {
   uint8_t lsb = addb(z, a, b, cy);
   uint8_t msb = addb(z, a >> 8, b >> 8, z->cf);
 
@@ -260,7 +264,7 @@ static inline uint16_t addw(z80* const z, uint16_t a, uint16_t b, bool cy) {
 }
 
 // SUBstract Word: substracts two words (with optional carry)
-static inline uint16_t subw(z80* const z, uint16_t a, uint16_t b, bool cy) {
+static Z80_INLINE uint16_t subw(z80* const z, uint16_t a, uint16_t b, bool cy) {
   uint8_t lsb = subb(z, a, b, cy);
   uint8_t msb = subb(z, a >> 8, b >> 8, z->cf);
 
@@ -271,7 +275,7 @@ static inline uint16_t subw(z80* const z, uint16_t a, uint16_t b, bool cy) {
 }
 
 // adds a word to HL
-static inline void addhl(z80* const z, uint16_t val) {
+static Z80_INLINE void addhl(z80* const z, uint16_t val) {
   bool sf = z->sf;
   bool zf = z->zf;
   bool pf = z->pf;
@@ -283,7 +287,7 @@ static inline void addhl(z80* const z, uint16_t val) {
 }
 
 // adds a word to IX or IY
-static inline void addiz(z80* const z, uint16_t* reg, uint16_t val) {
+static Z80_INLINE void addiz(z80* const z, uint16_t* reg, uint16_t val) {
   bool sf = z->sf;
   bool zf = z->zf;
   bool pf = z->pf;
@@ -295,7 +299,7 @@ static inline void addiz(z80* const z, uint16_t* reg, uint16_t val) {
 }
 
 // adds a word (+ carry) to HL
-static inline void adchl(z80* const z, uint16_t val) {
+static Z80_INLINE void adchl(z80* const z, uint16_t val) {
   uint16_t result = addw(z, get_hl(z), val, z->cf);
   z->sf = result >> 15;
   z->zf = result == 0;
@@ -303,7 +307,7 @@ static inline void adchl(z80* const z, uint16_t val) {
 }
 
 // substracts a word (+ carry) to HL
-static inline void sbchl(z80* const z, uint16_t val) {
+static Z80_INLINE void sbchl(z80* const z, uint16_t val) {
   const uint16_t result = subw(z, get_hl(z), val, z->cf);
   z->sf = result >> 15;
   z->zf = result == 0;
@@ -311,7 +315,7 @@ static inline void sbchl(z80* const z, uint16_t val) {
 }
 
 // increments a byte value
-static inline uint8_t inc(z80* const z, uint8_t a) {
+static Z80_INLINE uint8_t inc(z80* const z, uint8_t a) {
   bool cf = z->cf;
   uint8_t result = addb(z, a, 1, 0);
   z->cf = cf;
@@ -319,7 +323,7 @@ static inline uint8_t inc(z80* const z, uint8_t a) {
 }
 
 // decrements a byte value
-static inline uint8_t dec(z80* const z, uint8_t a) {
+static Z80_INLINE uint8_t dec(z80* const z, uint8_t a) {
   bool cf = z->cf;
   uint8_t result = subb(z, a, 1, 0);
   z->cf = cf;
@@ -330,7 +334,7 @@ static inline uint8_t dec(z80* const z, uint8_t a) {
 
 // executes a logic "and" between register A and a byte, then stores the
 // result in register A
-static inline void land(z80* const z, uint8_t val) {
+static Z80_INLINE void land(z80* const z, uint8_t val) {
   const uint8_t result = z->a & val;
   z->sf = result >> 7;
   z->zf = result == 0;
@@ -345,7 +349,7 @@ static inline void land(z80* const z, uint8_t val) {
 
 // executes a logic "xor" between register A and a byte, then stores the
 // result in register A
-static inline void lxor(z80* const z, const uint8_t val) {
+static Z80_INLINE void lxor(z80* const z, const uint8_t val) {
   const uint8_t result = z->a ^ val;
   z->sf = result >> 7;
   z->zf = result == 0;
@@ -360,7 +364,7 @@ static inline void lxor(z80* const z, const uint8_t val) {
 
 // executes a logic "or" between register A and a byte, then stores the
 // result in register A
-static inline void lor(z80* const z, const uint8_t val) {
+static Z80_INLINE void lor(z80* const z, const uint8_t val) {
   const uint8_t result = z->a | val;
   z->sf = result >> 7;
   z->zf = result == 0;
@@ -374,7 +378,7 @@ static inline void lor(z80* const z, const uint8_t val) {
 }
 
 // compares a value with register A
-static inline void cp(z80* const z, const uint8_t val) {
+static Z80_INLINE void cp(z80* const z, const uint8_t val) {
   subb(z, z->a, val, 0);
 
   // the only difference between cp and sub is that
@@ -386,7 +390,7 @@ static inline void cp(z80* const z, const uint8_t val) {
 
 // 0xCB opcodes
 // rotate left with carry
-static inline uint8_t cb_rlc(z80* const z, uint8_t val) {
+static Z80_INLINE uint8_t cb_rlc(z80* const z, uint8_t val) {
   const bool old = val >> 7;
   val = (val << 1) | old;
   z->sf = val >> 7;
@@ -401,7 +405,7 @@ static inline uint8_t cb_rlc(z80* const z, uint8_t val) {
 }
 
 // rotate right with carry
-static inline uint8_t cb_rrc(z80* const z, uint8_t val) {
+static Z80_INLINE uint8_t cb_rrc(z80* const z, uint8_t val) {
   const bool old = val & 1;
   val = (val >> 1) | (old << 7);
   z->sf = val >> 7;
@@ -416,7 +420,7 @@ static inline uint8_t cb_rrc(z80* const z, uint8_t val) {
 }
 
 // rotate left (simple)
-static inline uint8_t cb_rl(z80* const z, uint8_t val) {
+static Z80_INLINE uint8_t cb_rl(z80* const z, uint8_t val) {
   const bool cf = z->cf;
   z->cf = val >> 7;
   val = (val << 1) | cf;
@@ -431,7 +435,7 @@ static inline uint8_t cb_rl(z80* const z, uint8_t val) {
 }
 
 // rotate right (simple)
-static inline uint8_t cb_rr(z80* const z, uint8_t val) {
+static Z80_INLINE uint8_t cb_rr(z80* const z, uint8_t val) {
   const bool c = z->cf;
   z->cf = val & 1;
   val = (val >> 1) | (c << 7);
@@ -446,7 +450,7 @@ static inline uint8_t cb_rr(z80* const z, uint8_t val) {
 }
 
 // shift left preserving sign
-static inline uint8_t cb_sla(z80* const z, uint8_t val) {
+static Z80_INLINE uint8_t cb_sla(z80* const z, uint8_t val) {
   z->cf = val >> 7;
   val <<= 1;
   z->sf = val >> 7;
@@ -460,7 +464,7 @@ static inline uint8_t cb_sla(z80* const z, uint8_t val) {
 }
 
 // SLL (exactly like SLA, but sets the first bit to 1)
-static inline uint8_t cb_sll(z80* const z, uint8_t val) {
+static Z80_INLINE uint8_t cb_sll(z80* const z, uint8_t val) {
   z->cf = val >> 7;
   val <<= 1;
   val |= 1;
@@ -475,7 +479,7 @@ static inline uint8_t cb_sll(z80* const z, uint8_t val) {
 }
 
 // shift right preserving sign
-static inline uint8_t cb_sra(z80* const z, uint8_t val) {
+static Z80_INLINE uint8_t cb_sra(z80* const z, uint8_t val) {
   z->cf = val & 1;
   val = (val >> 1) | (val & 0x80); // 0b10000000
   z->sf = val >> 7;
@@ -489,7 +493,7 @@ static inline uint8_t cb_sra(z80* const z, uint8_t val) {
 }
 
 // shift register right
-static inline uint8_t cb_srl(z80* const z, uint8_t val) {
+static Z80_INLINE uint8_t cb_srl(z80* const z, uint8_t val) {
   z->cf = val & 1;
   val >>= 1;
   z->sf = val >> 7;
@@ -503,7 +507,7 @@ static inline uint8_t cb_srl(z80* const z, uint8_t val) {
 }
 
 // tests bit "n" from a byte
-static inline uint8_t cb_bit(z80* const z, uint8_t val, uint8_t n) {
+static Z80_INLINE uint8_t cb_bit(z80* const z, uint8_t val, uint8_t n) {
   const uint8_t result = val & (1 << n);
   z->sf = result >> 7;
   z->zf = result == 0;
@@ -515,7 +519,7 @@ static inline uint8_t cb_bit(z80* const z, uint8_t val, uint8_t n) {
   return result;
 }
 
-static inline void ldi(z80* const z) {
+static Z80_INLINE void ldi(z80* const z) {
   const uint16_t de = get_de(z);
   const uint16_t hl = get_hl(z);
   const uint8_t val = rb(z, hl);
@@ -537,14 +541,14 @@ static inline void ldi(z80* const z) {
   z->pf = get_bc(z) > 0;
 }
 
-static inline void ldd(z80* const z) {
+static Z80_INLINE void ldd(z80* const z) {
   ldi(z);
   // same as ldi but HL and DE are decremented instead of incremented
   set_hl(z, get_hl(z) - 2);
   set_de(z, get_de(z) - 2);
 }
 
-static inline void cpi(z80* const z) {
+static Z80_INLINE void cpi(z80* const z) {
   bool cf = z->cf;
   const uint8_t result = subb(z, z->a, rb(z, get_hl(z)), 0);
   set_hl(z, get_hl(z) + 1);
@@ -556,7 +560,7 @@ static inline void cpi(z80* const z) {
   z->mem_ptr += 1;
 }
 
-static inline void cpd(z80* const z) {
+static Z80_INLINE void cpd(z80* const z) {
   cpi(z);
   // same as cpi but HL is decremented instead of incremented
   set_hl(z, get_hl(z) - 2);
@@ -639,14 +643,14 @@ static void daa(z80* const z) {
   z->yf = GET_BIT(5, z->a);
 }
 
-static inline uint16_t displace(
+static Z80_INLINE uint16_t displace(
     z80* const z, uint16_t base_addr, int8_t displacement) {
   const uint16_t addr = base_addr + displacement;
   z->mem_ptr = addr;
   return addr;
 }
 
-static inline void process_interrupts(z80* const z) {
+static Z80_INLINE void process_interrupts(z80* const z) {
   // "When an EI instruction is executed, any pending interrupt request
   // is not accepted until after the instruction following EI is executed."
   if (z->iff_delay > 0) {
@@ -796,7 +800,10 @@ void z80_gen_int(z80* const z, uint8_t data) {
 }
 
 // executes a non-prefixed opcode
-void exec_opcode(z80* const z, uint8_t opcode) {
+static Z80_INLINE void exec_opcode_inl(z80* const z, uint8_t opcode);
+void exec_opcode(z80* const z, uint8_t opcode) { exec_opcode_inl(z, opcode); }
+// pacemu: the body, which pacemu inlines into its run loop (a call per instruction costs more)
+static Z80_INLINE void exec_opcode_inl(z80* const z, uint8_t opcode) {
   z->cyc += cyc_00[opcode];
   inc_r(z);
 

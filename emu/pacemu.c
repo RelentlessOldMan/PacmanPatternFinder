@@ -6,6 +6,7 @@
  * The whole machine state is one flat struct, so a savestate is a memcpy.
  *
  * Build: build.bat (MSVC) -> pacemu.dll, used from Python through emu.py. */
+#include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,6 +42,10 @@ typedef struct {
   int edge_on, edge_n;    /* see pm_edge */
   uint16_t edge_addr[8];
   uint8_t edge_old[8];
+  /* memory pages for the fast path (rebuilt by hook): NULL means go through rd/wr */
+  uint8_t *rp[256], *wp[256], **wt; /* wt: the write table in use (wnone while logging writes) */
+  uint8_t *wnone[256];
+  uint8_t bf[256], sink[256];
 } pm;
 
 /* debugging: log writes to one address */
@@ -106,9 +111,19 @@ static void wr(void *u, uint16_t a, uint8_t v) {
   }
 }
 
-/* the Z80 core, built in this file so rd/wr inline into it */
-#define Z80_READ(u, a) rd(u, a)
-#define Z80_WRITE(u, a, v) wr(u, a, v)
+static __forceinline uint8_t rd_fast(pm *m, uint16_t a) {
+  uint8_t *p = m->rp[a >> 8];
+  return p ? p[a & 255] : rd(m, a);
+}
+static __forceinline void wr_fast(pm *m, uint16_t a, uint8_t v) {
+  uint8_t *p = m->wt[a >> 8];
+  if (p) p[a & 255] = v; else wr(m, a, v);
+}
+#define PM_OF(z) ((pm *)((char *)(z) - offsetof(pm, s.cpu)))
+/* the Z80 core, built in this file so memory access inlines into it */
+#define Z80_READ(u, a) rd_fast(PM_OF(z), a)
+#define Z80_WRITE(u, a, v) wr_fast(PM_OF(z), a, v)
+#define Z80_INLINE __forceinline
 #include "z80.c"
 
 static uint8_t pin(z80 *z, uint8_t port) { (void)z; (void)port; return 0xFF; }
@@ -117,6 +132,17 @@ static void pout(z80 *z, uint8_t port, uint8_t v) {
 }
 
 static void hook(pm *m) {
+  memset(m->bf, 0xBF, sizeof m->bf);
+  for (int pg = 0; pg < 256; pg++) { /* the same decoding as rd/wr, per 256-byte page */
+    uint16_t a = (uint16_t)(pg << 8);
+    m->rp[pg] = m->wp[pg] = m->wnone[pg] = NULL;
+    a &= 0x7FFF;
+    if (a < 0x4000) { m->rp[pg] = &m->rom[a]; m->wp[pg] = m->sink; continue; }
+    a &= ~0x2000;
+    if (a < 0x4800 || (a >= 0x4C00 && a < 0x5000)) { m->rp[pg] = m->wp[pg] = &m->s.ram[a - 0x4000]; continue; }
+    if (a < 0x4C00) { m->rp[pg] = m->bf; m->wp[pg] = m->sink; }
+  }
+  m->wt = m->wp;
   m->s.cpu.read_byte = rd;
   m->s.cpu.write_byte = wr;
   m->s.cpu.port_in = pin;
@@ -193,9 +219,16 @@ static void vblank(pm *m) {
   }
 }
 
+static __declspec(noinline) void step_slow(z80 *z) {
+  process_interrupts(z);
+  exec_opcode(z, z->halted ? 0x00 : nextb(z));
+}
+
 /* Run up to the next frame end (where MAME's frame notifier runs). */
 EXPORT void pm_frame(pm *m) {
   z80 *z = &m->s.cpu;
+  uint8_t **wfast = watch_addr >= 0 ? m->wnone : m->wp; /* watching: every write through wr */
+  m->wt = wfast;
   for (;;) {
     uint32_t c = (uint32_t)z->cyc;
     if ((int32_t)(c - m->s.vblank) >= 0) {
@@ -215,12 +248,29 @@ EXPORT void pm_frame(pm *m) {
         continue;
       }
     }
+    /* Fast path: far enough from the next vblank / frame end that no instruction (plus an interrupt)
+       can reach it, run without the edge log until then or until the idle loop. */
+    uint32_t ev = ((int32_t)(m->s.vblank - m->s.frame_end) < 0) ? m->s.vblank : m->s.frame_end;
+    ev -= 64;
+    if ((int32_t)(c - ev) < 0) {
+      m->edge_n = 0;
+      do {
+        /* the IRQ line only rises at vblank, so with it low and no EI pending there's nothing to check */
+        if (m->s.line | z->iff_delay | z->nmi_pending) {
+          z->int_pending = m->s.line;
+          z->int_data = m->s.vector;
+          process_interrupts(z);
+        }
+        exec_opcode_inl(z, z->halted ? 0x00 : nextb(z));
+      } while ((int32_t)((uint32_t)z->cyc - ev) < 0 && z->pc != 0x238D);
+      continue;
+    }
     z->int_pending = m->s.line;
     z->int_data = m->s.vector;
     m->edge_n = 0;
-    m->edge_on = 1;
-    z80_step(z);
-    m->edge_on = 0;
+    m->edge_on = 1; m->wt = m->wnone;
+    step_slow(z);
+    m->edge_on = 0; m->wt = wfast;
     if ((int32_t)((uint32_t)z->cyc - m->s.frame_end) <= 0) m->edge_n = 0; /* ended by the frame end: not crossing */
   }
   m->s.frame_end += CYC_FRAME;
