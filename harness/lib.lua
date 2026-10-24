@@ -14,7 +14,7 @@ end
 H.fields = fields
 
 function H.rd(a) return H.mem:read_u8(a) end
-function H.wr(a, v) H.mem:write_u8(a, v) end
+function H.wr(a, v) if H.trace_poke then H.trace_poke(a, v) end H.mem:write_u8(a, v) end
 
 function H.wait(n)
   for _ = 1, (n or 1) do coroutine.yield() end
@@ -54,9 +54,37 @@ H.A = {
   level = 0x4E13, lives = 0x4E14,
 }
 
+-- PACMAN_TRACE=<prefix> (for checking emu/pacemu against MAME): at every frame notifier write
+-- 0x4000-0x4FFF to <prefix>.ram and "frame IN0 IN1" to <prefix>.txt (the values the CPU read since the
+-- last notifier, "-" if none, "a/b" if they changed), then one "poke addr value" line per H.wr.
+local trace
+if os.getenv("PACMAN_TRACE") then
+  local pre = os.getenv("PACMAN_TRACE")
+  trace = { ram = assert(io.open(pre .. ".ram", "wb")), txt = assert(io.open(pre .. ".txt", "w")),
+    seen = { [0] = {}, [1] = {} }, f = 0 }
+  local function note(p, v) local s = trace.seen[p]; if s[#s] ~= v then s[#s + 1] = v end end
+  trace.taps = { H.mem:install_read_tap(0x5000, 0x5000, "tr0", function(o, d) note(0, d) end),
+    H.mem:install_read_tap(0x5040, 0x5040, "tr1", function(o, d) note(1, d) end) }
+  local function fmt(s)
+    if #s == 0 then return "-" end
+    local o = {}
+    for i, v in ipairs(s) do o[i] = string.format("%02X", v) end
+    return table.concat(o, "/")
+  end
+  function trace.record()
+    trace.ram:write(H.mem:read_range(0x4000, 0x4FFF, 8))
+    trace.txt:write(string.format("%d %s %s\n", trace.f, fmt(trace.seen[0]), fmt(trace.seen[1])))
+    trace.seen[0], trace.seen[1] = {}, {}
+    trace.f = trace.f + 1
+    trace.ram:flush(); trace.txt:flush()
+  end
+  H.trace_poke = function(a, v) trace.txt:write(string.format("poke %04X %02X\n", a, v)) end
+end
+
 function H.run(fn)
   local co = coroutine.create(function() fn(); H.machine:exit() end)
   H.sub = emu.add_machine_frame_notifier(function()
+    if trace then trace.record() end
     H.frame = H.frame + 1
     if coroutine.status(co) == "dead" then return end
     local t = emu.osd_ticks()

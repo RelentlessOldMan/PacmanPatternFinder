@@ -18,3 +18,10 @@ videos/*
 !videos/L21_118_level21.mp4
 # game logs written by pacman.bat / watch.lua
 logs/
+# pacemu build output, MAME traces, and the MAME sources kept locally for reference
+emu/*.dll
+emu/*.lib
+emu/*.exp
+emu/*.obj
+emu/traces/
+emu/ref/
