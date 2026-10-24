@@ -1,0 +1,34 @@
+[cw] Started pid 46248 (full).
+start 1 ok f=932 tile=13,23 dir=2 dots=0 level=1 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} on={'L1': 1} best=2 fruit=0 t=0s ram=1 states (peak 1 ~0.0GB) moved=0 busy=34% copy=0s
+d=10 jobs=119 kids=118 fails={} on={} best=34 fruit=0 t=0s ram=118 states (peak 184 ~0.0GB) moved=35 busy=52% copy=0s
+d=20 jobs=539 kids=377 fails={'ghostmiss': 138, 'dead': 10, 'shortwin': 1} on={'L1': 149} best=73 fruit=0 t=7s ram=300 states (peak 818 ~0.0GB) moved=372 busy=70% copy=0s
+d=30 jobs=317 kids=118 fails={'ghostmiss': 184, 'dead': 9} on={'L1': 193} best=88 fruit=0 t=13s ram=118 states (peak 818 ~0.0GB) moved=670 busy=70% copy=0s
+d=35 beam died: backtrack #1 to d=30, 182/183 candidates left after dropping the dead family
+d=30 jobs=315 kids=116 fails={'ghostmiss': 184, 'dead': 9} on={'L1': 193} best=88 fruit=0 t=14s ram=116 states (peak 818 ~0.0GB) moved=757 busy=70% copy=0s
+d=34 beam died: backtrack #2 to d=25, 299/300 candidates left after dropping the dead family
+d=30 jobs=301 kids=91 fails={'ghostmiss': 199, 'dead': 10} on={'L1': 209} best=88 fruit=0 t=18s ram=91 states (peak 818 ~0.0GB) moved=995 busy=70% copy=0s
+d=32 beam died: backtrack #3 to d=20, 297/300 candidates left after dropping the dead family
+d=20 jobs=534 kids=372 fails={'ghostmiss': 138, 'dead': 10, 'shortwin': 1} on={'L1': 149} best=73 fruit=0 t=19s ram=300 states (peak 818 ~0.0GB) moved=1038 busy=71% copy=0s
+d=30 jobs=402 kids=189 fails={'ghostmiss': 185, 'dead': 13} on={'L1': 198} best=89 fruit=1 t=26s ram=189 states (peak 818 ~0.0GB) moved=1330 busy=71% copy=0s
+d=38 beam died: backtrack #4 to d=35, 178/181 candidates left after dropping the dead family
+d=37 beam died: backtrack #5 to d=30, 221/226 candidates left after dropping the dead family
+d=30 jobs=392 kids=179 fails={'ghostmiss': 185, 'dead': 13} on={'L1': 198} best=89 fruit=1 t=29s ram=179 states (peak 818 ~0.0GB) moved=1520 busy=71% copy=0s
+d=36 beam died: backtrack #6 to d=25, 296/300 candidates left after dropping the dead family
+d=30 jobs=346 kids=136 fails={'ghostmiss': 185, 'dead': 14} on={'L1': 199} best=89 fruit=1 t=34s ram=136 states (peak 818 ~0.0GB) moved=1833 busy=70% copy=0s
+d=35 beam died: backtrack #7 to d=20, 295/297 candidates left after dropping the dead family
+d=20 jobs=532 kids=370 fails={'ghostmiss': 138, 'dead': 10, 'shortwin': 1} on={'L1': 149} best=73 fruit=0 t=35s ram=300 states (peak 818 ~0.0GB) moved=1934 busy=70% copy=0s
+d=30 jobs=326 kids=106 fails={'ghostmiss': 204, 'dead': 14} on={'L1': 218} best=89 fruit=1 t=42s ram=106 states (peak 818 ~0.0GB) moved=2279 busy=71% copy=0s
+d=33 beam died: backtrack #8 to d=15, 299/300 candidates left after dropping the dead family
+d=20 jobs=537 kids=375 fails={'ghostmiss': 138, 'dead': 10, 'shortwin': 1} on={'L1': 149} best=73 fruit=0 t=46s ram=300 states (peak 818 ~0.0GB) moved=2482 busy=71% copy=0s
+d=30 jobs=348 kids=175 fails={'ghostmiss': 141, 'dead': 17} on={'L1': 158} best=89 fruit=1 t=53s ram=175 states (peak 818 ~0.0GB) moved=2822 busy=72% copy=0s
+d=38 beam died: backtrack #9 to d=10, 64/65 candidates left after dropping the dead family
+d=10 jobs=117 kids=116 fails={} on={} best=34 fruit=0 t=55s ram=116 states (peak 818 ~0.0GB) moved=2994 busy=72% copy=0s
+d=20 jobs=542 kids=380 fails={'ghostmiss': 138, 'dead': 10, 'shortwin': 1} on={'L1': 149} best=73 fruit=0 t=62s ram=300 states (peak 819 ~0.0GB) moved=3297 busy=72% copy=0s
+d=30 jobs=304 kids=99 fails={'ghostmiss': 190, 'dead': 13} on={'L1': 203} best=89 fruit=1 t=68s ram=99 states (peak 819 ~0.0GB) moved=3639 busy=72% copy=0s
+d=32 beam died: backtrack #10 to d=5, 5/7 candidates left after dropping the dead family
+d=10 jobs=106 kids=106 fails={} on={} best=34 fruit=0 t=69s ram=106 states (peak 819 ~0.0GB) moved=3709 busy=72% copy=0s
+d=20 jobs=539 kids=373 fails={'ghostmiss': 143, 'dead': 9} on={'L1': 152} best=73 fruit=0 t=75s ram=300 states (peak 819 ~0.0GB) moved=3996 busy=72% copy=0s
+d=30 jobs=17 kids=0 fails={'ghostmiss': 17} on={'L1': 17} best=- fruit=- t=80s ram=0 states (peak 819 ~0.0GB) moved=4350 busy=72% copy=0s
+RESULT cleared=False dots=103 frames=1074 fruits=0 moves=38 turns=27 minwin=13 route=LDRDRRULLUUUUURDLUURDLLDLDRDDDRDLDLDLU
+[cw] Exited with code 0.

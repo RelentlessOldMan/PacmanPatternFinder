@@ -1,0 +1,85 @@
+[cw] Started pid 42424 (full).
+start 4 ok f=2630 tile=13,23 dir=2 dots=0 level=4 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} on={'L4': 1} best=2 fruit=0 t=0s ram=1 states (peak 1 ~0.0GB) moved=0 busy=49% copy=0s
+d=10 jobs=74 kids=66 fails={'dead': 5, 'ghostmiss': 3} on={'L4': 8} best=37 fruit=0 t=1s ram=571 states (peak 903 ~0.0GB) moved=31 busy=57% copy=0s
+d=20 jobs=541 kids=424 fails={'ghostmiss': 66, 'dead': 46, 'shortwin': 1} on={'L4': 103, 'late': 10} best=59 fruit=0 t=11s ram=3531 states (peak 8379 ~0.1GB) moved=349 busy=83% copy=0s
+d=30 jobs=555 kids=354 fails={'ghostmiss': 168, 'dead': 30} on={'L4': 165, 'late': 33} best=77 fruit=1 t=26s ram=4573 states (peak 11258 ~0.1GB) moved=823 busy=83% copy=0s
+d=40 jobs=544 kids=443 fails={'dead': 38, 'ghostmiss': 52} on={'L4': 69, 'late': 21} best=114 fruit=1 t=43s ram=4121 states (peak 11446 ~0.1GB) moved=1314 busy=85% copy=0s
+d=50 jobs=570 kids=391 fails={'ghostmiss': 118, 'dead': 50} on={'late': 29, 'L4': 139} best=137 fruit=1 t=62s ram=5185 states (peak 12407 ~0.1GB) moved=1757 busy=85% copy=0s
+d=60 jobs=549 kids=419 fails={'ghostmiss': 101, 'dead': 18} on={'L4': 105, 'late': 14} best=161 fruit=1 t=82s ram=5435 states (peak 13459 ~0.1GB) moved=2088 busy=84% copy=1s
+d=70 jobs=534 kids=386 fails={'ghostmiss': 108, 'dead': 18} on={'L4': 104, 'late': 22} best=177 fruit=1 t=104s ram=5274 states (peak 14054 ~0.1GB) moved=2558 busy=84% copy=1s
+d=80 jobs=537 kids=382 fails={'ghostmiss': 75, 'dead': 47, 'shortwin': 1} on={'L4': 113, 'late': 10} best=184 fruit=2 t=122s ram=4790 states (peak 14054 ~0.1GB) moved=2889 busy=84% copy=1s
+d=84 endgame: 144 planned cleanups tried -> none cleared {'ghostmiss:L4': '135x avg37left', 'ghostmiss:late': '9x avg38left'}
+d=87 endgame: 144 planned cleanups tried -> none cleared {'ghostmiss:L4': '142x avg36left', 'ghostmiss:late': '2x avg33left'}
+d=90 endgame: 142 planned cleanups tried -> none cleared {'ghostmiss:L4': '106x avg36left', 'ghostmiss:late': '12x avg36left', 'dead:late': '12x avg40left', 'dead:L4': '12x avg34left'}
+d=90 jobs=544 kids=377 fails={'ghostmiss': 133, 'dead': 20} on={'L4': 151, 'late': 2} best=194 fruit=2 t=145s ram=5320 states (peak 14054 ~0.1GB) moved=3244 busy=83% copy=1s
+d=93 endgame: 144 planned cleanups tried -> none cleared {'ghostmiss:L4': '110x avg37left', 'ghostmiss:late': '27x avg38left', 'dead:L4': '7x avg38left'}
+d=96 endgame: 141 planned cleanups tried -> none cleared {'ghostmiss:L4': '141x avg36left'}
+d=99 endgame: 143 planned cleanups tried -> none cleared {'ghostmiss:L4': '128x avg37left', 'ghostmiss:late': '15x avg36left'}
+d=100 jobs=553 kids=412 fails={'ghostmiss': 60, 'dead': 24, 'shortwin': 1} on={'L4': 78, 'late': 7} best=200 fruit=2 t=167s ram=5733 states (peak 14999 ~0.1GB) moved=3516 busy=82% copy=1s
+d=102 endgame: 143 planned cleanups tried -> none cleared {'ghostmiss:L4': '117x avg32left', 'ghostmiss:late': '26x avg32left'}
+d=105 endgame: 143 planned cleanups tried -> none cleared {'ghostmiss:L4': '126x avg32left', 'ghostmiss:late': '9x avg31left', 'dead:L4': '8x avg32left'}
+d=108 endgame: 142 planned cleanups tried -> none cleared {'ghostmiss:L4': '132x avg31left', 'dead:L4': '10x avg38left'}
+d=110 jobs=538 kids=303 fails={'ghostmiss': 189, 'dead': 25} on={'L4': 203, 'late': 11} best=216 fruit=2 t=191s ram=7247 states (peak 15162 ~0.1GB) moved=3835 busy=82% copy=1s
+d=111 endgame: 143 planned cleanups tried -> none cleared {'ghostmiss:L4': '143x avg30left'}
+d=114 endgame: 141 planned cleanups tried -> none cleared {'ghostmiss:L4': '129x avg32left', 'dead:L4': '12x avg32left'}
+d=117 endgame: 139 planned cleanups tried -> none cleared {'ghostmiss:L4': '128x avg31left', 'ghostmiss:late': '11x avg28left'}
+d=120 endgame: 139 planned cleanups tried -> none cleared {'ghostmiss:L4': '101x avg31left', 'dead:L4': '23x avg28left', 'ghostmiss:late': '15x avg31left'}
+d=120 jobs=524 kids=309 fails={'ghostmiss': 81, 'dead': 32, 'shortwin': 2} on={'L4': 94, 'late': 21} best=212 fruit=2 t=216s ram=7584 states (peak 17760 ~0.1GB) moved=4137 busy=82% copy=2s
+d=123 endgame: 140 planned cleanups tried -> none cleared {'ghostmiss:L4': '102x avg29left', 'dead:L4': '24x avg28left', 'ghostmiss:late': '14x avg28left'}
+d=126 endgame: 140 planned cleanups tried -> none cleared {'ghostmiss:L4': '136x avg31left', 'ghostmiss:late': '4x avg28left'}
+d=129 endgame: 141 planned cleanups tried -> none cleared {'ghostmiss:L4': '129x avg29left', 'dead:L4': '12x avg32left'}
+d=130 jobs=546 kids=327 fails={'ghostmiss': 110, 'dead': 24} on={'L4': 117, 'late': 17} best=212 fruit=2 t=244s ram=7852 states (peak 18888 ~0.1GB) moved=4433 busy=81% copy=2s
+d=132 endgame: 140 planned cleanups tried -> none cleared {'ghostmiss:L4': '123x avg29left', 'ghostmiss:late': '17x avg28left'}
+d=135 endgame: 141 planned cleanups tried -> none cleared {'ghostmiss:L4': '118x avg29left', 'dead:L4': '15x avg31left', 'ghostmiss:late': '8x avg30left'}
+d=138 endgame: 136 planned cleanups tried -> none cleared {'ghostmiss:L4': '136x avg29left'}
+d=138 no progress past 216 dots: backtrack #1 to d=135, 218/300 candidates left after dropping the dead family
+d=135 endgame: 139 planned cleanups tried -> none cleared {'ghostmiss:L4': '124x avg29left', 'dead:L4': '11x avg32left', 'ghostmiss:late': '4x avg32left'}
+d=138 endgame: 139 planned cleanups tried -> none cleared {'ghostmiss:L4': '132x avg31left', 'ghostmiss:late': '5x avg32left', 'dead:L4': '2x avg28left'}
+d=140 jobs=347 kids=225 fails={'ghostmiss': 18, 'dead': 19, 'shortwin': 1} on={'L4': 28, 'late': 10} best=212 fruit=2 t=280s ram=5835 states (peak 25595 ~0.2GB) moved=4794 busy=81% copy=2s
+d=141 endgame: 140 planned cleanups tried -> none cleared {'ghostmiss:L4': '136x avg31left', 'ghostmiss:late': '4x avg32left'}
+d=144 endgame: 143 planned cleanups tried -> none cleared {'ghostmiss:L4': '140x avg32left', 'ghostmiss:late': '3x avg32left'}
+d=147 endgame: 141 planned cleanups tried -> none cleared {'ghostmiss:L4': '136x avg32left', 'ghostmiss:late': '5x avg31left'}
+d=150 endgame: 142 planned cleanups tried -> none cleared {'ghostmiss:L4': '113x avg30left', 'ghostmiss:late': '17x avg28left', 'dead:L4': '12x avg28left'}
+d=150 jobs=550 kids=329 fails={'ghostmiss': 79, 'dead': 21} on={'L4': 83, 'late': 17} best=216 fruit=2 t=312s ram=8939 states (peak 25595 ~0.2GB) moved=5040 busy=81% copy=2s
+d=153 endgame: 141 planned cleanups tried -> none cleared {'ghostmiss:L4': '111x avg30left', 'ghostmiss:late': '12x avg28left', 'shortwin:L4': '12x avg28left', 'dead:L4': '6x avg28left'}
+d=156 endgame: 140 planned cleanups tried -> none cleared {'ghostmiss:L4': '140x avg29left'}
+d=159 endgame: 142 planned cleanups tried -> none cleared {'ghostmiss:L4': '142x avg31left'}
+d=160 jobs=502 kids=302 fails={'ghostmiss': 72, 'dead': 34} on={'L4': 91, 'late': 15} best=216 fruit=2 t=342s ram=9813 states (peak 25595 ~0.2GB) moved=5335 busy=81% copy=3s
+d=162 endgame: 143 planned cleanups tried -> none cleared {'ghostmiss:L4': '143x avg28left'}
+d=165 endgame: 141 planned cleanups tried -> none cleared {'ghostmiss:L4': '141x avg28left'}
+d=168 endgame: 143 planned cleanups tried -> none cleared {'ghostmiss:L4': '140x avg29left', 'ghostmiss:late': '3x avg28left'}
+d=169 no progress past 216 dots: backtrack #2 to d=130, 296/300 candidates left after dropping the dead family
+d=130 jobs=538 kids=323 fails={'ghostmiss': 110, 'dead': 24} on={'L4': 117, 'late': 17} best=212 fruit=2 t=375s ram=7856 states (peak 35634 ~0.3GB) moved=5610 busy=82% copy=3s
+d=132 endgame: 140 planned cleanups tried -> none cleared {'ghostmiss:L4': '113x avg29left', 'ghostmiss:late': '27x avg29left'}
+d=135 endgame: 141 planned cleanups tried -> none cleared {'ghostmiss:L4': '116x avg29left', 'dead:L4': '16x avg31left', 'ghostmiss:late': '9x avg30left'}
+d=138 endgame: 138 planned cleanups tried -> none cleared {'ghostmiss:L4': '138x avg29left'}
+d=140 jobs=541 kids=330 fails={'ghostmiss': 90, 'dead': 26, 'shortwin': 1} on={'L4': 109, 'late': 8} best=216 fruit=2 t=402s ram=8058 states (peak 35634 ~0.3GB) moved=5857 busy=82% copy=3s
+d=141 endgame: 140 planned cleanups tried -> none cleared {'ghostmiss:L4': '122x avg29left', 'ghostmiss:late': '18x avg29left'}
+d=144 endgame: 143 planned cleanups tried -> none cleared {'ghostmiss:L4': '131x avg28left', 'dead:L4': '12x avg28left'}
+d=147 endgame: 142 planned cleanups tried -> none cleared {'ghostmiss:L4': '115x avg31left', 'ghostmiss:late': '27x avg29left'}
+d=150 endgame: 141 planned cleanups tried -> none cleared {'ghostmiss:L4': '141x avg30left'}
+d=150 jobs=544 kids=319 fails={'ghostmiss': 91, 'dead': 14, 'shortwin': 1} on={'L4': 95, 'late': 11} best=212 fruit=2 t=430s ram=7418 states (peak 35634 ~0.3GB) moved=6149 busy=82% copy=3s
+d=153 endgame: 138 planned cleanups tried -> none cleared {'ghostmiss:L4': '124x avg29left', 'ghostmiss:late': '14x avg28left'}
+d=156 endgame: 142 planned cleanups tried -> none cleared {'ghostmiss:L4': '133x avg28left', 'ghostmiss:late': '9x avg28left'}
+d=159 endgame: 142 planned cleanups tried -> none cleared {'ghostmiss:L4': '108x avg29left', 'dead:L4': '24x avg28left', 'ghostmiss:late': '10x avg28left'}
+d=160 jobs=519 kids=295 fails={'ghostmiss': 97, 'dead': 43, 'shortwin': 1} on={'L4': 126, 'late': 15} best=216 fruit=2 t=455s ram=7506 states (peak 35634 ~0.3GB) moved=6401 busy=82% copy=4s
+d=162 endgame: 144 planned cleanups tried -> none cleared {'ghostmiss:L4': '132x avg31left', 'ghostmiss:late': '12x avg28left'}
+d=165 endgame: 139 planned cleanups tried -> none cleared {'ghostmiss:L4': '139x avg28left'}
+d=168 endgame: 142 planned cleanups tried -> none cleared {'ghostmiss:L4': '135x avg29left', 'ghostmiss:late': '7x avg28left'}
+d=170 jobs=545 kids=331 fails={'dead': 43, 'ghostmiss': 83} on={'L4': 100, 'late': 26} best=216 fruit=2 t=483s ram=8463 states (peak 35634 ~0.3GB) moved=6640 busy=82% copy=4s
+d=171 endgame: 141 planned cleanups tried -> none cleared {'ghostmiss:L4': '126x avg31left', 'ghostmiss:late': '8x avg28left', 'dead:L4': '7x avg28left'}
+d=174 endgame: 141 planned cleanups tried -> none cleared {'ghostmiss:L4': '117x avg29left', 'dead:L4': '24x avg28left'}
+d=177 endgame: 143 planned cleanups tried -> none cleared {'ghostmiss:L4': '128x avg30left', 'ghostmiss:late': '10x avg30left', 'dead:L4': '5x avg32left'}
+d=180 endgame: 138 planned cleanups tried -> none cleared {'ghostmiss:L4': '123x avg29left', 'ghostmiss:late': '15x avg30left'}
+d=180 jobs=543 kids=305 fails={'ghostmiss': 108, 'dead': 48} on={'L4': 129, 'late': 27} best=212 fruit=2 t=513s ram=9257 states (peak 35634 ~0.3GB) moved=6914 busy=81% copy=4s
+d=183 endgame: 141 planned cleanups tried -> none cleared {'ghostmiss:L4': '131x avg30left', 'dead:L4': '8x avg32left', 'ghostmiss:late': '2x avg32left'}
+d=186 endgame: 143 planned cleanups tried -> none cleared {'ghostmiss:L4': '122x avg31left', 'ghostmiss:late': '18x avg30left', 'dead:L4': '3x avg32left'}
+d=189 endgame: 139 planned cleanups tried -> none cleared {'ghostmiss:L4': '139x avg30left'}
+d=190 jobs=536 kids=297 fails={'ghostmiss': 126, 'dead': 32} on={'L4': 143, 'late': 15} best=212 fruit=2 t=544s ram=9605 states (peak 35634 ~0.3GB) moved=7194 busy=81% copy=5s
+d=192 endgame: 143 planned cleanups tried -> none cleared {'ghostmiss:L4': '111x avg28left', 'dead:L4': '19x avg28left', 'ghostmiss:late': '13x avg28left'}
+d=195 endgame: 142 planned cleanups tried -> none cleared {'ghostmiss:L4': '122x avg28left', 'dead:L4': '12x avg28left', 'ghostmiss:late': '8x avg28left'}
+d=198 endgame: 141 planned cleanups tried -> none cleared {'ghostmiss:L4': '137x avg28left', 'ghostmiss:late': '4x avg28left'}
+d=200 stalled: no progress past 216 dots for 30 moves
+RESULT cleared=False dots=216 frames=3157 fruits=2 moves=108 turns=76 minwin=5 route=LLDLLDRRURULURRDLLLLDRDRRULLUUULDLULUURDRDRURURRDLUULDLLLURDRRRDDDLLDLULURDLDLLLUURDDLURDDLUULURDDDLDRDRUUUL
+[cw] Exited with code 0.

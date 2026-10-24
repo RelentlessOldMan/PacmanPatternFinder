@@ -30,6 +30,12 @@ The 99 route (5-20 final, corners by hand) =
 - Ranked #1 saved as `best_L1_16ghosts_129.json` (129/95, 73 single killers); MAME video (on time, clears):
   `videos/L1_16ghosts_129_level1.mp4`.
 - `..._16ghosts_wide_...`: same with `--beam 300 --backtracks 60 --family-cap 30`.
+  Results: late1 dead-ended on all 4 levels; ontime L1 and L2 dead-ended too (L1 found at beam 96 but not 300);
+  **L3 ontime 148/107 and L4 ontime 171/130 clear with 16 ghosts + 2 fruits.** Ranked (`--budget 1 --all-ghosts`):
+  L3 best 147/107, 103 single killers -> `best_L3_16ghosts_147.json`; L4 best 171/130, 68 -> `best_L4_16ghosts_171.json`.
+  MAME videos (on time, both clear): `videos/L3_16ghosts_147_level3.mp4`, `videos/L4_16ghosts_171_level4.mp4`.
+- L2 retries: `result_L2_2fruit_16ghosts_b600_ontime` (`--beam 600 --backtracks 100 --family-cap 40`),
+  `result_L2_2fruit_16ghosts_fd10_ontime` (`--beam 200 --family-depth 10 --family-cap 20 --backtracks 100`).
 
 ### L2-4: keep ghosts away (user: no passing ghosts in the lower left near the end of the 97)
 - On the 97, ghosts come within 19-20 px (2.5 tiles) at moves 75-83, lower left (scratchpad permove.py).
