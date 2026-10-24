@@ -658,17 +658,19 @@ def search(pool, sims0, args, log=print, resume=None):
     dropped = 0
     global LATE_BUDGET
     budget = LATE_BUDGET
-    if args.prefix_on_time:  # no late presses yet; BRANCH stays on so the sims keep their fruit counts
-        LATE_BUDGET = 0
     for opt in ("" if resume else args.prefix):
         c = beam[0]
+        # --prefix-on-time [N]: no late presses in the first N moves (default all); BRANCH stays on so the
+        # sims keep their fruit counts
+        on_time = args.prefix_on_time is not None and len(c.route) < args.prefix_on_time
+        LATE_BUDGET = 0 if on_time else budget
         node, path = maze.next_node(*c.tile, c.heading)
         while True:
             st, sims, res = pool.submit(run_child, c.sims, c.heading, opt, args.minwin, c.route,
                                         f"ok {c.tile[0]} {c.tile[1]} {len(c.eaten)}" if c.route else None,
                                         len(maze.exits(*node)) == 2, need=c.sims).result()
-            if res is not None or sims < n:
-                break
+            if res is not None or sims < n or args.prefix_on_time is not None:
+                break  # with --prefix-on-time, a late variant dying in the prefix fails it
             log(f"prefix move {len(c.route) + 1} ({opt} at {node}): dropping a late variant ({st})")
             c = replace(c, sims=c.sims[:sims] + c.sims[sims + 1:])
             dropped += 1
@@ -881,8 +883,9 @@ def main():
                          "point); identical states merge")
     ap.add_argument("--branch-cap", type=int, default=8,
                     help="--branch: max extra sims kept per level (with --late-budget: more rejects the move)")
-    ap.add_argument("--prefix-on-time", action="store_true",
-                    help="--branch: play --prefix on time only; late presses are branched from its end on")
+    ap.add_argument("--prefix-on-time", type=int, nargs="?", const=10**9, default=None, metavar="N",
+                    help="--branch: play the first N moves of --prefix on time only (default: all of it); late "
+                         "presses are branched from there on, and one that dies inside the prefix fails it")
     ap.add_argument("--late-budget", type=int, default=None,
                     help="--branch: follow every combination of up to K late presses per level exactly")
     ap.add_argument("--leave-pockets", action="store_true",
