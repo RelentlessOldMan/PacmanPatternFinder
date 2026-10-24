@@ -7,7 +7,8 @@ HERE = Path(__file__).resolve().parent
 ROM_ZIP = HERE.parent / "mame-0.289" / "roms" / "pacman.zip"
 PROGRAM = ["pacman.6e", "pacman.6f", "pacman.6h", "pacman.6j"]  # 0x0000-0x3FFF
 
-_dll = ctypes.CDLL(str(HERE / "pacemu.dll"))
+import os
+_dll = ctypes.CDLL(os.environ.get("PACEMU_DLL") or str(HERE / "pacemu.dll"))  # PACEMU_DLL: another build
 _dll.pm_new.restype = ctypes.c_void_p
 _dll.pm_new.argtypes = [ctypes.c_char_p, ctypes.c_int32]
 for name in ("pm_free", "pm_frame"):

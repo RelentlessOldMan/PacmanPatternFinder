@@ -1,5 +1,11 @@
 #include "z80.h"
 
+// pacemu includes this file with its own memory functions here, so they can be inlined
+#ifndef Z80_READ
+#define Z80_READ(u, a) z->read_byte(u, a)
+#define Z80_WRITE(u, a, v) z->write_byte(u, a, v)
+#endif
+
 // MARK: timings
 static const uint8_t cyc_00[256] = {4, 10, 7, 6, 4, 4, 7, 4, 4, 11, 7, 6, 4, 4,
     7, 4, 8, 10, 7, 6, 4, 4, 7, 4, 12, 11, 7, 6, 4, 4, 7, 4, 7, 10, 16, 6, 4, 4,
@@ -46,21 +52,21 @@ static const uint8_t cyc_ddfd[256] = {4, 4, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4,
 #define GET_BIT(n, val) (((val) >> (n)) & 1)
 
 static inline uint8_t rb(z80* const z, uint16_t addr) {
-  return z->read_byte(z->userdata, addr);
+  return Z80_READ(z->userdata, addr);
 }
 
 static inline void wb(z80* const z, uint16_t addr, uint8_t val) {
-  z->write_byte(z->userdata, addr, val);
+  Z80_WRITE(z->userdata, addr, val);
 }
 
 static inline uint16_t rw(z80* const z, uint16_t addr) {
-  return (z->read_byte(z->userdata, addr + 1) << 8) |
-         z->read_byte(z->userdata, addr);
+  return (Z80_READ(z->userdata, addr + 1) << 8) |
+         Z80_READ(z->userdata, addr);
 }
 
 static inline void ww(z80* const z, uint16_t addr, uint16_t val) {
-  z->write_byte(z->userdata, addr, val & 0xFF);
-  z->write_byte(z->userdata, addr + 1, val >> 8);
+  Z80_WRITE(z->userdata, addr, val & 0xFF);
+  Z80_WRITE(z->userdata, addr + 1, val >> 8);
 }
 
 static inline void pushw(z80* const z, uint16_t val) {
@@ -148,12 +154,8 @@ static inline bool carry(int bit_no, uint16_t a, uint16_t b, bool cy) {
 
 // returns the parity of byte: 0 if number of 1 bits in `val` is odd, else 1
 static inline bool parity(uint8_t val) {
-  uint8_t nb_one_bits = 0;
-  for (int i = 0; i < 8; i++) {
-    nb_one_bits += ((val >> i) & 1);
-  }
-
-  return (nb_one_bits & 1) == 0;
+  val ^= val >> 4;
+  return (0x9669 >> (val & 15)) & 1; // pacemu: was a bit-counting loop
 }
 
 static void exec_opcode(z80* const z, uint8_t opcode);

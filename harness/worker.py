@@ -11,12 +11,31 @@ MAME_MEM = ROOT / "mame-0.289-mem" / "mame.exe"
 STATE_DIR = ROOT / "state"
 
 
+def below_normal():
+    """Run this process below normal priority, as the MAME/pacemu child processes always did, so
+    in-process pacemu threads stay behind foreground work too."""
+    if os.name == "nt":
+        import ctypes
+        k = ctypes.windll.kernel32
+        k.GetCurrentProcess.restype = ctypes.c_void_p
+        k.SetPriorityClass.argtypes = [ctypes.c_void_p, ctypes.c_uint32]
+        k.SetPriorityClass(k.GetCurrentProcess(), 0x4000)  # BELOW_NORMAL_PRIORITY_CLASS
+
+
 class Worker:
     def __init__(self, mame=MAME, idle=False, script=None, extra=()):
         """idle: our patched MAME skips Pac-Man's idle loop (see mame-patches/); stock ignores it.
         script: the Lua server to run (default server.lua beside this file).
-        mame="emu": run emu_server.py (the same protocol on pacemu, emu/) instead of MAME."""
-        if str(mame) == "emu":
+        mame="emu": emu_server.py's Server (the same protocol on pacemu, emu/) in this process;
+        "emu-proc": the same in a child process."""
+        if str(mame) == "emu":  # in this process: commands are calls, no pipe (pacemu frees the GIL)
+            from emu_server import Server
+            below_normal()
+            self.srv = Server(idle)
+            self.cmd = self.srv.handle
+            self.p = None
+            return
+        if str(mame) == "emu-proc":  # the same in its own process, over a pipe
             import sys
             self.p = subprocess.Popen(
                 [sys.executable, str(Path(__file__).parent / "emu_server.py"), *([] if idle else ["--no-idle"])],
@@ -65,6 +84,8 @@ class Worker:
         return self._readline()
 
     def close(self):
+        if self.p is None:
+            return
         try:
             self.p.stdin.write("quit\n"); self.p.stdin.flush()
             self.p.wait(timeout=10)

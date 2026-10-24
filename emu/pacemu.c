@@ -106,6 +106,11 @@ static void wr(void *u, uint16_t a, uint8_t v) {
   }
 }
 
+/* the Z80 core, built in this file so rd/wr inline into it */
+#define Z80_READ(u, a) rd(u, a)
+#define Z80_WRITE(u, a, v) wr(u, a, v)
+#include "z80.c"
+
 static uint8_t pin(z80 *z, uint8_t port) { (void)z; (void)port; return 0xFF; }
 static void pout(z80 *z, uint8_t port, uint8_t v) {
   if (port == 0) ((pm *)z->userdata)->s.vector = v;

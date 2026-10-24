@@ -28,7 +28,14 @@ STATE_DIR = HERE.parent / "state" / "emu"
 S = emu.STATE_SIZE
 
 
+_maze_loaded = False
+
+
 def load_maze():
+    global _maze_loaded
+    if _maze_loaded:
+        return
+    _maze_loaded = True
     rows = [l.rstrip("\n").ljust(28)[:28] for l in open(HERE / "maze.txt")][:31]
     D.pm_set_maze("".join(rows).encode())
 

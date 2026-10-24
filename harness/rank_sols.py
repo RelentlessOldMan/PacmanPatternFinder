@@ -57,23 +57,39 @@ def late_mixes(route, lv, budget):
     w.cmd(f"mload start{lv} L"); w.cmd("msave r0")
     states, n, held, deaths = {"": ("r0", (), 0)}, 0, "L", []
     for i, d in enumerate(route):
-        nxt = {}
+        nxt, replaced = {}, []
+
+        def keep(name, r, h, mix, eaten0):
+            """True if the state saved as `name` is kept for the next move."""
+            eaten = eaten0 + r["fruits"]
+            if bad(r, eaten):
+                deaths.append((i + 1, mix))
+                return False
+            if h in nxt:
+                if len(nxt[h][1]) <= len(mix):
+                    return False
+                replaced.append(nxt[h][0])
+            nxt[h] = (name, mix, eaten)
+            return True
+
         for slot, lates, eaten0 in states.values():
-            for k in (range(5) if d != held and len(lates) < budget else [0]):
-                w.cmd(f"mload {slot} {held}")
-                r = parse_seg(w.cmd(f"seg {d} 4 {k}" if k else f"seg {d} E 0"))
-                mix = lates + (((i + 1, k),) if k else ())
-                eaten = eaten0 + r["fruits"]
-                if bad(r, eaten):
-                    deaths.append((i + 1, mix))
-                    continue
-                h = w.cmd("hash").split()[1]
-                if h in nxt and len(nxt[h][1]) <= len(mix):
-                    continue
-                n += 1
+            w.cmd(f"mload {slot} {held}")
+            r = parse_seg(w.cmd(f"seg {d} E 0"))
+            n += 1
+            if keep(f"r{n}", r, w.cmd("hash").split()[1], lates, eaten0):
                 w.cmd(f"msave r{n}")
-                nxt[h] = (f"r{n}", mix, eaten)
-        for slot, _, _ in states.values():
+            if d != held and len(lates) < budget:
+                # the late presses (1-4 frames) share every frame up to the press: one segb plays them
+                w.cmd(f"mload {slot} {held}")
+                names = [f"r{n + k}" for k in range(1, 5)]
+                n += 4
+                lines = w.cmd(f"segb {d} 4 " + " ".join(names)).split(" | ")
+                drop = [name for k, (name, line) in enumerate(zip(names, lines), 1)
+                        if not keep(name, parse_seg(line.rsplit(" ", 1)[0]), line.split()[-1],
+                                    lates + ((i + 1, k),), eaten0)]
+                if drop:
+                    w.cmd("mdrop " + " ".join(drop))
+        for slot in [v[0] for v in states.values()] + replaced:
             w.cmd(f"mdrop {slot}")
         states, held = nxt, d
     return deaths
