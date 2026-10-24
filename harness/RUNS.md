@@ -27,6 +27,8 @@ The 99 route (5-20 final, corners by hand) =
   `rank_sols.py --levels 1 --budget 1 --need-fruits 2 --all-ghosts` (new flag: a lost ghost counts as a kill) on its 50:
   best 73 single late presses kill (weak at moves 48-52, 76, 92, 114-115) -> `rank_L1_16ghosts_v3.log`. L1 late1 and
   L2-4 (both modes) dead-ended at beam 96 / 20 backtracks.
+- Ranked #1 saved as `best_L1_16ghosts_129.json` (129/95, 73 single killers); MAME video (on time, clears):
+  `videos/L1_16ghosts_129_level1.mp4`.
 - `..._16ghosts_wide_...`: same with `--beam 300 --backtracks 60 --family-cap 30`.
 
 ### L2-4: keep ghosts away (user: no passing ghosts in the lower left near the end of the 97)

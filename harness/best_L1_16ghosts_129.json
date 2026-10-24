@@ -1,0 +1,10 @@
+{
+ "route": "LLDLLDRRRULLULDLDLULURULURDRUUUULDLULLDRURDLDRDLDLLDDLLLLLDLULURDRRRURULULLDRDLDLUULULDLUULURURDRRRRULLDLLLDDDDRRRURRULULURURDRUU",
+ "levels": "1",
+ "ghosts": 16,
+ "fruits": 2,
+ "n_moves": 129,
+ "n_turns": 95,
+ "killers1": 73,
+ "source": "result_L1_2fruit_16ghosts_v3_ontime.ranked.json #1"
+}
