@@ -1,0 +1,32 @@
+[cw] Started pid 33888 (full).
+start 2 ok f=1286 tile=13,23 dir=2 dots=0 level=2 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} on={'L2': 1} best=2 fruit=0 t=0s ram=1 states (peak 1 ~0.0GB) moved=0 busy=47% copy=0s
+d=10 jobs=86 kids=80 fails={'dead': 5} on={'L2': 5} best=29 fruit=0 t=0s ram=80 states (peak 126 ~0.0GB) moved=39 busy=50% copy=0s
+d=20 jobs=1088 kids=899 fails={'ghostmiss': 106, 'dead': 48, 'shortwin': 3} on={'L2': 157} best=84 fruit=0 t=11s ram=600 states (peak 1560 ~0.0GB) moved=390 busy=77% copy=0s
+d=30 jobs=945 kids=476 fails={'ghostmiss': 397, 'dead': 50, 'shortwin': 1} on={'L2': 448} best=79 fruit=1 t=27s ram=476 states (peak 1570 ~0.0GB) moved=872 busy=80% copy=0s
+d=38 beam died: backtrack #1 to d=35, 99/100 candidates left after dropping the dead family
+d=37 beam died: backtrack #2 to d=30, 503/507 candidates left after dropping the dead family
+d=30 jobs=938 kids=469 fails={'ghostmiss': 397, 'dead': 50, 'shortwin': 1} on={'L2': 448} best=79 fruit=1 t=30s ram=469 states (peak 1570 ~0.0GB) moved=1107 busy=79% copy=0s
+d=36 beam died: backtrack #3 to d=25, 599/600 candidates left after dropping the dead family
+d=30 jobs=914 kids=447 fails={'ghostmiss': 396, 'dead': 49, 'shortwin': 1} on={'L2': 446} best=88 fruit=1 t=40s ram=447 states (peak 1570 ~0.0GB) moved=1604 busy=79% copy=0s
+d=35 beam died: backtrack #4 to d=30, 487/491 candidates left after dropping the dead family
+d=30 jobs=905 kids=438 fails={'ghostmiss': 396, 'dead': 49, 'shortwin': 1} on={'L2': 446} best=88 fruit=1 t=43s ram=438 states (peak 1570 ~0.0GB) moved=1772 busy=79% copy=0s
+d=35 beam died: backtrack #5 to d=25, 598/599 candidates left after dropping the dead family
+d=30 jobs=906 kids=439 fails={'ghostmiss': 396, 'dead': 49, 'shortwin': 1} on={'L2': 446} best=88 fruit=1 t=53s ram=439 states (peak 1570 ~0.0GB) moved=2117 busy=80% copy=0s
+d=35 beam died: backtrack #6 to d=20, 597/600 candidates left after dropping the dead family
+d=20 jobs=1084 kids=896 fails={'ghostmiss': 106, 'dead': 48, 'shortwin': 3} on={'L2': 157} best=84 fruit=0 t=56s ram=600 states (peak 1570 ~0.0GB) moved=2265 busy=80% copy=0s
+d=30 jobs=667 kids=275 fails={'ghostmiss': 332, 'dead': 48} on={'L2': 380} best=98 fruit=0 t=70s ram=275 states (peak 1570 ~0.0GB) moved=2874 busy=80% copy=0s
+d=35 beam died: backtrack #7 to d=15, 589/590 candidates left after dropping the dead family
+d=20 jobs=1088 kids=899 fails={'ghostmiss': 106, 'dead': 48, 'shortwin': 3} on={'L2': 157} best=84 fruit=0 t=80s ram=600 states (peak 1570 ~0.0GB) moved=3246 busy=80% copy=0s
+d=30 jobs=945 kids=476 fails={'ghostmiss': 397, 'dead': 50, 'shortwin': 1} on={'L2': 448} best=79 fruit=1 t=96s ram=476 states (peak 1570 ~0.0GB) moved=3733 busy=81% copy=0s
+d=38 beam died: backtrack #8 to d=10, 44/45 candidates left after dropping the dead family
+d=10 jobs=84 kids=79 fails={'dead': 5} on={'L2': 5} best=29 fruit=0 t=98s ram=79 states (peak 1570 ~0.0GB) moved=4002 busy=80% copy=0s
+d=20 jobs=1085 kids=900 fails={'ghostmiss': 109, 'dead': 43, 'shortwin': 2} on={'L2': 154} best=84 fruit=0 t=109s ram=600 states (peak 1570 ~0.0GB) moved=4417 busy=80% copy=0s
+d=30 jobs=790 kids=335 fails={'ghostmiss': 383, 'dead': 59} on={'L2': 442} best=98 fruit=0 t=124s ram=335 states (peak 1570 ~0.0GB) moved=4891 busy=80% copy=0s
+d=35 beam died: backtrack #9 to d=5, 5/7 candidates left after dropping the dead family
+d=10 jobs=57 kids=55 fails={'dead': 1} on={'L2': 1} best=29 fruit=0 t=125s ram=55 states (peak 1570 ~0.0GB) moved=5042 busy=79% copy=0s
+d=20 jobs=1062 kids=838 fails={'ghostmiss': 130, 'dead': 65, 'shortwin': 2} on={'L2': 197} best=84 fruit=0 t=135s ram=600 states (peak 1570 ~0.0GB) moved=5410 busy=79% copy=0s
+d=30 jobs=1099 kids=593 fails={'ghostmiss': 431, 'dead': 45, 'shortwin': 2} on={'L2': 478} best=94 fruit=1 t=152s ram=593 states (peak 1570 ~0.0GB) moved=5844 busy=79% copy=0s
+d=38 jobs=3 kids=0 fails={'ghostmiss': 3} on={'L2': 3} best=- fruit=- t=155s ram=0 states (peak 1570 ~0.0GB) moved=6106 busy=79% copy=0s
+RESULT cleared=False dots=105 frames=1037 fruits=0 moves=35 turns=24 minwin=12 route=LDRDRURURUUUUULDLULLDRRDRDLDDDRDRRR
+[cw] Exited with code 0.

@@ -36,6 +36,8 @@ The 99 route (5-20 final, corners by hand) =
   MAME videos (on time, both clear): `videos/L3_16ghosts_147_level3.mp4`, `videos/L4_16ghosts_171_level4.mp4`.
 - L2 retries: `result_L2_2fruit_16ghosts_b600_ontime` (`--beam 600 --backtracks 100 --family-cap 40`),
   `result_L2_2fruit_16ghosts_fd10_ontime` (`--beam 200 --family-depth 10 --family-cap 20 --backtracks 100`).
+  b600 dead-ended at move 38; **fd10 clears with 16 ghosts + 2 fruits** (141/110). Ranked: best 139/102, 69 single
+  killers -> `best_L2_16ghosts_139.json`; MAME video (on time, clears) `videos/L2_16ghosts_139_level2.mp4`.
 
 ### L2-4: keep ghosts away (user: no passing ghosts in the lower left near the end of the 97)
 - On the 97, ghosts come within 19-20 px (2.5 tiles) at moves 75-83, lower left (scratchpad permove.py).
