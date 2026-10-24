@@ -372,11 +372,12 @@ H.run(function()
       reply(string.format("ok %d f=%d", ram_hash(), H.frame))
     elseif cmd == "reverse" then
       -- "reverse <D> <col> <row>": keep going until Pac-Man is on that tile, then push D (a
-      -- turnaround in mid-corridor, which seg can't do). Replies like peek, or "dead"/"timeout".
+      -- turnaround in mid-corridor, which seg can't do). Replies "ok f= tile= dots= mind=" (mind: the closest ghost on the way, like seg's), or "dead"/"timeout".
       local tc, tr, n = pac_tile()
+      local md = ghost_min_dist()
       n = 0
       while not (tc == tonumber(b) and tr == tonumber(c)) do
-        H.wait(1); n = n + 1; tc, tr = pac_tile()
+        H.wait(1); n = n + 1; tc, tr = pac_tile(); md = math.min(md, ghost_min_dist())
         if dead() then break end
         if n > 600 then break end
       end
@@ -385,9 +386,10 @@ H.run(function()
       else
         -- the game takes the push on a later frame: wait for it so a following seg sees the new heading
         H.joy(a); n = 0
-        while H.rd(0x4D30) ~= LETTER[a] and n < 10 do H.wait(1); n = n + 1 end
+        while H.rd(0x4D30) ~= LETTER[a] and n < 10 do H.wait(1); n = n + 1; md = math.min(md, ghost_min_dist()) end
         tc, tr = pac_tile()
-        reply(string.format("ok f=%d tile=%d,%d dots=%d", H.frame, tc, tr, dots()))
+        if dead() then reply("dead")
+        else reply(string.format("ok f=%d tile=%d,%d dots=%d mind=%d", H.frame, tc, tr, dots(), md)) end
       end
     elseif cmd == "peek" then
       local tc, tr = pac_tile()

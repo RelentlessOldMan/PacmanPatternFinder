@@ -1,0 +1,53 @@
+[cw] Started pid 62784 (throttled).
+[cw] Throttled to 1 core at below-normal priority: Overwatch (Overwatch.exe) is running.
+start 21 ok f=10724 tile=13,23 dir=2 dots=0 level=21 4E04=3 score=0
+d=0 jobs=2 kids=2 fails={} on={} best=2 fruit=0 t=0s ram=2 states (peak 2 ~0.0GB) moved=0 busy=267% copy=0s
+d=10 jobs=55 kids=46 fails={'dead': 9} on={'L21': 9} best=38 fruit=0 t=0s ram=30 states (peak 84 ~0.0GB) moved=98 busy=26% copy=0s
+BADLOAD sim=r62784n262 route=LLDLLDRULUx expected='ok 9 24 37' got='ok 9 25 37' retry='ok 9 25 37'
+BADLOAD sim=r62784n528 route=LDRDRRULURULDDRx expected='ok 23 26 53' got='ok 22 26 53' retry='ok 22 26 53'
+d=20 jobs=50 kids=43 fails={'dead': 7} on={'L21': 7} best=78 fruit=0 t=1s ram=30 states (peak 84 ~0.0GB) moved=300 busy=24% copy=0s
+BADLOAD sim=r62784n1121 route=ULLLDRDLDRRRULURULLULDRDLDRDx expected='ok 12 28 85' got='ok 12 27 85' retry='ok 12 27 85'
+d=30 jobs=47 kids=41 fails={'dead': 6} on={'L21': 6} best=89 fruit=1 t=2s ram=30 states (peak 84 ~0.0GB) moved=528 busy=23% copy=0s
+BADLOAD sim=r62784n1392 route=ULLLDRDLDRRRULURULLULDRDLDRDRURURUx expected='ok 21 21 99' got='ok 21 22 99' retry='ok 21 22 99'
+BADLOAD sim=r62784n1392 route=ULLLDRDLDRRRULURULLULDRDLDRDRURURUx expected='ok 21 21 99' got='ok 21 22 99' retry='ok 21 22 99'
+d=40 jobs=57 kids=44 fails={'dead': 13} on={'L21': 13} best=123 fruit=1 t=2s ram=30 states (peak 87 ~0.0GB) moved=736 busy=23% copy=0s
+BADLOAD sim=r62784n1700 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRDLxDRx expected='ok 23 26 112' got='ok 22 26 112' retry='ok 22 26 112'
+BADLOAD sim=r62784n1845 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRUURUULDRx expected='ok 25 5 139' got='ok 24 5 139' retry='ok 24 5 139'
+BADLOAD sim=r62784n1845 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRUURUULDRx expected='ok 25 5 139' got='ok 24 5 139' retry='ok 24 5 139'
+BADLOAD sim=r62784n1845 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRUURUULDRx expected='ok 25 5 139' got='ok 24 5 139' retry='ok 24 5 139'
+BADLOAD sim=r62784n1935 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRUUURULDDRUx expected='ok 26 6 141' got='ok 26 7 141' retry='ok 26 7 141'
+d=50 jobs=48 kids=37 fails={'dead': 11} on={'L21': 11} best=163 fruit=1 t=3s ram=30 states (peak 87 ~0.0GB) moved=926 busy=24% copy=0s
+BADLOAD sim=r62784n2245 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRUURUULLDLULLDRRRx expected='ok 11 5 173' got='ok 10 5 173' retry='ok 10 5 173'
+BADLOAD sim=r62784n2245 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRUURUULLDLULLDRRRx expected='ok 11 5 173' got='ok 10 5 173' retry='ok 10 5 173'
+d=60 jobs=60 kids=55 fails={'dead': 4} on={'L21': 4} best=187 fruit=1 t=3s ram=30 states (peak 88 ~0.0GB) moved=1095 busy=24% copy=0s
+BADLOAD sim=r62784n2645 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRUURUULLDRDLDLULULDLURULDx expected='ok 1 4 187' got='ok 1 3 187' retry='ok 1 3 187'
+BADLOAD sim=r62784n2803 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRUURUULLDRDLDLULULLDRUxDDDDLx expected='ok 4 26 194' got='ok 5 26 194' retry='ok 5 26 194'
+BADLOAD sim=r62784n2877 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRUURUULLDRDLDLULULLDRUxDDDRxDLx expected='ok 4 26 196' got='ok 5 26 196' retry='ok 5 26 196'
+BADLOAD sim=r62784n2995 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRDLxDRURULUURUULLDLULLDRUxDDDDDLx expected='ok 4 26 203' got='ok 5 26 203' retry='ok 5 26 203'
+d=69 endgame: 143 planned cleanups tried -> none cleared {'dead:L21': '143x avg34left'}
+BADLOAD sim=r62784n3090 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRUURUULLDLULLDRUxRRxDRDRURULxRDxUx expected='ok 21 2 199' got='ok 21 3 199' retry='ok 21 3 199'
+BADLOAD sim=r62784n3090 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRUURUULLDLULLDRUxRRxDRDRURULxRDxUx expected='ok 21 2 199' got='ok 21 3 199' retry='ok 21 3 199'
+BADLOAD sim=r62784n3090 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRUURUULLDLULLDRUxRRxDRDRURULxRDxUx expected='ok 21 2 199' got='ok 21 3 199' retry='ok 21 3 199'
+BADLOAD sim=r62784n3113 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRDLxDRURULUURUULLDLULLDRUxDDDDRxDLx expected='ok 4 26 205' got='ok 5 26 205' retry='ok 5 26 205'
+d=70 jobs=62 kids=49 fails={'dead': 12, 'badload': 1} on={'L21': 13} best=205 fruit=2 t=5s ram=30 states (peak 92 ~0.0GB) moved=1295 busy=29% copy=0s
+BADLOAD sim=r62784n3923 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRUURUULLDLULLDRUxRDRDRURULLLLDDDDDLx expected='ok 4 26 213' got='ok 5 26 213' retry='ok 5 26 213'
+d=72 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg32left'}
+d=75 endgame: 143 planned cleanups tried -> none cleared {'dead:L21': '143x avg31left'}
+d=78 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg31left'}
+BADLOAD sim=r62784n6022 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRUURUULLDLULLDRUxRDRDRURULLLLDDDRURDLDRRDRx expected='ok 23 26 213' got='ok 22 26 213' retry='ok 22 26 213'
+BADLOAD sim=r62784n6851 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRDLxDRURULUURUULLDLULLDRUxDLUxRDDRURUULLULURx expected='ok 11 5 211' got='ok 10 5 211' retry='ok 10 5 211'
+BADLOAD sim=r62784n6851 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRDLxDRURULUURUULLDLULLDRUxDLUxRDDRURUULLULURx expected='ok 11 5 211' got='ok 10 5 211' retry='ok 10 5 211'
+d=80 jobs=54 kids=49 fails={'badload': 2, 'dead': 3} on={'L21': 5} best=212 fruit=2 t=9s ram=30 states (peak 92 ~0.0GB) moved=1450 busy=34% copy=0s
+d=81 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg22left'}
+BADLOAD sim=r62784n6973 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRDLxDRURULUURUULLDLULLDRUxDLUxRDDRURUULURURRxDx expected='ok 21 7 218' got='ok 21 6 218' retry='ok 21 6 218'
+BADLOAD sim=r62784n6973 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRDLxDRURULUURUULLDLULLDRUxDLUxRDDRURUULURURRxDx expected='ok 21 7 218' got='ok 21 6 218' retry='ok 21 6 218'
+BADLOAD sim=r62784n6973 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRDLxDRURULUURUULLDLULLDRUxDLUxRDDRURUULURURRxDx expected='ok 21 7 218' got='ok 21 6 218' retry='ok 21 6 218'
+d=84 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg20left'}
+BADLOAD sim=r62784n8273 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRDLxDRURULUURUULLDLULLDRUxDLUxRDDRURUULURULxRUxDx expected='ok 21 7 219' got='ok 21 6 219' retry='ok 21 6 219'
+BADLOAD sim=r62784n8273 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRDLxDRURULUURUULLDLULLDRUxDLUxRDDRURUULURULxRUxDx expected='ok 21 7 219' got='ok 21 6 219' retry='ok 21 6 219'
+BADLOAD sim=r62784n8273 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRDLxDRURULUURUULLDLULLDRUxDLUxRDDRURUULURULxRUxDx expected='ok 21 7 219' got='ok 21 6 219' retry='ok 21 6 219'
+d=87 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '142x avg19left', 'shortwin:L21': '2x avg1left'}
+d=90 endgame: 142 planned cleanups tried -> CLEARED x1 {'dead:L21': '136x avg12left', 'shortwin:L21': '5x avg1left'}
+d=90 jobs=60 kids=48 fails={'dead': 10} on={'L21': 10} best=229 fruit=2 t=14s ram=31 states (peak 93 ~0.0GB) moved=1674 busy=40% copy=0s
+RESULT cleared=True dots=244 frames=2823 fruits=2 moves=116 turns=94 minwin=5 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRDLxDRURULUURUULLDLULLDRUxDLUxRDDRURUULURURUxRxDxLLLLDRDLDLDDDLLDRULULDLULURUUURR
+[cw] Exited with code 0.

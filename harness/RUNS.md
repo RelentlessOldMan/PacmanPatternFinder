@@ -40,6 +40,25 @@ The 99 route (5-20 final, corners by hand) =
   killers -> `best_L2_16ghosts_139.json`; MAME video (on time, clears) `videos/L2_16ghosts_139_level2.mp4`.
 - The four `best_L<N>_16ghosts_*.json` moved to `best/L<N>_allghosts_*.json` with pattern sheets; README shows 1-4 / 5-20 / 21+.
 
+### L21 speed (for fun): tie/beat the ~42 s (~2545 frames) world-record clear; tight timing, then reversals
+- Found: search `frames` missed the frame each move's state load runs (1 per move), so every earlier frame total is
+  low by ~moves. Fixed in make_child. True times by `replay_route.py <route> 21` (new; straight replay on pacemu):
+  `best/L21_full_118.json` 3039 frames (50.14 s).
+- `result_L21_speed_fc{0.25,1}` (`--levels 21 --minwin 1 --corner-minwin 1 --no-late --late-budget 0 --frame-cost F
+  --beam 300 --family-depth 6 --family-cap 30 --backtracks 60 --solutions 50`, new `--frame-cost`, no fruit needed):
+  116/90 2975 frames (49.09 s) at 0.25; 121/92 3095 at 1.
+- New `--reverse`: an "x" move keeps going to the last uneaten dot before the next node (when the rest up to the node
+  is eaten) and turns back there (server `reverse`). `result_L21_revtest` (beam 30, 4 workers): 116 moves, 2938 frames.
+- `result_L21_speed_rev_{fc0.25,fc0.5,fc0.25_b1000}`: the speed runs with `--reverse` (beam 300, 300, 1000).
+  Results 2685 / 2812 / 2684 frames (44.30 / 46.40 / 44.29 s, replayed). The 2684 (b1000) route passes THROUGH a
+  ghost (one move's mind = 1 px: the tile-swap glitch): these runs had no `--min-ghost`, and "x" moves didn't measure
+  ghost distance at all (mind=999). The 2685 route is clean: closest 12 px on segs, 38 px on its "x" moves.
+  Fixed: `reverse` now replies `mind=` (closest ghost on the way; emu_server.py and server.lua), run_rev uses it.
+- `result_L21_speed_rev_fc{0.1,0.15,0.25}_cc{40,10,0}_s200` (beam 300, `--cluster-cost`, 200 solutions): none
+  better (best 2685 again at fc0.25 cc40). Same no-min-ghost caveat.
+- `result_L21_speed_rev_{mg8,mg8_b1000,mg12}` (`--reverse --min-ghost 8/8/12`, fc 0.25, beam 300/1000/300): all three
+  find the same clean 102-move route, 2685 frames (44.30 s). Target 41.6 s (~2521 frames): 164 frames short.
+
 ### L2-4: keep ghosts away (user: no passing ghosts in the lower left near the end of the 97)
 - On the 97, ghosts come within 19-20 px (2.5 tiles) at moves 75-83, lower left (scratchpad permove.py).
 - New `search.py --min-ghost PX --min-ghost-from N`: drop a move if any sim lets a ghost come closer than PX

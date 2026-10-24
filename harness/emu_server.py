@@ -86,6 +86,11 @@ class Server:
     def tile(self):
         return 59 - self.rd(0x4D3A), self.rd(0x4D39) - 33
 
+    def gdist(self):
+        """Closest ghost to Pac-Man in pixels (|dx| + |dy|), like seg.h ghost_min_dist."""
+        x, y = self.rd(0x4D09), self.rd(0x4D08)
+        return min(abs(self.rd(0x4D01 + g * 2) - x) + abs(self.rd(0x4D00 + g * 2) - y) for g in range(4))
+
     def dots(self):
         return self.rd(0x4E0E)
 
@@ -180,11 +185,12 @@ class Server:
             tc, tr = self.tile()
             return (f"ok f={self.frame} tile={tc},{tr} dir={self.rd(0x4D30)} dots={self.dots()} "
                     f"level={self.rd(0x4E13) + 1} 4E04={self.rd(0x4E04)} score={self.score()}")
-        if cmd == "reverse":
+        if cmd == "reverse":  # reply mind= the closest ghost (pixels, like seg's mind) on the way
             n = 0
             tc, tr = self.tile()
+            mind = self.gdist()
             while (tc, tr) != (int(b), int(c)):
-                self.wait(1); n += 1; tc, tr = self.tile()
+                self.wait(1); n += 1; tc, tr = self.tile(); mind = min(mind, self.gdist())
                 if self.rd(0x4DA5) or n > 600:
                     break
             if self.rd(0x4DA5):
@@ -193,9 +199,11 @@ class Server:
                 return "timeout"
             self.joy(a); n = 0
             while self.rd(0x4D30) != LETTER[a] and n < 10:
-                self.wait(1); n += 1
+                self.wait(1); n += 1; mind = min(mind, self.gdist())
+            if self.rd(0x4DA5):
+                return "dead"
             tc, tr = self.tile()
-            return f"ok f={self.frame} tile={tc},{tr} dots={self.dots()}"
+            return f"ok f={self.frame} tile={tc},{tr} dots={self.dots()} mind={mind}"
         return "err " + line
 
 
