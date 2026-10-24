@@ -12,6 +12,16 @@ The 99 route (5-20 final, corners by hand) =
 
 ## 2026-10-24
 
+### L2-4, 2 fruits, corners left, survives 1 late
+- The user's own level-4 play (logged by `C:/mame/pacman_logs/level4_logger.lua`, copied to
+  `harness/watch/play_L4_20261024_123629.log`): 50 moves, 132 dots, eats the 4 ghosts, no reverses:
+  `LLDLLDRRURULURRURUUURDRRDLDLLDDRURUULLLLLULDRDDDDD` (= the 5-20 route for 18 moves). Clears its 50 moves on
+  time on L2, L3 and L4.
+- Keep the 5-20 keep-70 route (`result_L2-4_2fruit_late1_keepK`): K=70 and K=50 die on time at move 35 on L2;
+  K=26 was stopped (user: keeping under 35 moves isn't worth it, start from their route instead).
+- From the user's 50 moves: `result_L2-4_2fruit_late1_user50_ot26` (late presses tested from move 27; if the prefix
+  fails, `..._ot50` plays all 50 on time). Same flags as the 5-20 runs, `--levels 2,3,4`.
+
 ### Compare 100/67 vs keep70 115/78 (timing), and videos of both
 - Narrowest press window over L5-20, on time: 100 has one 7-frame turn, the rest 10+; 115 has one 6- and one
   7-frame turn, the rest 10+ (scratchpad windows.py).

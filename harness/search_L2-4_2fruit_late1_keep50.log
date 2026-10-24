@@ -1,0 +1,9 @@
+[cw] Started pid 57444 (full).
+start 2 ok f=1286 tile=13,23 dir=2 dots=0 level=2 4E04=3 score=0
+start 3 ok f=2276 tile=13,23 dir=2 dots=0 level=3 4E04=3 score=0
+start 4 ok f=2630 tile=13,23 dir=2 dots=0 level=4 4E04=3 score=0
+prefix fails at move 35 (R at (12, 23)): dead on L2
+prefix: 34/50 moves, 95 dots, 0 late variants dropped
+d=34 jobs=2 kids=0 fails={'dead': 2} on={'L2': 2} best=- fruit=- t=5s ram=0 states (peak 273 ~0.0GB) moved=1 busy=9% copy=0s
+RESULT cleared=False dots=95 frames=953 fruits=0 moves=34 turns=22 minwin=7 route=LLDLLDRRURULURRURUURRRRDLDLLDLDDRR
+[cw] Exited with code 0.

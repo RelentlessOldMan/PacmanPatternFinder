@@ -1,0 +1,14 @@
+[cw] Started pid 5240 (full).
+start 2 ok f=1286 tile=13,23 dir=2 dots=0 level=2 4E04=3 score=0
+start 3 ok f=2276 tile=13,23 dir=2 dots=0 level=3 4E04=3 score=0
+start 4 ok f=2630 tile=13,23 dir=2 dots=0 level=4 4E04=3 score=0
+prefix: 26/26 moves, 87 dots, 0 late variants dropped
+d=30 jobs=16 kids=12 fails={'dead': 2} on={'L2': 2} best=94 fruit=0 t=6s ram=267 states (peak 465 ~0.0GB) moved=7 busy=22% copy=0s
+d=40 jobs=163 kids=117 fails={'dead': 16, 'fruitless': 30} on={'late': 9, 'L2': 14, 'L3': 23} best=93 fruit=1 t=31s ram=3164 states (peak 7074 ~0.1GB) moved=153 busy=60% copy=0s
+d=50 jobs=157 kids=134 fails={'dead': 23} on={'L3': 6, 'L2': 15, 'late': 2} best=118 fruit=1 t=47s ram=4144 states (peak 10119 ~0.1GB) moved=322 busy=65% copy=0s
+d=60 jobs=168 kids=149 fails={'dead': 17} on={'late': 10, 'L2': 7} best=148 fruit=1 t=65s ram=5829 states (peak 15887 ~0.1GB) moved=503 busy=69% copy=1s
+d=63 endgame: 36 planned cleanups tried -> none cleared {'dead:L2': '26x avg25left', 'dead:late': '5x avg27left', 'dead:L3': '4x avg28left', 'fruitless:L2': '1x avg10left'}
+d=66 endgame: 144 planned cleanups tried -> none cleared {'dead:L2': '105x avg24left', 'dead:late': '31x avg22left', 'dead:L3': '7x avg20left', 'fruitless:L4': '1x avg2left'}
+d=69 endgame: 144 planned cleanups tried -> CLEARED x1 {'dead:L2': '106x avg17left', 'dead:late': '24x avg12left', 'dead:L3': '6x avg12left', 'fruitless:L3': '4x avg8left', 'fruitless:L2': '3x avg9left'}
+d=69 SOLUTION #1: 96 moves 74 turns 2812 frames route=LLDLLDRRURULURRURUURRRRDLDRDRUULLLLDRDLDDRDRDDRRDLLULULUUULURURDRURDLLURDRDLDLDLDRDRRRULULDLURDR
+d=70 jobs=168 kids=148 fails={'dead': 17} on={'L2': 15, 'L3': 2} best=183 fruit=1 t=139s ram=5838 states (peak 17085 ~0.1GB) moved=730 busy=78% copy=1s
