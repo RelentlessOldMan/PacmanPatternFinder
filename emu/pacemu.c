@@ -35,6 +35,12 @@ typedef struct {
   pm_state s;
   uint8_t rom[0x4000];
   int32_t vbl_offset;     /* vblank minus frame end, in cycles (negative: vblank first) */
+  int32_t idle;           /* skip the main loop's empty-queue spin (see pm_frame) */
+  int32_t joy;            /* joystick direction held: -1 none, 0=R 1=D 2=L 3=U (not in savestates, like MAME) */
+  uint8_t in0, in1;       /* the other input bits (coin, start); active low */
+  int edge_on, edge_n;    /* see pm_edge */
+  uint16_t edge_addr[8];
+  uint8_t edge_old[8];
 } pm;
 
 /* debugging: log writes to one address */
@@ -47,13 +53,11 @@ EXPORT int pm_watch_get(int i, uint32_t *out) { if (i >= watch_n) return 0; memc
 /* Writes made by the instruction that crosses each frame end, oldest first, with the values they replaced.
    MAME's z80 can stop in the middle of an instruction, so at its frame notifier only the writes that
    instruction made before the frame end have happened; compare.py checks MAME's RAM against every
-   prefix of these. Game state is unaffected: the rest of the instruction runs before anything reads it. */
-static int edge_on, edge_n;
-static uint16_t edge_addr[8];
-static uint8_t edge_old[8];
-EXPORT int pm_edge(int i, int *addr, int *old) {
-  if (i >= edge_n) return 0;
-  *addr = edge_addr[i]; *old = edge_old[i]; return 1;
+   prefix of these. Game state is unaffected: the rest of the instruction runs before anything reads it.
+   Kept per machine (not global) so machines in different threads don't share them. */
+EXPORT int pm_edge(pm *m, int i, int *addr, int *old) {
+  if (i >= m->edge_n) return 0;
+  *addr = m->edge_addr[i]; *old = m->edge_old[i]; return 1;
 }
 
 static uint8_t rd(void *u, uint16_t a) {
@@ -81,7 +85,7 @@ static void wr(void *u, uint16_t a, uint8_t v) {
   if (a < 0x4000) return;
   a &= ~0x2000;
   if (a < 0x4800 || (a >= 0x4C00 && a < 0x5000)) {
-    if (edge_on && edge_n < 8) { edge_addr[edge_n] = a; edge_old[edge_n] = m->s.ram[a - 0x4000]; edge_n++; }
+    if (m->edge_on && m->edge_n < 8) { m->edge_addr[m->edge_n] = a; m->edge_old[m->edge_n] = m->s.ram[a - 0x4000]; m->edge_n++; }
     m->s.ram[a - 0x4000] = v;
     return;
   }
@@ -142,6 +146,8 @@ EXPORT pm *pm_new(const uint8_t *rom16k, int32_t vbl_offset) {
   m->vbl_offset = vbl_offset;
   memset(m->s.ram + 0x800, 0xBF, 0x400); /* so a RAM dump shows the unmapped area as MAME reads it */
   m->s.in0 = m->s.in1 = 0xFF;
+  m->in0 = m->in1 = 0xFF;
+  m->joy = -1;
   m->s.dsw1 = 0xC9; /* MAME defaults: 1 coin 1 credit, 3 lives, bonus at 10000, normal, normal names */
   m->s.dsw2 = 0xFF;
   cpu_power_on(m);
@@ -157,6 +163,21 @@ EXPORT void pm_set_inputs(pm *m, int in0, int in1) {
   m->s.in0 = (uint8_t)in0;
   m->s.in1 = (uint8_t)in1;
 }
+
+/* IN0 joystick bits (active low): up 0, left 1, right 2, down 3 */
+static const uint8_t JOYBIT[4] = { 0x04, 0x08, 0x02, 0x01 }; /* R D L U */
+static void apply_inputs(pm *m) {
+  uint8_t v = m->in0;
+  if (m->joy >= 0) v &= (uint8_t)~JOYBIT[m->joy];
+  m->s.in0 = v;
+  m->s.in1 = m->in1;
+}
+/* pm_joy/pm_buttons act like MAME's Lua set_value at a frame end: the next frame still reads the
+   old inputs (its interrupt comes right after the frame end), the one after reads the new ones. */
+EXPORT void pm_joy(pm *m, int dir) { m->joy = dir; }
+EXPORT int pm_get_joy(pm *m) { return m->joy; }
+EXPORT void pm_buttons(pm *m, int in0, int in1) { m->in0 = (uint8_t)in0; m->in1 = (uint8_t)in1; }
+EXPORT void pm_set_idle(pm *m, int on) { m->idle = on; }
 
 static void vblank(pm *m) {
   if (m->s.latch & 1) m->s.line = 1;
@@ -177,22 +198,35 @@ EXPORT void pm_frame(pm *m) {
       m->s.vblank += CYC_FRAME;
     }
     if ((int32_t)(c - m->s.frame_end) >= 0) break;
+    /* Idle skip (like mame-patches/idleskip.patch): the main loop at 0x238D (LD HL,(4C82); LD A,(HL);
+       AND A; JP M,238D) only spins while its task queue is empty, and only the interrupt changes
+       anything, so jump straight to the next event. The ROM never reads R; only the return address
+       the interrupt pushes (into stack below SP that nothing reads) can differ from a full run. */
+    if (m->idle && z->pc == 0x238D && !m->s.line) {
+      uint16_t task = (uint16_t)(m->s.ram[0xC82] | m->s.ram[0xC83] << 8);
+      if (task >= 0x4CC0 && task <= 0x4CFF && (m->s.ram[task - 0x4000] & 0x80)) {
+        uint32_t ev = ((int32_t)(m->s.vblank - m->s.frame_end) < 0) ? m->s.vblank : m->s.frame_end;
+        if ((int32_t)(ev - c) > 0) z->cyc = ev;
+        continue;
+      }
+    }
     z->int_pending = m->s.line;
     z->int_data = m->s.vector;
-    edge_n = 0;
-    edge_on = 1;
+    m->edge_n = 0;
+    m->edge_on = 1;
     z80_step(z);
-    edge_on = 0;
-    if ((int32_t)((uint32_t)z->cyc - m->s.frame_end) <= 0) edge_n = 0; /* ended by the frame end: not crossing */
+    m->edge_on = 0;
+    if ((int32_t)((uint32_t)z->cyc - m->s.frame_end) <= 0) m->edge_n = 0; /* ended by the frame end: not crossing */
   }
   m->s.frame_end += CYC_FRAME;
   m->s.frames++;
+  apply_inputs(m);
 }
 
 EXPORT uint8_t *pm_ram(pm *m) { return m->s.ram; }
 EXPORT int pm_state_size(void) { return (int)sizeof(pm_state); }
 EXPORT void pm_save(pm *m, void *buf) { memcpy(buf, &m->s, sizeof(pm_state)); }
-EXPORT void pm_load(pm *m, const void *buf) { memcpy(&m->s, buf, sizeof(pm_state)); hook(m); }
+EXPORT void pm_load(pm *m, const void *buf) { memcpy(&m->s, buf, sizeof(pm_state)); hook(m); apply_inputs(m); }
 EXPORT uint32_t pm_frames(pm *m) { return m->s.frames; }
 EXPORT uint32_t pm_resets(pm *m) { return m->s.resets; }
 EXPORT int pm_pc(pm *m) { return m->s.cpu.pc; }
@@ -203,3 +237,5 @@ EXPORT void pm_regs(pm *m, uint16_t *r) {
   r[0] = (uint16_t)(z->a << 8 | f); r[1] = (uint16_t)(z->b << 8 | z->c); r[2] = (uint16_t)(z->d << 8 | z->e);
   r[3] = (uint16_t)(z->h << 8 | z->l); r[4] = z->ix; r[5] = z->iy; r[6] = z->sp; r[7] = z->pc;
 }
+
+#include "seg.h"

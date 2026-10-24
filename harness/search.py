@@ -471,13 +471,16 @@ def solution_cost(c):
     return c.frames * 0.25 + n_turns(c) * TURN_COST
 
 
+SUBDIR = "pacman"  # where this run's workers keep savestate files under STATE_DIR (emu: "emu")
+
+
 def cleanup(keep, pattern="n*"):
     names = {base(k) for k in keep}
     for n in [n for n in SHARED if n not in names]:
         del SHARED[n]
         FILED.discard(n)
     keep = {f"{n}.sta" for n in names}
-    for f in (STATE_DIR / "pacman").glob(f"{RUN}{pattern}.sta"):
+    for f in (STATE_DIR / SUBDIR).glob(f"{RUN}{pattern}.sta"):
         if f.name not in keep:
             try:
                 f.unlink()
@@ -888,6 +891,9 @@ def main():
     ap.add_argument("--no-ram", action="store_true",
                     help="keep every savestate in a file and use stock MAME (default: states live in the "
                          "memory of the worker that made them, in our patched MAME, mame-0.289-mem/)")
+    ap.add_argument("--mame", action="store_true",
+                    help="run the game in MAME (default: pacemu, emu/, which plays exactly like it, faster; "
+                         "check with emu_parity.py)")
     ap.add_argument("--no-idle-skip", action="store_true",
                     help="with our patched MAME, emulate Pac-Man's idle loop instead of skipping it")
     ap.add_argument("--solutions", type=int, default=1,
@@ -895,7 +901,7 @@ def main():
                          "to <out>.sols.jsonl as it is found); the best one is the result")
     ap.add_argument("--out", default="result.json")
     args = ap.parse_args()
-    global RAM, CLUSTER_COST, GAP_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, FIRST_FRUIT, RAM_CAP
+    global SUBDIR, RAM, CLUSTER_COST, GAP_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, FIRST_FRUIT, RAM_CAP
     CLUSTER_COST, CORNER_MINWIN, GAP_COST = args.cluster_cost, args.corner_minwin, args.gap_cost
     LATE_VARIANTS = not args.no_late and not args.jitter_sims and not args.fixed_sims and not args.history_sims
     TURN_COST, JITTER, JITTER_CORNER = args.turn_cost, args.jitter, args.jitter_corner
@@ -913,9 +919,13 @@ def main():
     levels = [int(x) for x in args.levels.split(",")]
     RAM = not args.no_ram
     RAM_CAP = args.ram_cap
-    if RAM and not MAME_MEM.exists():
-        raise SystemExit(f"{MAME_MEM} not found: build it (see mame-patches/README.md) or use --no-ram")
-    pool = Pool(args.workers, MAME_MEM if RAM else MAME, idle=RAM and not args.no_idle_skip)
+    if not args.mame:
+        SUBDIR = "emu"
+        pool = Pool(args.workers, "emu", idle=not args.no_idle_skip)
+    else:
+        if RAM and not MAME_MEM.exists():
+            raise SystemExit(f"{MAME_MEM} not found: build it (see mame-patches/README.md) or use --no-ram")
+        pool = Pool(args.workers, MAME_MEM if RAM else MAME, idle=RAM and not args.no_idle_skip)
     args.checkpoint = None if args.checkpoint == "none" else args.checkpoint or args.out + ".ckpt"
     resume = None
     if args.resume:
@@ -943,7 +953,7 @@ def main():
     pool.close()
     cleanup(set(), "*")
     if resume and resume["run"] != RUN:  # the savestates the checkpointed run left behind
-        for f in (STATE_DIR / "pacman").glob(f"{resume['run']}*.sta"):
+        for f in (STATE_DIR / SUBDIR).glob(f"{resume['run']}*.sta"):
             try:
                 f.unlink()
             except OSError:

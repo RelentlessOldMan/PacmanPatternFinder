@@ -20,7 +20,7 @@ _dll.pm_load.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
 for name in ("pm_frames", "pm_resets", "pm_pc"):
     getattr(_dll, name).argtypes = [ctypes.c_void_p]
 _dll.pm_regs.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_uint16 * 8)]
-_dll.pm_edge.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int)]
+_dll.pm_edge.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int)]
 STATE_SIZE = _dll.pm_state_size()
 REGS = ("AF", "BC", "DE", "HL", "IX", "IY", "SP", "PC")
 
@@ -53,7 +53,7 @@ class Pacman:
     def edge_writes(self):
         """[(addr, old value)] written by the instruction that crossed the last frame end, oldest first."""
         out, i, a, o = [], 0, ctypes.c_int(), ctypes.c_int()
-        while _dll.pm_edge(i, ctypes.byref(a), ctypes.byref(o)):
+        while _dll.pm_edge(self.h, i, ctypes.byref(a), ctypes.byref(o)):
             out.append((a.value, o.value)); i += 1
         return out
 

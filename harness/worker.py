@@ -14,7 +14,17 @@ STATE_DIR = ROOT / "state"
 class Worker:
     def __init__(self, mame=MAME, idle=False, script=None, extra=()):
         """idle: our patched MAME skips Pac-Man's idle loop (see mame-patches/); stock ignores it.
-        script: the Lua server to run (default server.lua beside this file)."""
+        script: the Lua server to run (default server.lua beside this file).
+        mame="emu": run emu_server.py (the same protocol on pacemu, emu/) instead of MAME."""
+        if str(mame) == "emu":
+            import sys
+            self.p = subprocess.Popen(
+                [sys.executable, str(Path(__file__).parent / "emu_server.py"), *([] if idle else ["--no-idle"])],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True, bufsize=1, cwd=str(ROOT),
+                creationflags=getattr(subprocess, "BELOW_NORMAL_PRIORITY_CLASS", 0))
+            line = self._readline()
+            assert line == "ready", line
+            return
         mame = Path(mame).resolve()  # MAME runs from ROOT, so relative paths would break
         # MAME persists toggles/DIPs in cfg; always start from factory defaults
         try:

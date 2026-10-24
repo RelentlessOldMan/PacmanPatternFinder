@@ -19,13 +19,14 @@ from worker import MAME_MEM, Worker
 
 LOCAL = threading.local()
 LEVELS = []
+GAME = "emu"  # pacemu (emu/); --mame: our patched MAME
 
 
 def worker():
-    """This thread's MAME, with a start state in memory for each level. They are all made up front:
+    """This thread's game (pacemu or MAME), with a start state in memory for each level. They are all made up front:
     a second newgame after playing leaves the game in a bad state (Pac-Man stuck or dead at once)."""
     if not hasattr(LOCAL, "w"):
-        LOCAL.w = w = Worker(MAME_MEM, idle=True)
+        LOCAL.w = w = Worker(GAME, idle=True)
         for lv in LEVELS:
             w.cmd("newgame"); w.cmd(f"level {lv}"); w.cmd(f"msave start{lv}")
     return LOCAL.w
@@ -94,7 +95,11 @@ def main():
     ap.add_argument("--budget", type=int, default=2)
     ap.add_argument("--workers", type=int, default=10)
     ap.add_argument("--out", default=None, help="default: <sols> with .ranked.json")
+    ap.add_argument("--mame", action="store_true", help="run the game in our patched MAME instead of pacemu")
     args = ap.parse_args()
+    global GAME
+    if args.mame:
+        GAME = MAME_MEM
     sols = [json.loads(l) for l in open(args.sols)]
     levels = levels_arg(args.levels)
     late_levels = levels_arg(args.late_levels) if args.late_levels else levels
