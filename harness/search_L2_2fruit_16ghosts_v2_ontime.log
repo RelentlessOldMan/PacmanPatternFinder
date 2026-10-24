@@ -1,0 +1,51 @@
+[cw] Started pid 23132 (full).
+start 2 ok f=1286 tile=13,23 dir=2 dots=0 level=2 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} on={'L2': 1} best=2 fruit=0 t=0s ram=1 states (peak 1 ~0.0GB) moved=0 busy=40% copy=0s
+d=10 jobs=86 kids=80 fails={'dead': 5} on={'L2': 5} best=29 fruit=0 t=0s ram=80 states (peak 126 ~0.0GB) moved=40 busy=51% copy=0s
+d=20 jobs=164 kids=153 fails={'ghostmiss': 9, 'dead': 1} on={'L2': 10} best=65 fruit=0 t=2s ram=96 states (peak 260 ~0.0GB) moved=222 busy=59% copy=0s
+d=30 beam died: backtrack #1 to d=25, 94/96 candidates left after dropping the dead family
+d=29 beam died: backtrack #2 to d=20, 93/96 candidates left after dropping the dead family
+d=20 jobs=157 kids=146 fails={'ghostmiss': 9, 'dead': 1} on={'L2': 10} best=65 fruit=0 t=5s ram=96 states (peak 260 ~0.0GB) moved=491 busy=63% copy=0s
+d=30 jobs=115 kids=81 fails={'ghostmiss': 29, 'dead': 2} on={'L2': 31} best=106 fruit=0 t=7s ram=81 states (peak 260 ~0.0GB) moved=690 busy=62% copy=0s
+d=37 beam died: backtrack #3 to d=35, 56/59 candidates left after dropping the dead family
+d=36 beam died: backtrack #4 to d=30, 56/62 candidates left after dropping the dead family
+d=30 jobs=108 kids=74 fails={'ghostmiss': 29, 'dead': 2} on={'L2': 31} best=106 fruit=0 t=9s ram=74 states (peak 260 ~0.0GB) moved=839 busy=61% copy=0s
+d=35 beam died: backtrack #5 to d=30, 52/56 candidates left after dropping the dead family
+d=30 jobs=99 kids=67 fails={'ghostmiss': 29, 'dead': 2} on={'L2': 31} best=106 fruit=0 t=11s ram=67 states (peak 260 ~0.0GB) moved=942 busy=60% copy=0s
+d=35 beam died: backtrack #6 to d=25, 94/96 candidates left after dropping the dead family
+d=30 jobs=47 kids=28 fails={'ghostmiss': 17, 'dead': 2} on={'L2': 19} best=106 fruit=0 t=13s ram=28 states (peak 260 ~0.0GB) moved=1121 busy=58% copy=0s
+d=36 beam died: backtrack #7 to d=20, 92/93 candidates left after dropping the dead family
+d=20 jobs=156 kids=145 fails={'ghostmiss': 9, 'dead': 1} on={'L2': 10} best=65 fruit=0 t=14s ram=96 states (peak 260 ~0.0GB) moved=1183 busy=59% copy=0s
+d=30 beam died: backtrack #8 to d=15, 95/96 candidates left after dropping the dead family
+d=20 jobs=162 kids=151 fails={'ghostmiss': 9, 'dead': 1} on={'L2': 10} best=65 fruit=0 t=17s ram=96 states (peak 260 ~0.0GB) moved=1454 busy=59% copy=0s
+d=30 jobs=96 kids=81 fails={'ghostmiss': 12} on={'L2': 12} best=106 fruit=0 t=19s ram=81 states (peak 260 ~0.0GB) moved=1656 busy=59% copy=0s
+d=37 beam died: backtrack #9 to d=10, 44/45 candidates left after dropping the dead family
+d=10 jobs=83 kids=77 fails={'dead': 5} on={'L2': 5} best=29 fruit=0 t=21s ram=77 states (peak 260 ~0.0GB) moved=1791 busy=59% copy=0s
+d=20 jobs=162 kids=149 fails={'ghostmiss': 9, 'dead': 3} on={'L2': 12} best=65 fruit=0 t=23s ram=96 states (peak 261 ~0.0GB) moved=1965 busy=60% copy=0s
+d=30 beam died: backtrack #10 to d=5, 6/7 candidates left after dropping the dead family
+d=10 jobs=77 kids=73 fails={'dead': 3} on={'L2': 3} best=29 fruit=0 t=25s ram=73 states (peak 261 ~0.0GB) moved=2166 busy=59% copy=0s
+d=20 jobs=173 kids=153 fails={'ghostmiss': 13, 'dead': 4} on={'L2': 17} best=65 fruit=0 t=27s ram=96 states (peak 263 ~0.0GB) moved=2340 busy=60% copy=0s
+d=30 jobs=52 kids=31 fails={'ghostmiss': 20} on={'L2': 20} best=122 fruit=0 t=29s ram=31 states (peak 263 ~0.0GB) moved=2540 busy=59% copy=0s
+d=40 beam died: backtrack #11 to d=35, 95/96 candidates left after dropping the dead family
+d=39 beam died: backtrack #12 to d=30, 23/25 candidates left after dropping the dead family
+d=30 jobs=48 kids=27 fails={'ghostmiss': 20} on={'L2': 20} best=122 fruit=0 t=33s ram=27 states (peak 263 ~0.0GB) moved=2766 busy=59% copy=0s
+d=38 beam died: backtrack #13 to d=25, 95/96 candidates left after dropping the dead family
+d=30 beam died: backtrack #14 to d=20, 95/96 candidates left after dropping the dead family
+d=20 jobs=172 kids=152 fails={'ghostmiss': 13, 'dead': 4} on={'L2': 17} best=65 fruit=0 t=37s ram=96 states (peak 263 ~0.0GB) moved=2990 busy=59% copy=0s
+d=30 jobs=51 kids=31 fails={'ghostmiss': 18, 'dead': 1} on={'L2': 19} best=122 fruit=0 t=39s ram=31 states (peak 263 ~0.0GB) moved=3199 busy=59% copy=0s
+d=40 beam died: backtrack #15 to d=15, 95/96 candidates left after dropping the dead family
+d=20 jobs=173 kids=153 fails={'ghostmiss': 13, 'dead': 4} on={'L2': 17} best=65 fruit=0 t=43s ram=96 states (peak 263 ~0.0GB) moved=3455 busy=59% copy=0s
+d=30 jobs=49 kids=15 fails={'ghostmiss': 34} on={'L2': 34} best=82 fruit=0 t=45s ram=15 states (peak 263 ~0.0GB) moved=3631 busy=59% copy=0s
+d=40 jobs=180 kids=84 fails={'ghostmiss': 85, 'dead': 4} on={'L2': 89} best=89 fruit=0 t=46s ram=84 states (peak 263 ~0.0GB) moved=3764 busy=59% copy=0s
+d=50 jobs=167 kids=95 fails={'ghostmiss': 71} on={'L2': 71} best=111 fruit=1 t=47s ram=95 states (peak 263 ~0.0GB) moved=3958 busy=59% copy=0s
+d=60 jobs=171 kids=64 fails={'ghostmiss': 97, 'dead': 10} on={'L2': 107} best=143 fruit=1 t=51s ram=64 states (peak 263 ~0.0GB) moved=4144 busy=59% copy=0s
+d=70 beam died: backtrack #16 to d=65, 94/96 candidates left after dropping the dead family
+d=69 beam died: backtrack #17 to d=60, 91/96 candidates left after dropping the dead family
+d=60 jobs=162 kids=55 fails={'ghostmiss': 97, 'dead': 10} on={'L2': 107} best=143 fruit=1 t=55s ram=55 states (peak 263 ~0.0GB) moved=4388 busy=58% copy=0s
+d=70 beam died: backtrack #18 to d=65, 93/96 candidates left after dropping the dead family
+d=70 beam died: backtrack #19 to d=60, 90/91 candidates left after dropping the dead family
+d=60 jobs=161 kids=54 fails={'ghostmiss': 97, 'dead': 10} on={'L2': 107} best=143 fruit=1 t=59s ram=54 states (peak 263 ~0.0GB) moved=4640 busy=58% copy=0s
+d=70 beam died: backtrack #20 to d=65, 95/96 candidates left after dropping the dead family
+d=69 jobs=21 kids=0 fails={'ghostmiss': 16, 'dead': 5} on={'L2': 21} best=- fruit=- t=62s ram=0 states (peak 263 ~0.0GB) moved=4879 busy=58% copy=0s
+RESULT cleared=False dots=194 frames=1696 fruits=1 moves=68 turns=55 minwin=6 route=LDRDLURRURDRDRURULLULLDDLULURURDRDRRDLDLUUUURUULLDLULDLURDDLURRDRDRU
+[cw] Exited with code 0.

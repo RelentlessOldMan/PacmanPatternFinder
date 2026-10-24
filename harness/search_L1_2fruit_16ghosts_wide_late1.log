@@ -1,0 +1,4 @@
+[cw] Started pid 50964 (full).
+start 1 ok f=932 tile=13,23 dir=2 dots=0 level=1 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} on={'L1': 1} best=2 fruit=0 t=0s ram=1 states (peak 1 ~0.0GB) moved=0 busy=58% copy=0s
+d=10 jobs=119 kids=118 fails={} on={} best=39 fruit=0 t=1s ram=913 states (peak 1382 ~0.0GB) moved=33 busy=63% copy=0s

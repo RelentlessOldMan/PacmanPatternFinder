@@ -615,7 +615,7 @@ def endgame(pool, beam, args, rng):
     sols, why = [], {}
     for j in jobs:
         s, fail = j.result()
-        if s is not None and s.fruits >= args.need_fruits:
+        if s is not None and s.fruits >= args.need_fruits and (not ALL_GHOSTS or s.ghosts >= 16):
             sols.append(s)
         elif fail:
             st, i, left = fail
@@ -758,6 +758,8 @@ def search(pool, sims0, args, log=print, resume=None):
             if st == "clear" or finished(ch):
                 if ch.fruits < args.need_fruits:
                     fails["nofruit"] = fails.get("nofruit", 0) + 1
+                elif ALL_GHOSTS and ch.ghosts < 16:  # (per-move lowest over the sims: can only undercount)
+                    fails["fewghosts"] = fails.get("fewghosts", 0) + 1
                 else:
                     collect(ch)
                 continue

@@ -39,6 +39,7 @@ typedef struct {
   int32_t idle;           /* skip the main loop's empty-queue spin (see pm_frame) */
   int32_t joy;            /* joystick direction held: -1 none, 0=R 1=D 2=L 3=U (not in savestates, like MAME) */
   uint8_t in0, in1;       /* the other input bits (coin, start); active low */
+  int32_t mark, mark_a6, mark_d0; /* pm_mark: RAM 0x4DA6/0x4DD0 of the state just loaded, for the next seg */
   int edge_on, edge_n;    /* see pm_edge */
   uint16_t edge_addr[8];
   uint8_t edge_old[8];

@@ -1,0 +1,64 @@
+[cw] Started pid 39336 (full).
+start 3 ok f=2276 tile=13,23 dir=2 dots=0 level=3 4E04=3 score=0
+d=0 jobs=2 kids=1 fails={'shortwin': 1} on={'L3': 1} best=2 fruit=0 t=0s ram=1 states (peak 1 ~0.0GB) moved=0 busy=62% copy=0s
+d=10 jobs=80 kids=74 fails={'dead': 5} on={'L3': 5} best=37 fruit=0 t=0s ram=74 states (peak 117 ~0.0GB) moved=40 busy=53% copy=0s
+d=20 jobs=170 kids=136 fails={'ghostmiss': 25, 'dead': 9} on={'L3': 34} best=44 fruit=0 t=3s ram=96 states (peak 264 ~0.0GB) moved=233 busy=63% copy=0s
+d=30 jobs=170 kids=101 fails={'ghostmiss': 62, 'dead': 1} on={'L3': 63} best=103 fruit=0 t=5s ram=96 states (peak 264 ~0.0GB) moved=387 busy=62% copy=0s
+d=40 jobs=87 kids=68 fails={'fruitless': 14, 'dead': 3} on={'L3': 17} best=121 fruit=0 t=8s ram=68 states (peak 264 ~0.0GB) moved=562 busy=60% copy=0s
+d=50 jobs=106 kids=101 fails={'dead': 1} on={'L3': 1} best=130 fruit=1 t=10s ram=96 states (peak 264 ~0.0GB) moved=665 busy=59% copy=0s
+d=60 jobs=176 kids=87 fails={'ghostmiss': 79, 'dead': 6} on={'L3': 85} best=133 fruit=1 t=14s ram=87 states (peak 273 ~0.0GB) moved=840 busy=59% copy=0s
+d=66 beam died: backtrack #1 to d=65, 23/25 candidates left after dropping the dead family
+d=65 beam died: backtrack #2 to d=60, 95/96 candidates left after dropping the dead family
+d=60 jobs=173 kids=84 fails={'ghostmiss': 79, 'dead': 6} on={'L3': 85} best=133 fruit=1 t=15s ram=84 states (peak 273 ~0.0GB) moved=926 busy=58% copy=0s
+d=65 beam died: backtrack #3 to d=55, 93/96 candidates left after dropping the dead family
+d=60 jobs=176 kids=79 fails={'ghostmiss': 87, 'dead': 6} on={'L3': 93} best=133 fruit=1 t=18s ram=79 states (peak 273 ~0.0GB) moved=1077 busy=59% copy=0s
+d=70 jobs=60 kids=15 fails={'ghostmiss': 44, 'dead': 1} on={'L3': 45} best=141 fruit=1 t=20s ram=15 states (peak 273 ~0.0GB) moved=1234 busy=59% copy=0s
+d=72 beam died: backtrack #4 to d=70, 28/32 candidates left after dropping the dead family
+d=70 jobs=52 kids=7 fails={'ghostmiss': 44, 'dead': 1} on={'L3': 45} best=142 fruit=1 t=20s ram=7 states (peak 273 ~0.0GB) moved=1255 busy=59% copy=0s
+d=71 beam died: backtrack #5 to d=65, 95/96 candidates left after dropping the dead family
+d=70 beam died: backtrack #6 to d=60, 95/96 candidates left after dropping the dead family
+d=60 jobs=174 kids=77 fails={'ghostmiss': 87, 'dead': 6} on={'L3': 93} best=133 fruit=1 t=22s ram=77 states (peak 273 ~0.0GB) moved=1340 busy=59% copy=0s
+d=69 beam died: backtrack #7 to d=65, 95/96 candidates left after dropping the dead family
+d=68 beam died: backtrack #8 to d=60, 92/95 candidates left after dropping the dead family
+d=60 jobs=169 kids=72 fails={'ghostmiss': 87, 'dead': 6} on={'L3': 93} best=133 fruit=1 t=24s ram=72 states (peak 273 ~0.0GB) moved=1541 busy=59% copy=0s
+d=67 beam died: backtrack #9 to d=55, 92/93 candidates left after dropping the dead family
+d=60 jobs=177 kids=78 fails={'ghostmiss': 89, 'dead': 6} on={'L3': 95} best=133 fruit=1 t=27s ram=78 states (peak 273 ~0.0GB) moved=1708 busy=59% copy=0s
+d=68 beam died: backtrack #10 to d=50, 60/61 candidates left after dropping the dead family
+d=50 jobs=104 kids=99 fails={'dead': 1} on={'L3': 1} best=130 fruit=1 t=29s ram=96 states (peak 273 ~0.0GB) moved=1830 busy=58% copy=0s
+d=60 jobs=176 kids=87 fails={'ghostmiss': 79, 'dead': 6} on={'L3': 85} best=133 fruit=1 t=33s ram=87 states (peak 273 ~0.0GB) moved=2018 busy=58% copy=0s
+d=66 beam died: backtrack #11 to d=45, 74/75 candidates left after dropping the dead family
+d=50 jobs=87 kids=84 fails={} on={} best=130 fruit=1 t=35s ram=84 states (peak 273 ~0.0GB) moved=2173 busy=58% copy=0s
+d=60 jobs=180 kids=106 fails={'ghostmiss': 63, 'dead': 6} on={'L3': 69} best=133 fruit=1 t=40s ram=96 states (peak 273 ~0.0GB) moved=2337 busy=57% copy=0s
+d=69 beam died: backtrack #12 to d=65, 92/96 candidates left after dropping the dead family
+d=69 beam died: backtrack #13 to d=60, 95/96 candidates left after dropping the dead family
+d=60 jobs=178 kids=104 fails={'ghostmiss': 63, 'dead': 6} on={'L3': 69} best=133 fruit=1 t=43s ram=96 states (peak 273 ~0.0GB) moved=2539 busy=58% copy=0s
+d=70 beam died: backtrack #14 to d=55, 95/96 candidates left after dropping the dead family
+d=60 jobs=182 kids=107 fails={'ghostmiss': 63, 'dead': 6} on={'L3': 69} best=133 fruit=1 t=47s ram=96 states (peak 273 ~0.0GB) moved=2783 busy=58% copy=0s
+d=68 beam died: backtrack #15 to d=50, 49/51 candidates left after dropping the dead family
+d=50 jobs=83 kids=80 fails={} on={} best=130 fruit=1 t=50s ram=80 states (peak 273 ~0.0GB) moved=2913 busy=58% copy=0s
+d=60 jobs=175 kids=96 fails={'ghostmiss': 67, 'dead': 6} on={'L3': 73} best=133 fruit=1 t=54s ram=96 states (peak 273 ~0.0GB) moved=3085 busy=58% copy=0s
+d=70 jobs=3 kids=3 fails={} on={} best=154 fruit=1 t=56s ram=3 states (peak 273 ~0.0GB) moved=3239 busy=58% copy=0s
+d=80 jobs=14 kids=14 fails={} on={} best=169 fruit=1 t=56s ram=14 states (peak 273 ~0.0GB) moved=3326 busy=58% copy=0s
+d=90 jobs=167 kids=151 fails={'dead': 9, 'ghostmiss': 3} on={'L3': 12} best=190 fruit=1 t=60s ram=96 states (peak 273 ~0.0GB) moved=3450 busy=57% copy=0s
+d=99 endgame: 12 planned cleanups tried -> none cleared {'ghostmiss:L3': '12x avg34left'}
+d=100 jobs=174 kids=101 fails={'ghostmiss': 59, 'dead': 8} on={'L3': 67} best=190 fruit=2 t=63s ram=96 states (peak 273 ~0.0GB) moved=3653 busy=57% copy=0s
+d=102 endgame: 36 planned cleanups tried -> none cleared {'ghostmiss:L3': '36x avg38left'}
+d=105 endgame: 36 planned cleanups tried -> none cleared {'ghostmiss:L3': '36x avg38left'}
+d=110 beam died: backtrack #16 to d=105, 55/65 candidates left after dropping the dead family
+d=105 endgame: 36 planned cleanups tried -> none cleared {'ghostmiss:L3': '36x avg38left'}
+d=109 beam died: backtrack #17 to d=105, 52/55 candidates left after dropping the dead family
+d=105 endgame: 36 planned cleanups tried -> none cleared {'ghostmiss:L3': '36x avg38left'}
+d=108 beam died: backtrack #18 to d=100, 95/96 candidates left after dropping the dead family
+d=100 jobs=172 kids=99 fails={'ghostmiss': 59, 'dead': 8} on={'L3': 67} best=190 fruit=2 t=65s ram=96 states (peak 273 ~0.0GB) moved=3890 busy=56% copy=0s
+d=102 endgame: 36 planned cleanups tried -> none cleared {'ghostmiss:L3': '36x avg38left'}
+d=106 beam died: backtrack #19 to d=95, 94/96 candidates left after dropping the dead family
+d=100 jobs=174 kids=87 fails={'ghostmiss': 74, 'dead': 8} on={'L3': 82} best=190 fruit=2 t=67s ram=87 states (peak 273 ~0.0GB) moved=4094 busy=56% copy=0s
+d=105 endgame: 36 planned cleanups tried -> none cleared {'ghostmiss:L3': '36x avg38left'}
+d=110 beam died: backtrack #20 to d=90, 95/96 candidates left after dropping the dead family
+d=90 jobs=165 kids=149 fails={'dead': 9, 'ghostmiss': 3} on={'L3': 12} best=190 fruit=1 t=68s ram=96 states (peak 273 ~0.0GB) moved=4234 busy=56% copy=0s
+d=99 endgame: 12 planned cleanups tried -> none cleared {'ghostmiss:L3': '12x avg34left'}
+d=100 jobs=175 kids=94 fails={'ghostmiss': 67, 'dead': 8} on={'L3': 75} best=190 fruit=2 t=71s ram=94 states (peak 273 ~0.0GB) moved=4423 busy=56% copy=0s
+d=102 endgame: 36 planned cleanups tried -> none cleared {'ghostmiss:L3': '36x avg38left'}
+d=106 jobs=29 kids=0 fails={'ghostmiss': 28, 'dead': 1} on={'L3': 29} best=- fruit=- t=72s ram=0 states (peak 273 ~0.0GB) moved=4520 busy=56% copy=0s
+RESULT cleared=False dots=201 frames=2832 fruits=2 moves=108 turns=88 minwin=5 route=LDRDRURULLULLUUUURDRURDLDLDLULULDDDDRRULURDLDRDLDRULLULDLDLULULULDRDRURDRDLURRUURRDRRRULULULLDRDLDLUULUURUUR
+[cw] Exited with code 0.

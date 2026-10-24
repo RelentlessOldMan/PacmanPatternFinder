@@ -21,6 +21,7 @@ D.pm_hash.argtypes = [ctypes.c_void_p]
 for name, n in (("pm_joy", 1), ("pm_set_idle", 1), ("pm_to_level", 1), ("pm_buttons", 2)):
     getattr(D, name).argtypes = [ctypes.c_void_p] + [ctypes.c_int] * n
 D.pm_get_joy.argtypes = [ctypes.c_void_p]
+D.pm_mark.argtypes = [ctypes.c_void_p]
 D.pm_set_maze.argtypes = [ctypes.c_char_p]
 
 LETTER = {"R": 0, "D": 1, "L": 2, "U": 3}
@@ -76,6 +77,7 @@ class Server:
         self.joy(held)
         self.m.load(state)
         self.joy(held)
+        D.pm_mark(self.h)  # the next seg's ghost count starts at the loaded state
         self.wait(1)
 
     def rd(self, a):

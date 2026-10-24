@@ -98,6 +98,12 @@ local function dots() return rd(0x4E0E) end
 -- player presses the next turn as soon as they see Pac-Man come round the corner. `lead` is how
 -- many frames that is before leaving the node tile, i.e. extra window for the next turn.
 -- A segment's state lives in a table (n = frames so far) so segb can copy it at the press point.
+-- ghost counting across a load: MARKS[slot] = 0x4DA6/0x4DD0 of a saved state (its RAM when the save is
+-- asked for); a load sets MARK to it and the next segment starts counting there, so a fright that ends in
+-- the frame the load lets run still counts (emu: pm_mark)
+local MARKS, MARK = {}, nil
+local function mark_save(name) MARKS[name] = { rd(0x4DA6), rd(0x4DD0) } end
+
 local function seg_start(want, policy, lag, nxt, nxt_delay)
   local d = H.rd(0x4D30)
   local c, r = pac_tile()
@@ -112,6 +118,7 @@ local function seg_start(want, policy, lag, nxt, nxt_delay)
   -- pac-man stops dead at a corner's center, so a press "past center" can't happen there
   if policy ~= "E" and not open(mc + DC[d][1], mr + DC[d][2]) and policy < 0 then policy = 0 end
   snap()
+  local mk = MARK; MARK = nil
   return {
     want = want, policy = policy, lag = lag, nxt = nxt, nxt_delay = nxt_delay, d = d, mc = mc, mr = mr,
     n = 0, pressed = false, trigger = nil, entered = false, mind = 999, lastx = -1, lasty = -1, still = 0,
@@ -119,7 +126,7 @@ local function seg_start(want, policy, lag, nxt, nxt_delay)
     win = (want == d) and 99 or nil,
     fruits = 0, last_score = score(), lead_at = nil,
     -- ghosts eaten; gmiss: an energizer ended with fewer than 4 eaten
-    ghosts = 0, gmiss = 0, last_a6 = rd(0x4DA6), last_d0 = rd(0x4DD0),
+    ghosts = 0, gmiss = 0, last_a6 = mk and mk[1] or rd(0x4DA6), last_d0 = mk and mk[2] or rd(0x4DD0),
   }
 end
 
@@ -146,16 +153,19 @@ local function seg_after(g)
   g.n = g.n + 1
   snap()
   local s = score()
-  if FRUIT_POINTS[s - g.last_score] then g.fruits = g.fruits + 1 end
+  local ds = s - g.last_score
+  if FRUIT_POINTS[ds] then g.fruits = g.fruits + 1 end
   g.last_score = s
   -- 0x4DA6: ghosts blue; 0x4DD0: ghosts eaten since the last energizer
   local a6, d0 = rd(0x4DA6), rd(0x4DD0)
   if d0 > g.last_d0 then g.ghosts = g.ghosts + d0 - g.last_d0 end
-  if g.last_d0 < 4 and ((g.last_a6 ~= 0 and a6 == 0) or d0 < g.last_d0) then g.gmiss = 1 end
+  -- a miss: fright ends, the count resets, or an energizer (+50) is eaten while still blue, with < 4 eaten
+  if g.last_d0 < 4 and ((g.last_a6 ~= 0 and (a6 == 0 or ds == 50)) or d0 < g.last_d0) then g.gmiss = 1 end
   g.last_a6, g.last_d0 = a6, d0
   if dead() then return "dead" end
   if dots() >= 244 then
-    if a6 ~= 0 and d0 < 4 then g.gmiss = 1 end
+    -- the level also ends on an energizer as the last dot (+50), before the ghosts turn blue
+    if (a6 ~= 0 and d0 < 4) or ds == 50 then g.gmiss = 1 end
     return "clear"
   end
   local m = ghost_min_dist(); if m < g.mind then g.mind = m end
@@ -236,14 +246,14 @@ local function segb(want, policy, names)
   local out = {}
   local g = seg_start(want, policy, 1)
   if not g then
-    for k = 1, #names do out[k] = "nonode 0 0 0 999 0 0 0 0 0 0 0 0" end
+    for k = 1, #names do out[k] = "nonode 0 0 0 999 0 0 0 0 0 0 0 0 0 0" end
     return table.concat(out, " | ")
   end
   local r = { seg_run(g, true) }
   if #r > 0 then
     -- ended before the press point: no k ever presses, so they all play the same
     local line = seg_reply(table.unpack(r)) .. " " .. ram_hash()
-    for k = 1, #names do out[k] = line; H.msave(names[k]) end
+    for k = 1, #names do out[k] = line; mark_save(names[k]); H.msave(names[k]) end
     return table.concat(out, " | ")
   end
   local fork = copy(g)
@@ -255,7 +265,7 @@ local function segb(want, policy, names)
     local st = seg_after(g)
     if st then r = { seg_done(g, st) } else r = { seg_run(g) } end
     out[k] = seg_reply(table.unpack(r)) .. " " .. ram_hash()
-    H.msave(names[k])
+    mark_save(names[k]); H.msave(names[k])
   end
   H.machine:mem_drop("segb_fork")
   return table.concat(out, " | ")
@@ -289,7 +299,7 @@ H.run(function()
       reply("ok " .. H.frame)
     elseif cmd == "level" then
       to_level(tonumber(a)); reply("ok " .. H.rd(0x4E13) + 1)
-    elseif cmd == "save" then H.save(a); reply("ok")
+    elseif cmd == "save" then mark_save(a); H.save(a); reply("ok")
     elseif cmd == "rec" then
       -- video for showing a route: "rec <file.avi>" starts (in the snap directory), "rec" stops
       if a ~= "" then manager.machine.video:begin_recording(a, "avi") else manager.machine.video:end_recording() end
@@ -307,19 +317,19 @@ H.run(function()
     elseif cmd == "load" then
       -- savestates don't carry the joystick; restore the direction held when it was saved
       local held = b ~= "" and b or nil
-      H.joy(held); H.load(a); H.joy(held)
+      H.joy(held); H.load(a); H.joy(held); MARK = MARKS[a]
       local tc, tr = pac_tile(); reply(string.format("ok %d %d %d", tc, tr, dots()))
     elseif cmd:sub(1, 1) == "m" and cmd ~= "mem" and not H.has_mem then
       reply("err stock MAME has no memory slots")
     elseif cmd == "msave" then
       -- memory slot versions of save/load; mload replies like load. A failed save or load (it
       -- happens at the frame boundary, after the command returns) shows up as "err".
-      local e = H.machine:mem_errors(); H.msave(a)
+      local e = H.machine:mem_errors(); mark_save(a); H.msave(a)
       reply(H.machine:mem_errors() == e and "ok" or "err msave " .. a)
     elseif cmd == "mload" then
       local held = b ~= "" and b or nil
       local e = H.machine:mem_errors()
-      H.joy(held); H.mload(a); H.joy(held)
+      H.joy(held); H.mload(a); H.joy(held); MARK = MARKS[a]
       local tc, tr = pac_tile()
       reply(H.machine:mem_errors() == e and string.format("ok %d %d %d", tc, tr, dots()) or "err mload " .. a)
     elseif cmd == "mdrop" then

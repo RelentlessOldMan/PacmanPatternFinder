@@ -87,6 +87,7 @@ static int seg_start(pm *m, seg_t *g, int want, int pol_e, int policy, int lag, 
   g->d = d; g->mc = mc; g->mr = mr;
   g->trigger = NONE; g->mind = 999; g->lastx = g->lasty = -1;
   g->ghosts = g->gmiss = 0; g->last_a6 = RD(0x4DA6); g->last_d0 = RD(0x4DD0);
+  if (m->mark) { g->last_a6 = m->mark_a6; g->last_d0 = m->mark_d0; m->mark = 0; } /* count the load's frame too */
   g->win = (want == d) ? 99 : NONE;
   g->last_score = score(m); g->lead_at = NONE;
   return 1;
@@ -106,16 +107,18 @@ enum { ST_NONE, ST_OK, ST_CLEAR, ST_DEAD, ST_MISS, ST_STUCK, ST_TIMEOUT, ST_NONO
 
 static int seg_after(pm *m, seg_t *g) {
   g->n++;
-  int s = score(m);
-  if (fruit_points(s - g->last_score)) g->fruits++;
+  int s = score(m), ds = s - g->last_score;
+  if (fruit_points(ds)) g->fruits++;
   g->last_score = s;
   /* 0x4DA6: ghosts blue; 0x4DD0: ghosts eaten since the last energizer */
   int a6 = RD(0x4DA6), d0 = RD(0x4DD0);
   if (d0 > g->last_d0) g->ghosts += d0 - g->last_d0;
-  if (g->last_d0 < 4 && ((g->last_a6 && !a6) || d0 < g->last_d0)) g->gmiss = 1;
+  /* a miss: fright ends, the count resets, or an energizer (+50) is eaten while still blue, with < 4 eaten */
+  if (g->last_d0 < 4 && ((g->last_a6 && (!a6 || ds == 50)) || d0 < g->last_d0)) g->gmiss = 1;
   g->last_a6 = a6; g->last_d0 = d0;
   if (RD(0x4DA5) != 0) return ST_DEAD;
-  if (RD(0x4E0E) >= 244) { if (a6 && d0 < 4) g->gmiss = 1; return ST_CLEAR; }
+  /* the level also ends on an energizer as the last dot (+50), before the ghosts turn blue */
+  if (RD(0x4E0E) >= 244) { if ((a6 && d0 < 4) || ds == 50) g->gmiss = 1; return ST_CLEAR; }
   int md = ghost_min_dist(m);
   if (md < g->mind) g->mind = md;
   int tc = pac_c(m), tr = pac_r(m);
@@ -181,6 +184,9 @@ EXPORT int64_t pm_hash(pm *m) {
   if (r < 0) r += 2147483647;
   return r;
 }
+
+/* called by a load before the frame it lets run: a fright that ends in that frame still counts */
+EXPORT void pm_mark(pm *m) { m->mark = 1; m->mark_a6 = RD(0x4DA6); m->mark_d0 = RD(0x4DD0); }
 
 static void msave(pm *m, uint8_t *slot) { memcpy(slot, &m->s, sizeof(pm_state)); pm_frame(m); }
 static void mload(pm *m, const uint8_t *slot, int held) {

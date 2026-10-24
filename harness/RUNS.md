@@ -12,6 +12,23 @@ The 99 route (5-20 final, corners by hand) =
 
 ## 2026-10-24
 
+### L1, L2, L3, L4 each: all 16 ghosts (4 per energizer) + both fruits, full clear
+- `result_L<N>_2fruit_16ghosts_{late1,ontime}` (`--levels N --all-ghosts --need-fruits 2 --branch 4 --late-budget 1|0
+  --branch-cap 64 --beam 96 --gap-cost 5 --family-depth 6 --family-cap 12`): late1 stalled on every level; ontime
+  "cleared" in 1-2 min, but those routes eat only 9-12 ghosts: BUG, a fright ending in the frame a load lets run
+  (before the move's seg started counting) went unseen. Fixed: loads mark 0x4DA6/0x4DD0 of the loaded state
+  (`pm_mark`; server.lua keeps them per saved slot). These results are invalid.
+- Rerun as `result_L<N>_2fruit_16ghosts_v2_{late1,ontime}` after `emu_parity.py --levels 1,2,21` (`parity_ghosts2.log`).
+- v2 (parity OK): L1 ontime "cleared" with 12 ghosts, L2-4 dead-ended (late1 and ontime). Second BUG: an energizer
+  eaten while still blue from the last one, with 0 eaten, resets nothing (0x4DD0 stays 0). Now a +50 while blue with
+  < 4 eaten is a miss, a clear on an energizer is a miss, and `--all-ghosts` also rejects any clear with < 16 ghosts.
+  v2 results invalid too. Rerun as `..._16ghosts_v3_...` (`parity_ghosts3.log`).
+- v3 (parity OK): **L1 ontime clears with 16 ghosts + 2 fruits**, 128/93 (straight replay: 16 ghosts, score 14800).
+  `rank_sols.py --levels 1 --budget 1 --need-fruits 2 --all-ghosts` (new flag: a lost ghost counts as a kill) on its 50:
+  best 73 single late presses kill (weak at moves 48-52, 76, 92, 114-115) -> `rank_L1_16ghosts_v3.log`. L1 late1 and
+  L2-4 (both modes) dead-ended at beam 96 / 20 backtracks.
+- `..._16ghosts_wide_...`: same with `--beam 300 --backtracks 60 --family-cap 30`.
+
 ### L2-4: keep ghosts away (user: no passing ghosts in the lower left near the end of the 97)
 - On the 97, ghosts come within 19-20 px (2.5 tiles) at moves 75-83, lower left (scratchpad permove.py).
 - New `search.py --min-ghost PX --min-ghost-from N`: drop a move if any sim lets a ghost come closer than PX

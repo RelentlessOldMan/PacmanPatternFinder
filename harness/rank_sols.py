@@ -14,6 +14,7 @@ import json
 import threading
 from concurrent.futures import ThreadPoolExecutor
 
+import search
 from search import parse_seg
 from worker import MAME_MEM, Worker
 
@@ -116,7 +117,9 @@ def main():
     ap.add_argument("--out", default=None, help="default: <sols> with .ranked.json")
     ap.add_argument("--mame", action="store_true", help="run the game in our patched MAME instead of pacemu")
     ap.add_argument("--need-fruits", type=int, default=1, help="fruits (of 2) each level must eat")
+    ap.add_argument("--all-ghosts", action="store_true", help="a late press that loses a ghost (of 4 per energizer) kills too")
     args = ap.parse_args()
+    search.ALL_GHOSTS = args.all_ghosts
     global GAME, NEED_FRUITS
     NEED_FRUITS = args.need_fruits
     if args.mame:
