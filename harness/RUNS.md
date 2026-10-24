@@ -12,6 +12,23 @@ The 99 route (5-20 final, corners by hand) =
 
 ## 2026-10-24
 
+### L2-4: keep ghosts away (user: no passing ghosts in the lower left near the end of the 97)
+- On the 97, ghosts come within 19-20 px (2.5 tiles) at moves 75-83, lower left (scratchpad permove.py).
+- New `search.py --min-ghost PX --min-ghost-from N`: drop a move if any sim lets a ghost come closer than PX
+  pixels (|dx|+|dy|) after move N.
+- `result_L2-4_2fruit_late1_user40_g24` (user's 40, `--prefix-on-time 26 --min-ghost 24 --min-ghost-from 40`):
+  56 routes, 3.5 min, best 102/73; ranked (`..._g24.ranked.json`, `rank_..._g24.log`): all have 8+ single
+  killers: late presses at moves 13/14/18 (in the opening, not late-tested) kill at moves 72-76.
+- `result_L2-4_2fruit_late1_user40_g24_ot0` (same, `--prefix-on-time 0`: late presses tested from move 1):
+  73 routes, all 0 single killers, but best 122/92 (`..._g24_ot0.ranked.json`, `rank_..._g24_ot0.log`).
+- Instead, from the first user40 run: two 102/64 routes with 0 single killers keep ghosts 24+ px away from move 54
+  on (on time; the lower left now 25-49 px). `--budget 2` (`..._user40.102.b2.ranked.json`,
+  `rank_L2-4_2fruit_late1_user40_102_b2.log`): 60 killing pairs (the 97: 224) -> `harness/best_L2-4_2fruit_102.json`.
+  Videos: `videos/L2-4_102_level2.mp4`, `..._level4.mp4`.
+- seg replies gain two fields (emu/seg.h + server.lua): `ghosts` eaten this move, `gmiss` = an energizer ran out
+  (0x4DA6 blue -> 0) or was replaced, or the level cleared, with fewer than 4 eaten (0x4DD0). `search.py --all-ghosts`
+  fails such moves. Parity `emu_parity.py --levels 2,5,21` -> `parity_ghosts.log`: 0 differ.
+
 ### L2-4, 2 fruits, corners left, survives 1 late
 - The user's own level-4 play (logged by `C:/mame/pacman_logs/level4_logger.lua`, copied to
   `harness/watch/play_L4_20261024_123629.log`): 50 moves, 132 dots, eats the 4 ghosts, no reverses:

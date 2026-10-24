@@ -68,6 +68,7 @@ static int fruit_points(int d) {
 typedef struct {
   int want, pol_e, policy, lag, nxt, nxt_delay, d, mc, mr;
   int n, pressed, trigger, entered, mind, lastx, lasty, still, win, fruits, last_score, lead_at;
+  int ghosts, gmiss, last_a6, last_d0; /* ghosts eaten; an energizer ended with < 4 eaten */
 } seg_t;
 
 #define NONE (-100000)
@@ -85,6 +86,7 @@ static int seg_start(pm *m, seg_t *g, int want, int pol_e, int policy, int lag, 
   g->want = want; g->pol_e = pol_e; g->policy = policy; g->lag = lag; g->nxt = nxt; g->nxt_delay = nxt_delay;
   g->d = d; g->mc = mc; g->mr = mr;
   g->trigger = NONE; g->mind = 999; g->lastx = g->lasty = -1;
+  g->ghosts = g->gmiss = 0; g->last_a6 = RD(0x4DA6); g->last_d0 = RD(0x4DD0);
   g->win = (want == d) ? 99 : NONE;
   g->last_score = score(m); g->lead_at = NONE;
   return 1;
@@ -107,8 +109,13 @@ static int seg_after(pm *m, seg_t *g) {
   int s = score(m);
   if (fruit_points(s - g->last_score)) g->fruits++;
   g->last_score = s;
+  /* 0x4DA6: ghosts blue; 0x4DD0: ghosts eaten since the last energizer */
+  int a6 = RD(0x4DA6), d0 = RD(0x4DD0);
+  if (d0 > g->last_d0) g->ghosts += d0 - g->last_d0;
+  if (g->last_d0 < 4 && ((g->last_a6 && !a6) || d0 < g->last_d0)) g->gmiss = 1;
+  g->last_a6 = a6; g->last_d0 = d0;
   if (RD(0x4DA5) != 0) return ST_DEAD;
-  if (RD(0x4E0E) >= 244) return ST_CLEAR;
+  if (RD(0x4E0E) >= 244) { if (a6 && d0 < 4) g->gmiss = 1; return ST_CLEAR; }
   int md = ghost_min_dist(m);
   if (md < g->mind) g->mind = md;
   int tc = pac_c(m), tr = pac_r(m);
@@ -128,11 +135,13 @@ static int fruits_gone(pm *m) {
   return n;
 }
 
-/* seg reply fields: st fr mc mr mind dots tc tr win fruits lead gone */
+/* seg reply fields: st fr mc mr mind dots tc tr win fruits lead gone ghosts gmiss */
+#define SEGN 14
 static void seg_out(pm *m, seg_t *g, int st, int32_t *o) {
   o[0] = st; o[1] = g->n; o[2] = g->mc; o[3] = g->mr; o[4] = g->mind; o[5] = RD(0x4E0E);
   o[6] = pac_c(m); o[7] = pac_r(m); o[8] = g->win == NONE ? 0 : g->win; o[9] = g->fruits;
   o[10] = g->lead_at == NONE ? 0 : g->n - g->lead_at; o[11] = fruits_gone(m);
+  o[12] = g->ghosts; o[13] = g->gmiss;
 }
 
 /* run until the segment ends; with fork, return ST_NONE when the press is triggered but not made */
@@ -178,23 +187,23 @@ static void mload(pm *m, const uint8_t *slot, int held) {
   pm_joy(m, held); memcpy(&m->s, slot, sizeof(pm_state)); hook(m); apply_inputs(m); pm_frame(m);
 }
 
-/* "segb want policy name1..nameK": o gets 13 ints per k (seg fields + hash), slots K saved states */
+/* "segb want policy name1..nameK": o gets SEGN ints per k (seg fields), slots K saved states */
 EXPORT void pm_segb(pm *m, int want, int policy, int K, int32_t *o, int64_t *hashes, uint8_t *slots) {
   int held = m->joy;
   seg_t g, fork;
   size_t S = sizeof(pm_state);
   if (!seg_start(m, &g, want, 0, policy, 1, -1, 0)) {
     for (int k = 0; k < K; k++) {
-      int32_t z[12] = { ST_NONODE, 0, 0, 0, 999, 0, 0, 0, 0, 0, 0, 0 };
-      memcpy(o + 12 * k, z, sizeof z); hashes[k] = 0;
+      int32_t z[SEGN] = { ST_NONODE, 0, 0, 0, 999 };
+      memcpy(o + SEGN * k, z, sizeof z); hashes[k] = 0;
     }
     return;
   }
   int st = seg_run(m, &g, 1);
   if (st) { /* ended before the press point */
-    int32_t line[12]; seg_out(m, &g, st, line);
+    int32_t line[SEGN]; seg_out(m, &g, st, line);
     int64_t h = pm_hash(m);
-    for (int k = 0; k < K; k++) { memcpy(o + 12 * k, line, sizeof line); hashes[k] = h; msave(m, slots + S * k); }
+    for (int k = 0; k < K; k++) { memcpy(o + SEGN * k, line, sizeof line); hashes[k] = h; msave(m, slots + S * k); }
     return;
   }
   fork = g;
@@ -206,7 +215,7 @@ EXPORT void pm_segb(pm *m, int want, int policy, int K, int32_t *o, int64_t *has
     g.lag = k + 1;
     st = seg_after(m, &g);
     if (!st) st = seg_run(m, &g, 0);
-    seg_out(m, &g, st, o + 12 * k);
+    seg_out(m, &g, st, o + SEGN * k);
     hashes[k] = pm_hash(m);
     msave(m, slots + S * k);
   }

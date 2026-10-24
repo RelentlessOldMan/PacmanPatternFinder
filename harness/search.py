@@ -38,6 +38,7 @@ class Cand:
     segs: list
     score: float = 0.0
     after: int = -1  # moves played since the goal was reached (-1: not yet)
+    ghosts: int = 0  # ghosts eaten, summing each move's lowest over the sims
 
 
 # Savestates live in the RAM of the worker that made them (our patched MAME, mame-patches/) unless
@@ -236,12 +237,16 @@ def new_name():
 
 
 def parse_seg(r):
-    st, fr, mc, mr, mind, dots, tc, tr, win, fruits, lead, gone = r.split()
-    return dict(st=st, fr=int(fr), node=(int(mc), int(mr)), mind=int(mind), dots=int(dots),
+    st, fr, mc, mr, mind, dots, tc, tr, win, fruits, lead, gone, *g = r.split()
+    ghosts, gmiss = map(int, g or (0, 0))
+    if ALL_GHOSTS and gmiss and st in ("ok", "clear"):
+        st = "ghostmiss"  # --all-ghosts: an energizer ran out before all 4 ghosts were eaten
+    return dict(st=st, ghosts=ghosts, fr=int(fr), node=(int(mc), int(mr)), mind=int(mind), dots=int(dots),
                 tile=(int(tc), int(tr)), win=int(win), fruits=int(fruits), lead=int(lead), gone=int(gone))
 
 
 BADLOADS = []
+ALL_GHOSTS = False  # --all-ghosts
 
 
 def base(sim):
@@ -459,7 +464,7 @@ def score(c):
     near = maze.bfs_dist(c.tile, left)
     # each stranded pocket of dots costs a long trip back later (with a faster red ghost)
     return (len(c.eaten) * 10 - c.frames * 0.25 - near * 6 - c.risk * 2 + c.fruits * 400
-            - maze.clusters(left) * CLUSTER_COST - n_turns(c) * TURN_COST - (maze.gaps(left) * GAP_COST if GAP_COST else 0))
+            + c.ghosts * 300 * ALL_GHOSTS - maze.clusters(left) * CLUSTER_COST - n_turns(c) * TURN_COST - (maze.gaps(left) * GAP_COST if GAP_COST else 0))
 
 
 def n_turns(c):
@@ -509,6 +514,7 @@ def make_child(c, path, opt, sims, res):
               c.segs + [dict(node=r0["node"], dir=opt, turn=opt != c.heading,
                              win=min(r["win"] for r in res), mind=min(r["mind"] for r in res),
                              frames=r0["fr"])])
+    ch.ghosts = c.ghosts + min(r["ghosts"] for r in res)
     ch.after = c.after + 1 if c.after >= 0 else (0 if done(ch) else -1)
     ch.score = score(ch) + (100000 + 1000 * ch.after if ch.after >= 0 else 0)
     return ch
@@ -743,6 +749,9 @@ def search(pool, sims0, args, log=print, resume=None):
                 by_sim[who] = by_sim.get(who, 0) + 1
                 continue
             ch = make_child(c, path, opt, sims, res)
+            if len(ch.route) > args.min_ghost_from and ch.segs[-1]["mind"] < args.min_ghost:
+                fails["ghost"] = fails.get("ghost", 0) + 1  # --min-ghost: a ghost came too close
+                continue
             r0 = res[0]
             if r0["dots"] != len(ch.eaten) and args.debug:
                 print(f"DOTMISMATCH game={r0['dots']} mine={len(ch.eaten)} route={''.join(ch.route)}", flush=True)
@@ -832,7 +841,7 @@ def search(pool, sims0, args, log=print, resume=None):
 
 def summarize(c, levels, cleared):
     turns = [s for s in c.segs if s["turn"]]
-    return dict(levels=levels, cleared=cleared, dots=len(c.eaten), frames=c.frames, fruits=c.fruits,
+    return dict(levels=levels, cleared=cleared, dots=len(c.eaten), frames=c.frames, fruits=c.fruits, ghosts=c.ghosts,
                 route="".join(c.route), n_moves=len(c.route), n_turns=len(turns),
                 min_window=min((s["win"] for s in turns), default=99), segs=c.segs, end_sims=c.sims,
                 goal_at=len(c.route) - c.after if c.after >= 0 else None)
@@ -909,15 +918,22 @@ def main():
     ap.add_argument("--solutions", type=int, default=1,
                     help="keep searching until this many distinct clearing routes are found (each appended "
                          "to <out>.sols.jsonl as it is found); the best one is the result")
+    ap.add_argument("--all-ghosts", action="store_true",
+                    help="every energizer must be followed by all 4 ghosts eaten, by every sim (else the move fails)")
+    ap.add_argument("--min-ghost", type=int, default=0, metavar="PX",
+                    help="drop a move if any sim lets a ghost come closer than PX pixels (|dx|+|dy|, 8 per tile)")
+    ap.add_argument("--min-ghost-from", type=int, default=0, metavar="N",
+                    help="--min-ghost: only from move N+1 on")
     ap.add_argument("--out", default="result.json")
     args = ap.parse_args()
-    global SUBDIR, RAM, CLUSTER_COST, GAP_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, FIRST_FRUIT, RAM_CAP
+    global SUBDIR, RAM, CLUSTER_COST, GAP_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, FIRST_FRUIT, RAM_CAP, ALL_GHOSTS
     CLUSTER_COST, CORNER_MINWIN, GAP_COST = args.cluster_cost, args.corner_minwin, args.gap_cost
     LATE_VARIANTS = not args.no_late and not args.jitter_sims and not args.fixed_sims and not args.history_sims
     TURN_COST, JITTER, JITTER_CORNER = args.turn_cost, args.jitter, args.jitter_corner
     LATE_REL = args.late_rel
     BRANCH, BRANCH_CAP = args.branch, args.branch_cap
     NEED_FRUITS = args.need_fruits
+    ALL_GHOSTS = args.all_ghosts
     FIRST_FRUIT = args.first_fruit
     if args.late_budget is not None:
         LATE_BUDGET = args.late_budget

@@ -12,7 +12,8 @@ sys.path.insert(0, str(HERE.parent / "emu"))
 import emu  # noqa: E402
 
 D = emu._dll
-D.pm_seg.argtypes = [ctypes.c_void_p] + [ctypes.c_int] * 6 + [ctypes.POINTER(ctypes.c_int32 * 12)]
+SEGN = 14  # seg reply fields (emu/seg.h)
+D.pm_seg.argtypes = [ctypes.c_void_p] + [ctypes.c_int] * 6 + [ctypes.POINTER(ctypes.c_int32 * SEGN)]
 D.pm_segb.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int, ctypes.c_int,
                       ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p]
 D.pm_hash.restype = ctypes.c_int64
@@ -96,13 +97,13 @@ class Server:
 
     # --- commands ----------------------------------------------------------------------
     def seg_reply(self, o):
-        return f"{ST[o[0]]} " + " ".join(str(v) for v in o[1:12])
+        return f"{ST[o[0]]} " + " ".join(str(v) for v in o[1:SEGN])
 
     def handle(self, line):
         p = line.split()
         cmd, a, b, c = (p + ["", "", "", ""])[:4]
         if cmd == "seg":
-            o = (ctypes.c_int32 * 12)()
+            o = (ctypes.c_int32 * SEGN)()
             lag = int(p[3]) if len(p) > 3 else 0
             nxt, nd = (LETTER[p[4][0]], int(p[4][1:] or 0)) if len(p) > 4 and p[4] else (-1, 0)
             D.pm_seg(self.h, LETTER[a], b == "E", 0 if b == "E" else int(b), lag, nxt, nd, ctypes.byref(o))
@@ -124,7 +125,7 @@ class Server:
         if cmd == "segb":
             names = p[3:]
             K = len(names)
-            o = (ctypes.c_int32 * (12 * K))()
+            o = (ctypes.c_int32 * (SEGN * K))()
             hs = (ctypes.c_int64 * K)()
             buf = ctypes.create_string_buffer(S * K)
             D.pm_segb(self.h, LETTER[a], int(b), K, o, hs, buf)
@@ -132,7 +133,7 @@ class Server:
             out = []
             for k, name in enumerate(names):
                 self.slots[name] = raw[S * k:S * (k + 1)]
-                out.append(self.seg_reply(o[12 * k:12 * k + 12]) + f" {hs[k]}")
+                out.append(self.seg_reply(o[SEGN * k:SEGN * k + SEGN]) + f" {hs[k]}")
             return " | ".join(out)
         if cmd == "mget":
             st = self.slots.get(a)
