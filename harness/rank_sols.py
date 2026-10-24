@@ -20,6 +20,7 @@ from worker import MAME_MEM, Worker
 LOCAL = threading.local()
 LEVELS = []
 GAME = "emu"  # pacemu (emu/); --mame: our patched MAME
+NEED_FRUITS = 1  # --need-fruits
 
 
 def worker():
@@ -34,8 +35,10 @@ def worker():
 
 def bad(r, eaten):
     """Pac-Man died, or the first fruit went uneaten (gone counts this level's fruits eaten or
-    expired; eaten is the running total of seg's per-move fruits). The second may expire."""
-    return r["st"] not in ("ok", "clear") or (r["gone"] and not eaten)
+    expired; eaten is the running total of seg's per-move fruits). The second may expire unless
+    --need-fruits 2."""
+    return (r["st"] not in ("ok", "clear") or (r["gone"] and not eaten)
+            or r["gone"] - eaten > 2 - NEED_FRUITS)
 
 
 def on_time(route, lv):
@@ -48,7 +51,7 @@ def on_time(route, lv):
         eaten += r["fruits"]
         if bad(r, eaten):
             return i + 1
-    return None
+    return len(route) if eaten < NEED_FRUITS else None  # a fruit still out when the route ends
 
 
 def late_mixes(route, lv, budget):
@@ -112,8 +115,10 @@ def main():
     ap.add_argument("--workers", type=int, default=10)
     ap.add_argument("--out", default=None, help="default: <sols> with .ranked.json")
     ap.add_argument("--mame", action="store_true", help="run the game in our patched MAME instead of pacemu")
+    ap.add_argument("--need-fruits", type=int, default=1, help="fruits (of 2) each level must eat")
     args = ap.parse_args()
-    global GAME
+    global GAME, NEED_FRUITS
+    NEED_FRUITS = args.need_fruits
     if args.mame:
         GAME = MAME_MEM
     sols = [json.loads(l) for l in open(args.sols)]
