@@ -224,6 +224,50 @@ static __declspec(noinline) void step_slow(z80 *z) {
   exec_opcode(z, z->halted ? 0x00 : nextb(z));
 }
 
+#include "fastz80.h"
+
+#ifdef FZ_VERIFY
+/* Debug build: every fast-path instruction runs on both cores from the same state, and the whole
+   machine state is compared after each. */
+static __declspec(noinline) void fz_one(pm *m) { fz_run(m, 0, 1); }
+static uint64_t fz_checked, fz_bad;
+static void fz_lockstep(pm *m) {
+  static pm_state s0, s1;
+  z80 *z = &m->s.cpu;
+  memcpy(&s0, &m->s, sizeof s0);
+  if (m->s.line | z->iff_delay | z->nmi_pending) {
+    z->int_pending = m->s.line;
+    z->int_data = m->s.vector;
+    process_interrupts(z);
+  }
+  exec_opcode_inl(z, z->halted ? 0x00 : nextb(z));
+  memcpy(&s1, &m->s, sizeof s1);
+  memcpy(&m->s, &s0, sizeof s0);
+  fz_one(m);
+  fz_checked++;
+  if (memcmp(&s1, &m->s, sizeof s1)) {
+    if (fz_bad++ < 30) {
+      const z80 *o = &s1.cpu, *n = &m->s.cpu;
+      fprintf(stderr, "MISMATCH at pc %04X: %02X %02X %02X %02X\n", s0.cpu.pc, rd(m, s0.cpu.pc),
+              rd(m, (uint16_t)(s0.cpu.pc + 1)), rd(m, (uint16_t)(s0.cpu.pc + 2)), rd(m, (uint16_t)(s0.cpu.pc + 3)));
+      fprintf(stderr, "  old: pc %04X sp %04X af %02X%02X bc %02X%02X de %02X%02X hl %02X%02X ix %04X iy %04X wz %04X r %02X cyc %lu\n",
+              o->pc, o->sp, o->a, get_f((z80 *)o), o->b, o->c, o->d, o->e, o->h, o->l, o->ix, o->iy, o->mem_ptr, o->r, o->cyc);
+      fprintf(stderr, "  new: pc %04X sp %04X af %02X%02X bc %02X%02X de %02X%02X hl %02X%02X ix %04X iy %04X wz %04X r %02X cyc %lu\n",
+              n->pc, n->sp, n->a, get_f((z80 *)n), n->b, n->c, n->d, n->e, n->h, n->l, n->ix, n->iy, n->mem_ptr, n->r, n->cyc);
+      for (size_t i = 0; i < sizeof s1; i++)
+        if (((uint8_t *)&s1)[i] != ((uint8_t *)&m->s)[i]) fprintf(stderr, "  byte %zu: %02X vs %02X\n", i, ((uint8_t *)&s1)[i], ((uint8_t *)&m->s)[i]);
+    }
+    memcpy(&m->s, &s1, sizeof s1); /* carry on from the reference state */
+  }
+}
+EXPORT void pm_fz_report(void) {
+  fprintf(stderr, "fastz80 verify: %llu instructions, %llu mismatches\n", (unsigned long long)fz_checked, (unsigned long long)fz_bad);
+  for (int i = 0; i < 256; i++)
+    for (int j = 0; j < 256; j++)
+      if (fz_fallbacks[i][j]) fprintf(stderr, "  fallback %02X %02X: %u\n", i, j, fz_fallbacks[i][j]);
+}
+#endif
+
 /* Run up to the next frame end (where MAME's frame notifier runs). */
 EXPORT void pm_frame(pm *m) {
   z80 *z = &m->s.cpu;
@@ -254,8 +298,11 @@ EXPORT void pm_frame(pm *m) {
     ev -= 64;
     if ((int32_t)(c - ev) < 0) {
       m->edge_n = 0;
-      do {
-        /* the IRQ line only rises at vblank, so with it low and no EI pending there's nothing to check */
+#ifdef FZ_VERIFY
+      do fz_lockstep(m); while ((int32_t)((uint32_t)z->cyc - ev) < 0 && z->pc != 0x238D);
+#else
+      if (watch_addr < 0) { fz_run(m, ev, 0); continue; }
+      do { /* watching writes: z80.c, every write through wr */
         if (m->s.line | z->iff_delay | z->nmi_pending) {
           z->int_pending = m->s.line;
           z->int_data = m->s.vector;
@@ -263,6 +310,7 @@ EXPORT void pm_frame(pm *m) {
         }
         exec_opcode_inl(z, z->halted ? 0x00 : nextb(z));
       } while ((int32_t)((uint32_t)z->cyc - ev) < 0 && z->pc != 0x238D);
+#endif
       continue;
     }
     z->int_pending = m->s.line;

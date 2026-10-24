@@ -6,6 +6,10 @@ memory map, interrupt and frame timing, so RAM matches MAME frame for frame. The
 flat struct, so a savestate is a memcpy.
 
 - `build.bat`: MSVC build of `pacemu.dll` (run from PowerShell: `cmd /c emu\build.bat`).
+- `fastz80.h`: the fast Z80 loop pacemu runs (registers in locals, flags from lookup tables), generated
+  by `gen_fastz80.py` (`python gen_fastz80.py`; edit the generator, not the header). Opcodes it doesn't
+  cover (HALT, rare ED/DD/FD ones) fall back to `z80.c`. Building with `/DFZ_VERIFY` runs both cores on
+  every instruction and reports any difference (`pm_fz_report()`).
 - `emu.py`: the Python wrapper (`Pacman().frame(in0, in1)`, `ram()`, `save()`/`load()`).
 - `trace.lua`: records MAME booting and playing randomly. `route_trace.py <route json> <level> <prefix>`
   records MAME playing a finished route through the normal harness, using `PACMAN_TRACE` in
