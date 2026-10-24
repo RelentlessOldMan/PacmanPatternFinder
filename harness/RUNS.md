@@ -12,6 +12,14 @@ The 99 route (5-20 final, corners by hand) =
 
 ## 2026-10-24
 
+### L5-20, 2 fruits, corners left, survives 1 late, only 26 moves on time - CLEARED, 0 killers
+- out: `result_L5-20_2fruit_late1_p26.json` (+ `.sols.jsonl`, 55 routes), log `search_L5-20_2fruit_late1_p26.log`
+- same flags as the L7-20 run below but `--levels 5..20 --prefix <first 26 moves of the 99>`; 35 min (1 core, throttled).
+- Ranked (`rank_sols.py ... --levels 5-20 --budget 1 --need-fruits 2`, whole route incl. the opening) ->
+  `result_L5-20_2fruit_late1_p26.ranked.json`, log `rank_L5-20_2fruit_late1_p26.log`:
+  **all 55 have 0 single late killers on L5-20**. Shortest 100 moves / 67 turns -> `harness/best_L5-20_2fruit_100.json`
+  (= the 99 for 27 moves). 15 routes are 100 moves (67-71 turns).
+
 ### Videos and critical-move image of the 104/73 candidate
 - Route: `harness/best_L5-20_2fruit_104.json` (104 moves / 73 turns, from the L56zero ranking).
 - `videos/L5-20_104_level5.mp4`, `..._level19.mp4` (on time, MAME, both clear), `..._level19_move27_4late.mp4`
