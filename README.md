@@ -6,7 +6,7 @@ replayed with each turn pressed 1–4 frames late to find the ones that forgive 
 
 The point is not "perfect" frame-exact routes for a real arcade cabinet. It is routes that survive
 crappy or emulated machines: input lag, a mushy stick or keyboard, presses that land a few frames
-late. A route is only kept if it forgives that. Published arcade patterns often fail on MAME, so
+late. Routes are ranked by how much of that they forgive. Published arcade patterns often fail on MAME, so
 these were found and checked on MAME 0.289.
 
 ## The patterns
@@ -16,19 +16,44 @@ heading left. Details, timing data and older patterns are in [`best/`](best/READ
 
 | Levels | File | Moves / turns | Notes |
 |---|---|---|---|
-| 1 | — | — | played by hand |
-| 5–20 | `best/L5-20_keep70_115.json` | 115 / 78 | eats both fruits, leaves the corner pockets to eat by hand; any one turn can be pressed 1–4 frames late |
-| 21+ | `best/L21_full_118.json` | 118 / 88 | full clear, both fruits, ~48 s; starts like 5–20 |
+| 1 | `best/L1_allghosts_129.json` | 129 / 95 | **all ghosts**: 4 after each of the 4 energizers (16), both fruits, full clear |
+| 2 | `best/L2_allghosts_139.json` | 139 / 102 | all 16 ghosts, both fruits, full clear |
+| 3 | `best/L3_allghosts_147.json` | 147 / 107 | all 16 ghosts, both fruits, full clear |
+| 4 | `best/L4_allghosts_171.json` | 171 / 130 | all 16 ghosts, both fruits, full clear |
+| 5–20 | `best/L5-20_keep70_115.json` | 115 / 78 | **leave the corners**: eats both fruits, leaves the corner pockets to eat by hand; any one turn can be pressed 1–4 frames late |
+| 21+ | `best/L21_full_118.json` | 118 / 88 | **2-fruit full clear**, ~48 s; starts like 5–20 |
 
-Pattern sheets, one image each (made by `harness/pattern_sheet.py`; plain drawn versions without game
-graphics: [5–20](best/L5-20_115.png), [21+](best/L21_118.png)):
+The level 1–4 ghost routes need exact timing: a late press can cost a ghost or a life (see [`best/`](best/README.md)).
+The 5–20 and 21+ routes are the timing-tolerant ones.
+
+### Levels 1–4: all the ghosts
+
+Videos (played by MAME exactly on time): [level 1](videos/L1_16ghosts_129_level1.mp4),
+[level 2](videos/L2_16ghosts_139_level2.mp4), [level 3](videos/L3_16ghosts_147_level3.mp4),
+[level 4](videos/L4_16ghosts_171_level4.mp4).
+
+![Level 1 pattern](best/L1_allghosts_129_screen.png)
+
+![Level 2 pattern](best/L2_allghosts_139_screen.png)
+
+![Level 3 pattern](best/L3_allghosts_147_screen.png)
+
+![Level 4 pattern](best/L4_allghosts_171_screen.png)
+
+### Levels 5–20: leave the corners
+
+Videos: [level 5](videos/L5-20_keep70_115_level5.mp4) and [level 20](videos/L5-20_keep70_115_level20.mp4)
+(the corner dots are left to eat by hand).
 
 ![Levels 5-20 pattern](best/L5-20_115_screen.png)
 
+### Levels 21+: two fruits, full clear
+
+Video: [level 21](videos/L21_118_level21.mp4).
+
 ![Levels 21+ pattern](best/L21_118_screen.png)
 
-Videos (played by MAME exactly on time): 5–20 on [level 5](videos/L5-20_keep70_115_level5.mp4) and
-[level 20](videos/L5-20_keep70_115_level20.mp4) (the corner dots are left to eat by hand) and 21+ on [level 21](videos/L21_118_level21.mp4).
+Plain drawn versions of every sheet, without game graphics, are in `best/` (made by `harness/pattern_sheet.py`).
 
 For comparison, Don Goodrich's well-known level 21+ "9th key" pattern
 ([StrategyWiki](https://strategywiki.org/wiki/Pac-Man/Walkthrough)) is 117 moves / 84 turns with one
