@@ -1,0 +1,127 @@
+[cw] Started pid 19872 (full).
+start 21 ok f=10724 tile=13,23 dir=2 dots=0 level=21 4E04=3 score=0
+d=0 jobs=2 kids=2 fails={} on={} best=2 fruit=0 t=0s ram=2 states (peak 2 ~0.0GB) moved=0 busy=299% copy=0s
+d=10 jobs=755 kids=732 fails={'dead': 21} on={'L21': 21} best=32 fruit=0 t=4s ram=300 states (peak 1141 ~0.0GB) moved=107 busy=83% copy=0s
+d=20 jobs=723 kids=633 fails={'dead': 81} on={'L21': 81} best=72 fruit=0 t=10s ram=300 states (peak 1141 ~0.0GB) moved=271 busy=86% copy=0s
+d=30 jobs=828 kids=709 fails={'dead': 116} on={'L21': 116} best=100 fruit=0 t=16s ram=300 states (peak 1141 ~0.0GB) moved=421 busy=86% copy=0s
+d=40 jobs=682 kids=386 fails={'fruitless': 139, 'dead': 151} on={'L21': 151} best=139 fruit=0 t=21s ram=300 states (peak 1141 ~0.0GB) moved=628 busy=86% copy=0s
+d=48 beam died: backtrack #1 to d=45, 268/270 candidates left after dropping the dead family
+d=47 beam died: backtrack #2 to d=40, 292/300 candidates left after dropping the dead family
+d=40 jobs=660 kids=364 fails={'fruitless': 139, 'dead': 151} on={'L21': 151} best=139 fruit=0 t=25s ram=300 states (peak 1141 ~0.0GB) moved=733 busy=86% copy=0s
+d=47 beam died: backtrack #3 to d=35, 299/300 candidates left after dropping the dead family
+d=40 jobs=679 kids=376 fails={'fruitless': 139, 'dead': 157} on={'L21': 157} best=139 fruit=0 t=30s ram=300 states (peak 1141 ~0.0GB) moved=925 busy=86% copy=0s
+d=48 beam died: backtrack #4 to d=30, 299/300 candidates left after dropping the dead family
+d=30 jobs=823 kids=704 fails={'dead': 116} on={'L21': 116} best=100 fruit=0 t=33s ram=300 states (peak 1141 ~0.0GB) moved=1004 busy=86% copy=0s
+d=40 jobs=685 kids=420 fails={'fruitless': 121, 'dead': 135} on={'L21': 135} best=139 fruit=0 t=38s ram=300 states (peak 1141 ~0.0GB) moved=1173 busy=86% copy=0s
+d=48 beam died: backtrack #5 to d=45, 227/230 candidates left after dropping the dead family
+d=47 beam died: backtrack #6 to d=40, 297/300 candidates left after dropping the dead family
+d=40 jobs=677 kids=413 fails={'fruitless': 121, 'dead': 135} on={'L21': 135} best=139 fruit=0 t=41s ram=300 states (peak 1141 ~0.0GB) moved=1313 busy=86% copy=0s
+d=47 beam died: backtrack #7 to d=35, 299/300 candidates left after dropping the dead family
+d=40 jobs=681 kids=400 fails={'fruitless': 130, 'dead': 141} on={'L21': 141} best=139 fruit=0 t=46s ram=300 states (peak 1141 ~0.0GB) moved=1521 busy=86% copy=0s
+d=48 beam died: backtrack #8 to d=30, 298/299 candidates left after dropping the dead family
+d=30 jobs=821 kids=702 fails={'dead': 116} on={'L21': 116} best=100 fruit=0 t=49s ram=300 states (peak 1141 ~0.0GB) moved=1606 busy=86% copy=0s
+d=40 jobs=691 kids=410 fails={'fruitless': 137, 'dead': 135} on={'L21': 135} best=139 fruit=0 t=54s ram=300 states (peak 1141 ~0.0GB) moved=1825 busy=85% copy=0s
+d=48 beam died: backtrack #9 to d=25, 299/300 candidates left after dropping the dead family
+d=30 jobs=803 kids=673 fails={'dead': 127} on={'L21': 127} best=100 fruit=0 t=60s ram=300 states (peak 1141 ~0.0GB) moved=2006 busy=85% copy=0s
+d=40 jobs=662 kids=380 fails={'fruitless': 148, 'dead': 119} on={'L21': 119} best=138 fruit=0 t=65s ram=300 states (peak 1141 ~0.0GB) moved=2166 busy=85% copy=0s
+d=48 beam died: backtrack #10 to d=20, 299/300 candidates left after dropping the dead family
+d=20 jobs=722 kids=632 fails={'dead': 81} on={'L21': 81} best=72 fruit=0 t=68s ram=300 states (peak 1141 ~0.0GB) moved=2274 busy=85% copy=0s
+d=30 jobs=797 kids=653 fails={'dead': 141} on={'L21': 141} best=100 fruit=0 t=74s ram=300 states (peak 1141 ~0.0GB) moved=2455 busy=85% copy=0s
+d=40 jobs=744 kids=416 fails={'fruitless': 157, 'dead': 160} on={'L21': 160} best=139 fruit=0 t=79s ram=300 states (peak 1141 ~0.0GB) moved=2668 busy=85% copy=0s
+d=50 jobs=154 kids=14 fails={'fruitless': 90, 'dead': 49} on={'L21': 49} best=129 fruit=0 t=82s ram=14 states (peak 1141 ~0.0GB) moved=2889 busy=85% copy=0s
+d=52 beam died: backtrack #11 to d=50, 64/66 candidates left after dropping the dead family
+d=50 jobs=150 kids=11 fails={'fruitless': 90, 'dead': 49} on={'L21': 49} best=129 fruit=0 t=82s ram=11 states (peak 1141 ~0.0GB) moved=2898 busy=85% copy=0s
+d=51 beam died: backtrack #12 to d=45, 192/196 candidates left after dropping the dead family
+d=50 beam died: backtrack #13 to d=40, 299/300 candidates left after dropping the dead family
+d=40 jobs=742 kids=414 fails={'fruitless': 157, 'dead': 160} on={'L21': 160} best=139 fruit=0 t=84s ram=300 states (peak 1141 ~0.0GB) moved=2943 busy=85% copy=0s
+d=48 beam died: backtrack #14 to d=35, 299/300 candidates left after dropping the dead family
+d=40 jobs=734 kids=375 fails={'fruitless': 187, 'dead': 162} on={'L21': 162} best=139 fruit=0 t=89s ram=300 states (peak 1141 ~0.0GB) moved=3117 busy=85% copy=0s
+d=50 jobs=424 kids=240 fails={'dead': 92, 'fruitless': 90} on={'L21': 92} best=129 fruit=1 t=92s ram=240 states (peak 1141 ~0.0GB) moved=3275 busy=85% copy=0s
+d=60 jobs=734 kids=483 fails={'dead': 247} on={'L21': 247} best=154 fruit=1 t=96s ram=300 states (peak 1141 ~0.0GB) moved=3623 busy=85% copy=0s
+d=70 jobs=824 kids=746 fails={'dead': 64} on={'L21': 64} best=191 fruit=1 t=101s ram=300 states (peak 1141 ~0.0GB) moved=3833 busy=85% copy=0s
+d=75 endgame: 84 planned cleanups tried -> none cleared {'dead:L21': '84x avg30left'}
+d=78 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg28left'}
+d=80 jobs=682 kids=625 fails={'dead': 26} on={'L21': 26} best=214 fruit=1 t=108s ram=300 states (peak 1141 ~0.0GB) moved=3961 busy=84% copy=0s
+d=81 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg24left'}
+d=84 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg23left'}
+d=87 endgame: 143 planned cleanups tried -> none cleared {'dead:L21': '142x avg22left'}
+d=90 endgame: 139 planned cleanups tried -> none cleared {'dead:L21': '139x avg20left'}
+d=90 jobs=639 kids=533 fails={'dead': 74, 'fruitless': 7} on={'L21': 74} best=218 fruit=1 t=116s ram=300 states (peak 1141 ~0.0GB) moved=4105 busy=81% copy=0s
+d=93 endgame: 141 planned cleanups tried -> none cleared {'dead:L21': '141x avg18left'}
+d=96 endgame: 143 planned cleanups tried -> none cleared {'dead:L21': '143x avg20left'}
+d=99 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg21left'}
+d=100 jobs=244 kids=62 fails={'fruitless': 104, 'dead': 78} on={'L21': 78} best=222 fruit=1 t=122s ram=62 states (peak 1141 ~0.0GB) moved=4215 busy=79% copy=0s
+d=102 beam died: backtrack #15 to d=100, 129/135 candidates left after dropping the dead family
+d=100 jobs=235 kids=53 fails={'fruitless': 104, 'dead': 78} on={'L21': 78} best=222 fruit=1 t=123s ram=53 states (peak 1141 ~0.0GB) moved=4233 busy=79% copy=0s
+d=101 beam died: backtrack #16 to d=95, 291/300 candidates left after dropping the dead family
+d=96 endgame: 142 planned cleanups tried -> none cleared {'dead:L21': '140x avg19left', 'shortwin:L21': '2x avg2left'}
+d=99 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg23left'}
+d=100 jobs=104 kids=9 fails={'dead': 42, 'fruitless': 52} on={'L21': 42} best=219 fruit=1 t=126s ram=9 states (peak 1141 ~0.0GB) moved=4313 busy=78% copy=0s
+d=102 beam died: backtrack #17 to d=90, 299/300 candidates left after dropping the dead family
+d=90 endgame: 141 planned cleanups tried -> none cleared {'dead:L21': '141x avg20left'}
+d=90 jobs=637 kids=531 fails={'dead': 74, 'fruitless': 7} on={'L21': 74} best=218 fruit=1 t=127s ram=300 states (peak 1141 ~0.0GB) moved=4322 busy=78% copy=0s
+d=93 endgame: 139 planned cleanups tried -> none cleared {'dead:L21': '139x avg18left'}
+d=96 endgame: 143 planned cleanups tried -> none cleared {'dead:L21': '142x avg19left', 'shortwin:L21': '1x avg1left'}
+d=99 endgame: 143 planned cleanups tried -> none cleared {'dead:L21': '143x avg23left'}
+d=100 jobs=181 kids=43 fails={'dead': 59, 'fruitless': 79} on={'L21': 59} best=222 fruit=1 t=133s ram=43 states (peak 1141 ~0.0GB) moved=4403 busy=76% copy=0s
+d=102 beam died: backtrack #18 to d=85, 299/300 candidates left after dropping the dead family
+d=87 endgame: 143 planned cleanups tried -> none cleared {'dead:L21': '141x avg23left', 'shortwin:L21': '2x avg2left'}
+d=90 endgame: 142 planned cleanups tried -> none cleared {'dead:L21': '142x avg20left'}
+d=90 jobs=639 kids=537 fails={'dead': 70, 'fruitless': 7} on={'L21': 70} best=218 fruit=1 t=138s ram=300 states (peak 1141 ~0.0GB) moved=4464 busy=75% copy=0s
+d=93 endgame: 139 planned cleanups tried -> none cleared {'dead:L21': '139x avg18left'}
+d=96 endgame: 142 planned cleanups tried -> none cleared {'dead:L21': '140x avg19left'}
+d=99 endgame: 142 planned cleanups tried -> none cleared {'dead:L21': '142x avg21left'}
+d=100 jobs=162 kids=36 fails={'fruitless': 82, 'dead': 43} on={'L21': 43} best=222 fruit=1 t=144s ram=36 states (peak 1141 ~0.0GB) moved=4608 busy=74% copy=0s
+d=102 beam died: backtrack #19 to d=80, 299/300 candidates left after dropping the dead family
+d=80 jobs=679 kids=625 fails={'dead': 26} on={'L21': 26} best=214 fruit=1 t=144s ram=300 states (peak 1141 ~0.0GB) moved=4617 busy=74% copy=0s
+d=81 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg23left'}
+d=84 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg24left'}
+d=87 endgame: 143 planned cleanups tried -> none cleared {'dead:L21': '143x avg22left'}
+d=90 endgame: 143 planned cleanups tried -> none cleared {'dead:L21': '143x avg21left'}
+d=90 jobs=636 kids=525 fails={'dead': 77, 'fruitless': 7} on={'L21': 77} best=218 fruit=1 t=152s ram=300 states (peak 1141 ~0.0GB) moved=4732 busy=73% copy=0s
+d=93 endgame: 142 planned cleanups tried -> none cleared {'dead:L21': '142x avg18left'}
+d=96 endgame: 143 planned cleanups tried -> none cleared {'dead:L21': '142x avg18left'}
+d=99 endgame: 108 planned cleanups tried -> none cleared {'dead:L21': '108x avg21left'}
+d=100 beam died: backtrack #20 to d=75, 298/300 candidates left after dropping the dead family
+d=75 endgame: 84 planned cleanups tried -> none cleared {'dead:L21': '84x avg30left'}
+d=78 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg29left'}
+d=80 jobs=671 kids=620 fails={'dead': 26} on={'L21': 26} best=214 fruit=1 t=163s ram=300 states (peak 1141 ~0.0GB) moved=5001 busy=72% copy=0s
+d=81 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '143x avg24left', 'shortwin:L21': '1x avg1left'}
+d=84 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg24left'}
+d=87 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg22left'}
+d=90 endgame: 142 planned cleanups tried -> none cleared {'dead:L21': '142x avg17left'}
+d=90 jobs=645 kids=570 fails={'dead': 36, 'fruitless': 5} on={'L21': 36} best=228 fruit=1 t=171s ram=300 states (peak 1141 ~0.0GB) moved=5150 busy=70% copy=0s
+d=93 endgame: 141 planned cleanups tried -> none cleared {'dead:L21': '141x avg18left'}
+d=96 endgame: 141 planned cleanups tried -> none cleared {'dead:L21': '141x avg19left'}
+d=99 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '142x avg21left', 'shortwin:L21': '2x avg2left'}
+d=100 jobs=81 kids=5 fails={'fruitless': 58, 'dead': 18} on={'L21': 18} best=221 fruit=1 t=177s ram=5 states (peak 1141 ~0.0GB) moved=5244 busy=69% copy=0s
+d=101 beam died: backtrack #21 to d=70, 299/300 candidates left after dropping the dead family
+d=70 jobs=821 kids=743 fails={'dead': 64} on={'L21': 64} best=191 fruit=1 t=178s ram=300 states (peak 1141 ~0.0GB) moved=5247 busy=70% copy=0s
+d=75 endgame: 72 planned cleanups tried -> none cleared {'dead:L21': '72x avg29left'}
+d=78 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg28left'}
+d=80 jobs=678 kids=629 fails={'dead': 29} on={'L21': 29} best=214 fruit=1 t=185s ram=300 states (peak 1141 ~0.0GB) moved=5489 busy=69% copy=0s
+d=81 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg24left'}
+d=84 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg24left'}
+d=87 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg23left'}
+d=90 endgame: 140 planned cleanups tried -> none cleared {'dead:L21': '139x avg20left', 'shortwin:L21': '1x avg1left'}
+d=90 jobs=648 kids=505 fails={'dead': 112, 'fruitless': 1} on={'L21': 112} best=218 fruit=1 t=193s ram=300 states (peak 1141 ~0.0GB) moved=5590 busy=68% copy=0s
+d=93 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg18left'}
+d=96 endgame: 143 planned cleanups tried -> none cleared {'dead:L21': '143x avg20left'}
+d=99 endgame: 143 planned cleanups tried -> none cleared {'dead:L21': '143x avg23left'}
+d=100 jobs=69 kids=3 fails={'fruitless': 42, 'dead': 24} on={'L21': 24} best=216 fruit=1 t=199s ram=3 states (peak 1141 ~0.0GB) moved=5700 busy=68% copy=0s
+d=101 beam died: backtrack #22 to d=65, 299/300 candidates left after dropping the dead family
+d=70 jobs=850 kids=786 fails={'dead': 55} on={'L21': 55} best=175 fruit=1 t=202s ram=300 states (peak 1141 ~0.0GB) moved=5758 busy=68% copy=0s
+d=78 endgame: 120 planned cleanups tried -> none cleared {'dead:L21': '120x avg31left'}
+d=80 jobs=685 kids=603 fails={'dead': 66} on={'L21': 66} best=211 fruit=1 t=208s ram=300 states (peak 1141 ~0.0GB) moved=5946 busy=68% copy=0s
+d=81 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg33left'}
+d=84 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg29left'}
+d=87 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '142x avg27left'}
+d=90 endgame: 143 planned cleanups tried -> none cleared {'dead:L21': '142x avg21left'}
+d=90 jobs=626 kids=489 fails={'dead': 128} on={'L21': 128} best=220 fruit=1 t=216s ram=300 states (peak 1141 ~0.0GB) moved=6107 busy=67% copy=0s
+d=93 endgame: 138 planned cleanups tried -> none cleared {'dead:L21': '136x avg15left'}
+d=96 endgame: 137 planned cleanups tried -> none cleared {'dead:L21': '136x avg14left'}
+d=99 endgame: 137 planned cleanups tried -> none cleared {'dead:L21': '137x avg16left'}
+d=100 jobs=334 kids=63 fails={'fruitless': 211, 'dead': 58} on={'L21': 58} best=226 fruit=1 t=223s ram=63 states (peak 1141 ~0.0GB) moved=6219 busy=67% copy=0s
+d=102 jobs=20 kids=0 fails={'fruitless': 16, 'dead': 4} on={'L21': 4} best=- fruit=- t=223s ram=0 states (peak 1141 ~0.0GB) moved=6234 busy=67% copy=0s
+RESULT cleared=False dots=230 frames=2156 fruits=1 moves=92 turns=73 minwin=5 route=Lx1ULLUx1LDRDLDRRRULLx1URULUUUx1RUUx1LUx2LDLDLLDDRDLDRRULLDRDLDLULULUUULx1URx1Ux2LDRxUURRDLDx1RRRxURRx3
+[cw] Exited with code 0.

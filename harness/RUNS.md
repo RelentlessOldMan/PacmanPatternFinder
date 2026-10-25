@@ -225,6 +225,8 @@ killers, 2749 killing mixes, weak moves 84 and 90-97 (top right). Full clear 131
   Result: worse at every setting (best 2600 at P 3; P 15 up to 3802). Dropped.
 - `sweep_noise2.sh` -> `sweep_noise2.txt`: fc 1.0 cc 40 beam 300 need-fruits 2, noise {25,40,60} x seeds 9-24 (48
   runs, with fruitless pruning): best 2562 (several seeds), 2576, 2577. The 2560 stands.
+- `sweep_noise3.sh` -> `sweep_noise3.txt`: fc {0.95,1.05} x cc {35,45} x seeds 1-8, noise 40: best 2560 (fc 1.05
+  cc 45 s3), then 2578, 2583. No gain.
 
 **L21 speed, standing best (2026-10-24): `result_L21_nz_fc1.0_n40_s3.json`, 2560 frames = 42.24 s, 108 moves, both
 fruits, full clear, replayed on pacemu.** Closest ghost 21 px on any move (no booey needed); tightest window 5 frames.
