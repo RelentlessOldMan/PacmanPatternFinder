@@ -340,3 +340,5 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   117); safe124 34 (all 11 new at move 112, the tunnel: moves 96-107 3-4 late, also 14/62/77). Not better.
 - `result_L21_safeend_k110_ot95_mg{32,24}`: same but late presses tested from move 96 (--prefix-on-time 95).
   mg32: no clear (every move-111 option dies in some late-press sim from moves 96-110). mg24 running.
+  mg24 done: 7 clears, best 128/94 (3372 fr), survives single late presses from move 96 on.
+- (A video of the 124 was made, then deleted at the user's request: they prefer the 118 ending and winging it.)
