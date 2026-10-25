@@ -319,3 +319,6 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   `climb_c4.txt`, `climb_c5.txt`). **L21 speed, standing best: `result_L21_neigh_2438.json`, 2438 frames = 40.23 s**
   (sub-40 needs <= 2423).
 - Correction: the 2438 never passes through a ghost (closest 7 px, move 70); its late presses are dodges.
+- New `neigh2.py` (pairs: two turns from move 50 on, the second within the next 6, both pressed late by 2 or 8) and
+  climb.py `--neigh/--neigh-args`. `climb.py result_L21_neigh_2438.json c6 --jobs 2 --neigh neigh2.py --neigh-args
+  "2,8 50 6"`: 780 pairs -> `climb_c6.txt`.

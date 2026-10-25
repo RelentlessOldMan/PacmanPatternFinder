@@ -7,6 +7,8 @@ import argparse, json, os, queue, re, shutil, subprocess, sys, threading
 ap = argparse.ArgumentParser()
 ap.add_argument("route"); ap.add_argument("tag")
 ap.add_argument("--jobs", type=int, default=4); ap.add_argument("--beam", type=int, default=150)
+ap.add_argument("--neigh", default="neigh.py", help="neighbor generator (neigh2.py: pairs of late presses)")
+ap.add_argument("--neigh-args", default="", help="its args after <route> <out> (default: --ks)")
 ap.add_argument("--ks", default="2,4,6,8", help="late presses tried (neigh.py)")
 ap.add_argument("--guide", default="result_floor_L21_2fruit_trips.json", help="the re-search's --guide")
 ap.add_argument("--guide-cost", default="10"); ap.add_argument("--guide-slack", default="25")
@@ -49,7 +51,7 @@ def say(f, s):
 
 def enqueue(base, label=None):
     out = f"climb/{args.tag}_neigh_r{label or best['round']}.txt"
-    subprocess.run([sys.executable, "neigh.py", base, out, args.ks], check=True, capture_output=True)
+    subprocess.run([sys.executable, args.neigh, base, out, *(args.neigh_args.split() or [args.ks])], check=True, capture_output=True)
     while not work.empty():
         try:
             work.get_nowait()
