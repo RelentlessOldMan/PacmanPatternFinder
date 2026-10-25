@@ -231,3 +231,31 @@ killers, 2749 killing mixes, weak moves 84 and 90-97 (top right). Full clear 131
 **L21 speed, standing best (2026-10-24): `result_L21_nz_fc1.0_n40_s3.json`, 2560 frames = 42.24 s, 108 moves, both
 fruits, full clear, replayed on pacemu.** Closest ghost 21 px on any move (no booey needed); tightest window 5 frames.
 vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no fruit, 2337 both fruits.
+
+### L21 speed: deliberate booeys (2026-10-24; this route only, never routes the user plays)
+- `booey_probe.py 150 21`: 150 random walks from the L21 start until death. 99 deaths head-on (killer heading
+  opposite Pac-Man). Redoing the move before the deadly one pressed k = 1..12 frames late (seg "4 k") rescued 50;
+  32 of those went through the ghost (closest ghost ~1 px: same-frame tile swap), the rest dodged it.
+- New `--booey K` (search.py): a move that dies is retried after redoing the move before it k = 1..K frames late;
+  the first k that lives makes a child, route token e.g. "R2" (replay_route.py plays it as seg "R 4 2"). Cand
+  keeps its parent (states kept alive). Test `result_L21_booey12_n40_s3.json` (best settings + noise 40 s3 +
+  booey 12): ~20-30 rescues per depth, half through ghosts; result 2666 (no booey in it); 21/56 solutions had one
+  (best 2719 `...LULUR2R`, replays as a clear at exactly 2719).
+- `sweep_booey.sh` -> `sweep_booey.txt`: booey {12,6} x seeds 1-8.
+  Result (`sweep_booey.txt`): best 2666 (s3), the rest 2752-3010; K 6 and 12 give the same routes (the first k that
+  works is small). Booeys rescue moves but the extra children push the beam elsewhere: no gain over 2560.
+- New `--guide FILE[:i]` / `--guide-cost G` / `--guide-slack W` (search.py): follow a floor.py ghost-free walk.
+  The score's "nearest dot" term becomes the distance to the guide's next uneaten dot, and each eaten dot outside
+  the guide's first len(eaten)+W costs G. floor.py `--keep N` saves the N fastest distinct walks ("walks").
+  Test `result_L21_guide_trips_gc20_b12.json` (2337 walk, G 20, W 0, cc 0, booey 12): 3903 frames, 179 moves:
+  with no slack, eating a dot early is penalized, so the search turns back to avoid dots. Hence the slack.
+- `floor.py --steps-from result_floor_L21_nofruit.json --fruits 2 --keep 40` -> `result_floor_L21_2fruit_keep40.json`.
+- `sweep_guide.sh` -> `sweep_guide.txt`: 2337 walk, G {3,10} x W {10,25} x cc {0,40}, booey 12.
+  Result (`sweep_guide.txt`): **G 10 W 25 cc 40: 2458 frames (40.56 s), 100 moves, both fruits, full clear, replayed**
+  (`result_L21_guide_gc10_sl25_cc40.json`): under the ~2521 (41.6 s) target, 102 frames better than 2560. Its "R9"
+  is a booey-retry move, but it dodged (9 frames waiting at a corner; the next move's closest ghost 20 px), not a
+  pass-through; closest ghost on the whole route 14 px; tightest window 5. G 3 W 25 cc 40: 2465 (no late move).
+  Slack 10 and cc 0 are much worse (2655-3104).
+- `sweep_guide2.sh` -> `sweep_guide2.txt`: G 10 W 25 cc 40 guided by each of the 12 kept floor walks (2337-2346).
+
+**L21 speed, standing best (2026-10-25): `result_L21_guide_gc10_sl25_cc40.json`, 2458 frames = 40.56 s.**

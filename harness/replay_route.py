@@ -1,6 +1,6 @@
 """replay_route.py <route.json|route> <level>: play a route on pacemu exactly on time and print its frames
 (ready to clear) and the outcome. Routes may hold "x" / "x<i>" moves (search.py --reverse / --reverse-any:
-turn back mid-corridor)."""
+turn back mid-corridor) and late presses like "R4" (search.py --booey)."""
 import json, sys
 import maze
 from emu_server import Server
@@ -24,10 +24,11 @@ def play(srv, route, on_move=None):
             st = "clear" if int(p[3][5:]) >= 244 else "ok"
         else:
             node, path = maze.next_node(*tile, heading)
-            r = parse_seg(srv.handle(f"seg {m} E 0"))
+            # "R4" (search.py --booey): R pressed 4 frames late
+            r = parse_seg(srv.handle(f"seg {m[0]} 4 {m[1:]}" if len(m) > 1 else f"seg {m} E 0"))
             frames += r["fr"]
             eaten |= (set(path) | {r["tile"]}) & maze.DOTS
-            tile, heading, st = r["tile"], m, r["st"]
+            tile, heading, st = r["tile"], m[0], r["st"]
         if on_move:
             on_move(i, m, st, frames)
         if st != "ok":

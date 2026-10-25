@@ -1,0 +1,16 @@
+booey12_n40_s2 | clear 122/122 moves 2993 frames 49.38s | 
+booey6_n40_s1 | clear 121/121 moves 2817 frames 46.48s | R2 
+booey6_n40_s2 | clear 122/122 moves 2993 frames 49.38s | 
+booey12_n40_s1 | clear 121/121 moves 2817 frames 46.48s | R2 
+booey6_n40_s3 | clear 116/116 moves 2666 frames 43.99s | 
+booey12_n40_s3 | clear 116/116 moves 2666 frames 43.99s | 
+booey12_n40_s4 | clear 127/127 moves 3010 frames 49.67s | 
+booey6_n40_s4 | clear 128/128 moves 2998 frames 49.47s | 
+booey6_n40_s5 | clear 124/124 moves 2905 frames 47.93s | 
+booey12_n40_s5 | clear 126/126 moves 2887 frames 47.64s | L4 
+booey12_n40_s6 | clear 118/118 moves 2752 frames 45.41s | 
+booey6_n40_s6 | clear 124/124 moves 2789 frames 46.02s | R2 
+booey12_n40_s7 | clear 121/121 moves 2774 frames 45.77s | 
+booey6_n40_s7 | clear 121/121 moves 2768 frames 45.67s | 
+booey6_n40_s8 | ok 43/43 moves 1151 frames 18.99s | 
+booey12_n40_s8 | ok 43/43 moves 1151 frames 18.99s | 

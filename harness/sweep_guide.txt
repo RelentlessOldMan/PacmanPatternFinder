@@ -1,0 +1,8 @@
+guide_gc3_sl10_cc0 | clear 132/132 moves 3104 frames 51.22s | 
+guide_gc3_sl10_cc40 | clear 111/111 moves 2655 frames 43.81s | L3 
+guide_gc3_sl25_cc40 | clear 107/107 moves 2465 frames 40.67s | 
+guide_gc3_sl25_cc0 | clear 124/124 moves 2871 frames 47.37s | U2 
+guide_gc10_sl10_cc0 | clear 120/120 moves 2928 frames 48.31s | L5 
+guide_gc10_sl10_cc40 | clear 124/124 moves 2794 frames 46.10s | U8 
+guide_gc10_sl25_cc0 | clear 137/137 moves 3058 frames 50.46s | 
+guide_gc10_sl25_cc40 | clear 100/100 moves 2458 frames 40.56s | R9 

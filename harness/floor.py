@@ -208,6 +208,7 @@ def main():
     ap.add_argument("--fruit-visits", type=int, default=0, help="the milp walk enters the fruit tile this often")
     ap.add_argument("--time-limit", type=int, default=1800, help="milp seconds")
     ap.add_argument("--steps-from", metavar="JSON", help="reuse the steps of a saved floor result (skip the milp)")
+    ap.add_argument("--keep", type=int, default=1, help="also save the N fastest distinct walks (\"walks\")")
     ap.add_argument("--out", default="result_floor.json")
     args = ap.parse_args()
     assert os.environ.get("PACMAN_NOGHOSTS"), "set PACMAN_NOGHOSTS=1"
@@ -218,7 +219,7 @@ def main():
     srv = Server()
     srv.handle("newgame"); srv.handle(f"level {args.level}"); srv.handle("msave s")
     rng = random.Random(args.seed)
-    best = None
+    best, kept = None, {}
     for i in range(args.tries):
         w = euler_walk(A, x, rng)
         r = drive(srv, w)
@@ -232,13 +233,17 @@ def main():
                 r = None
                 break
             _, w, r = got
+        if r and r["fruits"] >= args.fruits:
+            kept[tuple(map(tuple, w))] = r["frames"]
         if r and r["fruits"] >= args.fruits and (best is None or r["frames"] < best[0]):
             best = (r["frames"], w, r)
             print(f"try {i}: {r['frames']} frames ({r['frames'] / 60.606:.2f}s) steps={len(w) - 1} "
                   f"fruits={r['fruits']} windows={r['windows']}", flush=True)
     f, w, r = best
-    json.dump({"level": args.level, "frames": f, "steps": len(w) - 1, "fruits": r["fruits"], "walk": w},
-              open(args.out, "w"))
+    walks = sorted(kept.items(), key=lambda kv: kv[1])[:args.keep]
+    json.dump({"level": args.level, "frames": f, "steps": len(w) - 1, "fruits": r["fruits"], "walk": w,
+               "walks": [dict(frames=fr, walk=list(wk)) for wk, fr in walks]}, open(args.out, "w"))
+    print(f"kept {len(walks)} walks: {[fr for _, fr in walks]}")
     print(f"BEST {f} frames {f / 60.606:.2f}s steps={len(w) - 1} fruits={r['fruits']}")
 
 

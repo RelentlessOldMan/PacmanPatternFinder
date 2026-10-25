@@ -20,7 +20,7 @@ import random
 import threading
 import time
 from concurrent.futures import Future, ThreadPoolExecutor
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 
 import maze
 from worker import MAME, MAME_MEM, Worker, STATE_DIR
@@ -40,6 +40,7 @@ class Cand:
     score: float = 0.0
     after: int = -1  # moves played since the goal was reached (-1: not yet)
     ghosts: int = 0  # ghosts eaten, summing each move's lowest over the sims
+    parent: "Cand" = field(default=None, repr=False, compare=False)  # --booey: redoes the parent's last move
 
 
 # Savestates live in the RAM of the worker that made them (our patched MAME, mame-patches/) unless
@@ -309,7 +310,9 @@ def run_child(w, sims, held, opt, minwin, route=(), expect=None, corner=False):
         lag = 0
         if opt != held:
             lag = minwin if late else jitter_lag(sim, len(route), corner) if jit else 0
-        if LATE_REL and lag:  # k frames after the last press that still corners cleanly
+        if len(opt) > 1:  # --booey's "R4": R pressed 4 frames late (run_booey)
+            r = parse_seg(w.cmd(f"seg {opt[0]} 4 {opt[1:]}"))
+        elif LATE_REL and lag:  # k frames after the last press that still corners cleanly
             r = parse_seg(w.cmd(f"seg {opt} 4 {lag}"))
         else:
             r = parse_seg(w.cmd(f"seg {opt} E {stepped_lag(lag)}"))
@@ -343,8 +346,8 @@ REVERSE_ANY = False  # --reverse-any: also "x<i>": turn back on any uneaten dot 
 
 
 def tokens(route):
-    """A route string or list as moves: "L", "x", "x3", ..."""
-    return re.findall(r"x\d*|[LRUD]", route) if isinstance(route, str) else list(route)
+    """A route string or list as moves: "L", "x", "x3", "R4" (--booey: R pressed 4 frames late), ..."""
+    return re.findall(r"x\d*|[LRUD]\d*", route) if isinstance(route, str) else list(route)
 
 
 def rev_spots(tile, heading, eaten, any_dot=False):
@@ -398,6 +401,36 @@ def run_rev(w, sims, held, spot, expect=None):
             g = load_state(w, name, maze.REV[held]).split()
             res[-1]["tile"] = (int(g[1]), int(g[2]))
     return ("clear" if all(r["st"] == "clear" for r in res) else "ok"), out, res
+
+
+BOOEY = 0  # --booey K: a move that dies is retried after redoing the move before it up to K frames late
+
+
+def run_booey(w, sims, held, prev, opt, expect=None):
+    """--booey: Pac-Man died taking `opt` right after `prev`. Redo `prev` pressed k = 1..BOOEY frames late
+    (seg "4 k": k frames after he is within 4 px of the node; at a corner he waits at the wall), which moves
+    him a few pixels against the ghosts, then `opt` again: a head-on ghost that killed him can swap tiles with
+    him in one frame (a booey: no collision), or be dodged. The first k that survives wins.
+    Returns (status, k, ([mid state], [state]), ([mid result], [result])), or (status, 0, None, None)."""
+    (sim,) = sims  # one on-time sim (--no-late, one level)
+    for k in range(1, BOOEY + 1):
+        got = load_state(w, base(sim), held)
+        if expect and got != expect:
+            BADLOADS.append((sim, "booey", expect, got, None))
+            return "badload", 0, None, None
+        a = parse_seg(w.cmd(f"seg {prev} 4 {k}"))
+        if a["st"] != "ok":
+            return "booey-" + a["st"], 0, None, None  # missed the turn (or died first): later presses do too
+        mid = new_name()
+        save_state(w, mid)
+        load_state(w, mid, prev)  # (as the next move of a search would)
+        b = parse_seg(w.cmd(f"seg {opt} E 0"))
+        if b["st"] in ("ok", "clear"):
+            name = new_name()
+            save_state(w, name)
+            return b["st"], k, ([mid], [name]), ([a], [b])
+        forget(w, [mid])
+    return "booey-dead", 0, None, None
 
 
 def run_child_branch(w, sims, held, opt, minwin, route=(), expect=None):
@@ -526,15 +559,40 @@ FRUIT_TILE = (13, 17)
 FRUIT_PULL = 0.0  # --fruit-pull: score per tile of distance to an uneaten fruit that is out
 
 
+GUIDE = []  # --guide: the dots in the order a guide walk (floor.py, ghost-free) first eats them
+GUIDE_SETS = []  # GUIDE_SETS[n]: its first n dots
+GUIDE_COST = 0.0  # --guide-cost: per eaten dot outside the guide's first len(eaten) + GUIDE_SLACK
+GUIDE_SLACK = 0  # --guide-slack
+
+
+def load_guide(spec):
+    """--guide FILE[:i]: walk i (default: the best) of a floor.py result."""
+    f, _, i = spec.partition(":")
+    r = json.load(open(f))
+    walk = r["walks"][int(i)]["walk"] if i else r["walk"]
+    order = []
+    for t in map(tuple, walk):
+        if t in maze.DOTS and t not in order:
+            order.append(t)
+    GUIDE[:] = order
+    GUIDE_SETS[:] = [frozenset(order[:n]) for n in range(len(order) + 1)]
+
+
 def score(c):
     left = GOAL - c.eaten
-    near = maze.bfs_dist(c.tile, left)
+    if GUIDE:
+        # --guide: head for the guide's next dot, and pay for every dot eaten out of its order
+        nxt = next((t for t in GUIDE if t not in c.eaten), None)
+        near = maze.bfs_dist(c.tile, {nxt}) if nxt else 0
+        off = len(c.eaten - GUIDE_SETS[min(len(c.eaten) + GUIDE_SLACK, len(GUIDE))]) * GUIDE_COST
+    else:
+        near, off = maze.bfs_dist(c.tile, left), 0
     # a fruit is out once its dot count (70, 170) is reached until eaten (one that left uneaten is pruned: --need-fruits)
     out = (len(c.eaten) >= 70 and c.fruits < 1) or (len(c.eaten) >= 170 and c.fruits < 2)
     pull = FRUIT_PULL * maze.bfs_dist(c.tile, {FRUIT_TILE}) if FRUIT_PULL and out else 0
     # each stranded pocket of dots costs a long trip back later (with a faster red ghost)
     return (len(c.eaten) * 10 - c.frames * FRAME_COST - near * 6 - c.risk * 2 + c.fruits * 400
-            + c.ghosts * 300 * ALL_GHOSTS - pull - maze.clusters(left) * CLUSTER_COST - n_turns(c) * TURN_COST - (maze.gaps(left) * GAP_COST if GAP_COST else 0))
+            + c.ghosts * 300 * ALL_GHOSTS - pull - off - maze.clusters(left) * CLUSTER_COST - n_turns(c) * TURN_COST - (maze.gaps(left) * GAP_COST if GAP_COST else 0))
 
 
 def n_turns(c):
@@ -578,15 +636,16 @@ def make_starts(pool, levels):
 
 def make_child(c, path, opt, sims, res):
     r0 = res[0]
-    ch = Cand(c.route + [opt], r0["tile"], maze.REV[c.heading] if opt[0] == "x" else opt,
+    ch = Cand(c.route + [opt], r0["tile"], maze.REV[c.heading] if opt[0] == "x" else opt[0],
               c.eaten | (frozenset(path) & maze.DOTS) | (frozenset([r0["tile"]]) & maze.DOTS),
               c.frames + max(r["fr"] for r in res) + 1,  # + the frame the move's state load runs
               c.risk + max(0, 24 - min(r["mind"] for r in res)),
               min(r["fruits"] for r in res) if BRANCH else c.fruits + min(r["fruits"] for r in res), sims,
-              c.segs + [dict(node=r0["node"], dir=opt, turn=opt != c.heading,
+              c.segs + [dict(node=r0["node"], dir=opt, turn=opt[0] != c.heading,
                              win=min(r["win"] for r in res), mind=min(r["mind"] for r in res),
                              frames=r0["fr"])])
     ch.ghosts = c.ghosts + min(r["ghosts"] for r in res)
+    ch.parent = c if BOOEY else None
     ch.after = c.after + 1 if c.after >= 0 else (0 if done(ch) else -1)
     # --score-noise: a fixed (per --seed and route) random nudge, so restarts explore
     noise = random.Random(f"{SEED} {''.join(ch.route)}").uniform(0, SCORE_NOISE) if SCORE_NOISE else 0
@@ -829,20 +888,14 @@ def search(pool, sims0, args, log=print, resume=None):
                                                         f"ok {c.tile[0]} {c.tile[1]} {len(c.eaten)}" if c.route else None,
                                                         need=c.sims)))
         children, fails, by_sim = {}, {}, {}
-        for c, path, opt, fut in jobs:
-            st, sims, res = fut.result()
-            if res is None:
-                who = sim_label(sims0, sims)
-                fails[st] = fails.get(st, 0) + 1
-                by_sim[who] = by_sim.get(who, 0) + 1
-                continue
-            ch = make_child(c, path, opt, sims, res)
+
+        def consider(ch, st, res):
             if len(ch.route) > args.min_ghost_from and ch.segs[-1]["mind"] < args.min_ghost:
                 fails["ghost"] = fails.get("ghost", 0) + 1  # --min-ghost: a ghost came too close
-                continue
+                return
             if max(r["gone"] for r in res) - ch.fruits > 2 - NEED_FRUITS:
                 fails["fruitless"] = fails.get("fruitless", 0) + 1  # --need-fruits: a fruit came and went uneaten
-                continue
+                return
             r0 = res[0]
             if r0["dots"] != len(ch.eaten) and args.debug:
                 print(f"DOTMISMATCH game={r0['dots']} mine={len(ch.eaten)} route={''.join(ch.route)}", flush=True)
@@ -853,10 +906,42 @@ def search(pool, sims0, args, log=print, resume=None):
                     fails["fewghosts"] = fails.get("fewghosts", 0) + 1
                 else:
                     collect(ch)
-                continue
+                return
             key = (ch.tile, ch.heading, ch.eaten)
             if key not in children or children[key].score < ch.score:
                 children[key] = ch
+        deaths = []
+        for c, path, opt, fut in jobs:
+            st, sims, res = fut.result()
+            if res is None:
+                who = sim_label(sims0, sims)
+                fails[st] = fails.get(st, 0) + 1
+                by_sim[who] = by_sim.get(who, 0) + 1
+                if st == "dead" and opt[0] != "x":
+                    deaths.append((c, opt))
+                continue
+            consider(make_child(c, path, opt, sims, res), st, res)
+        # --booey: a move that died is retried with the move before it pressed late (see run_booey)
+        bjobs = []
+        for c, opt in deaths if BOOEY else []:
+            p, prev = c.parent, c.route[-1] if c.route else ""
+            if p is None or len(prev) != 1 or prev == "x" or prev == p.heading:
+                continue  # (a late press only changes anything on a turn)
+            bjobs.append((c, opt, pool.submit(run_booey, p.sims, p.heading, prev, opt,
+                                              f"ok {p.tile[0]} {p.tile[1]} {len(p.eaten)}" if p.route else None,
+                                              need=p.sims)))
+        for c, opt, fut in bjobs:
+            st, k, sims, res = fut.result()
+            if res is None:
+                fails[st] = fails.get(st, 0) + 1
+                continue
+            p = c.parent
+            mid = make_child(p, maze.next_node(*p.tile, p.heading)[1], c.route[-1] + str(k), sims[0], res[0])
+            ch = make_child(mid, maze.next_node(*mid.tile, mid.heading)[1], opt, sims[1], res[1])
+            fails["booey"] = fails.get("booey", 0) + 1  # (not a failure: rescues, counted with them)
+            if res[1][0]["mind"] < 6:
+                fails["booey-through"] = fails.get("booey-through", 0) + 1
+            consider(ch, st, res[1])
         ranked = sorted(children.values(), key=lambda c: -c.score)
         per, fam, beam, held_back = {}, {}, [], []
         for c in ranked:
@@ -917,7 +1002,8 @@ def search(pool, sims0, args, log=print, resume=None):
         top = beam[0] if beam else None
         peak_ram = max(peak_ram, len(OWNER))
         if RAM:
-            free_ram(pool, {base(s) for c in beam + ([solution] if solution else []) for s in c.sims})
+            free_ram(pool, {base(s) for c in beam + ([solution] if solution else []) + [c.parent for c in beam if c.parent]
+                            + [c.parent for _, snap in snapshots for c in snap if c.parent] for s in c.sims})
         if depth % 10 == 0 or solution or not beam:
             ram = (f" ram={len(OWNER)} states (peak {peak_ram} ~{peak_ram * 0.0077 / 1024:.1f}GB)"
                    f" moved={pool.moved}" if RAM else "")
@@ -926,7 +1012,8 @@ def search(pool, sims0, args, log=print, resume=None):
                 f"t={time.time() - t0:.0f}s{ram} busy={sum(pool.busy) / max(1e-9, (time.time() - t0) * pool.n):.0%}"
                 + (f" copy={COPY_SECONDS[0]:.0f}s" if RAM else ""))
         keep = ({s for c in beam for s in c.sims} | set(solution.sims if solution else []) | set(sims0)
-                | {s for _, snap in snapshots for c in snap for s in c.sims})
+                | {s for _, snap in snapshots for c in snap for s in c.sims}
+                | {s for c in beam + [c for _, snap in snapshots for c in snap] if c.parent for s in c.parent.sims})
         cleanup(keep)
         if solution is not None or not beam:
             return solution or (min(found.values(), key=solution_cost) if found else None), best_partial
@@ -979,6 +1066,15 @@ def main():
     ap.add_argument("--reverse", action="store_true", help="also try turning back mid-corridor (\"x\": on the last dot before an eaten stretch)")
     ap.add_argument("--fruit-pull", type=float, default=0.0, help="score per tile of distance to a fruit that is out")
     ap.add_argument("--score-noise", type=float, default=0.0, help="add a random 0..X (per --seed) to each beam score")
+    ap.add_argument("--guide", metavar="FILE[:i]",
+                    help="follow a floor.py walk's dot order (i: its \"walks\" entry); see --guide-cost")
+    ap.add_argument("--guide-cost", type=float, default=20.0,
+                    help="--guide: score cost per eaten dot outside the guide's first len(eaten) + --guide-slack")
+    ap.add_argument("--guide-slack", type=int, default=10,
+                    help="--guide: dots this far ahead in the guide's order count as in order")
+    ap.add_argument("--booey", type=int, default=0,
+                    help="K: when a move dies, retry it after pressing the move before 1..K frames late (\"R4\"), "
+                         "to pass through the ghost (a booey) or dodge it; for the L21 speed route only")
     ap.add_argument("--reverse-any", action="store_true", help="--reverse, and turn back on any uneaten dot ahead (\"x<i>\")")
     ap.add_argument("--frame-cost", type=float, default=0.25, help="score penalty per frame (a dot is worth 10)")
     ap.add_argument("--turn-cost", type=float, default=0, help="score penalty per turn (a dot is worth 10)")
@@ -1024,10 +1120,14 @@ def main():
                     help="--min-ghost: only from move N+1 on")
     ap.add_argument("--out", default="result.json")
     args = ap.parse_args()
-    global SUBDIR, RAM, CLUSTER_COST, GAP_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, FIRST_FRUIT, RAM_CAP, ALL_GHOSTS, FRAME_COST, REVERSE, REVERSE_ANY, SCORE_NOISE, SEED, FRUIT_PULL
+    global SUBDIR, RAM, CLUSTER_COST, GAP_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, FIRST_FRUIT, RAM_CAP, ALL_GHOSTS, FRAME_COST, REVERSE, REVERSE_ANY, SCORE_NOISE, SEED, FRUIT_PULL, BOOEY, GUIDE_COST, GUIDE_SLACK
     CLUSTER_COST, CORNER_MINWIN, GAP_COST = args.cluster_cost, args.corner_minwin, args.gap_cost
     SCORE_NOISE, SEED, FRUIT_PULL = args.score_noise, args.seed, args.fruit_pull
     FRAME_COST, REVERSE, REVERSE_ANY = args.frame_cost, args.reverse or args.reverse_any, args.reverse_any
+    BOOEY = args.booey
+    GUIDE_COST, GUIDE_SLACK = args.guide_cost, args.guide_slack
+    if args.guide:
+        load_guide(args.guide)
     assert not (REVERSE and args.branch), "--reverse: no --branch yet"
     LATE_VARIANTS = not args.no_late and not args.jitter_sims and not args.fixed_sims and not args.history_sims
     TURN_COST, JITTER, JITTER_CORNER = args.turn_cost, args.jitter, args.jitter_corner
@@ -1040,6 +1140,8 @@ def main():
         LATE_BUDGET = args.late_budget
     if BRANCH:
         LATE_VARIANTS = False
+    assert not (BOOEY and (args.branch or LATE_VARIANTS or args.jitter_sims or args.fixed_sims or args.history_sims
+                           or len(args.levels.split(",")) > 1)), "--booey: one level, one on-time sim (--no-late)"
     if args.leave_pockets:
         GOAL, AVOID = maze.DOTS - maze.POCKETS, maze.POCKETS
         SAFE_AFTER = args.safe_after
