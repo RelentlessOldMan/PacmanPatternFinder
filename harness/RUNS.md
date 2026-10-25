@@ -342,3 +342,20 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   mg32: no clear (every move-111 option dies in some late-press sim from moves 96-110). mg24 running.
   mg24 done: 7 clears, best 128/94 (3372 fr), survives single late presses from move 96 on.
 - (A video of the 124 was made, then deleted at the user's request: they prefer the 118 ending and winging it.)
+
+### L21 118: drift test of the endings, then a search robust to where blue is ("safe safe safe")
+- User: the 124 (tunnel) ending fails for them (blue in the tunnel); they prefer the 118 ending and winging it, but
+  want a very safe ending. Video of the 124 deleted (it was gitignored, never pushed).
+- Spread-out drift kills the 118 mid-route: 1 frame late on 10% of turns dies at moves 37/45/46/78 in 8/8 tries.
+  The 118 survives any ONE late press; combined drift is another matter.
+- `drift_end.py` (moves 1-79 on time, 80-110 each turn 1-2 late w.p. 0.3, every ending on time from the result):
+  s1 (60 tries, 44 alive at 110): s128 `UURRRURDLLLLLULDRR` 44/44, 118 30/44, user 24/44, rest <= 24.
+  s2 (80 tries, 52 alive): s128 50/52, 118 27, user 27. Ending also drifted (`0.3 2 80 1`, s3): s128 38/45, 118 33/45,
+  user 23/45. Harsher drift (p 0.5 k<=3, or from move 60) leaves almost nobody alive at 110.
+- `drift_hist.py 24 11 hist_L21_drift80_s11.json` (24 drifted games alive at 110, from 38 tries; lateness runs on to
+  move 160) -> `search.py --prefix <118 first 110> --history-sims ... --late-rel --beam 96` =
+  `result_L21_safe3_hist24_s11`: an ending that survives all 24 (drifted ending presses included).
+  19 clears; best 141/104 (3860 fr): after 110 `UUURDRURDLLLLLDDDRRDRURRURULURR` (top row right, up into the top-right
+  corner, back along row 5, a big lap down col 6 / along the bottom / out the right tunnel, then the top-left last).
+  Fresh drift (`drift_L21_ends_v_s4_e1`, sloppy ending presses too): s141 46/46, s128 38/46, 118 33/46, user 23/46.
+  `drift_L21_ends_v_s5_e0` (on-time ending): s141 44/44, s128 43/44. On time the closest ghost is 20 px (last move).
