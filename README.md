@@ -60,6 +60,14 @@ For comparison, Don Goodrich's well-known level 21+ "9th key" pattern
 reverse and takes ~53 s. It clears on MAME when played exactly on time, but 131 single late presses
 kill it versus 31 for the 118/88 (`harness/goodrich_late.py`).
 
+### Level 21+ speed run (just for fun)
+
+Video: [level 21 in 2438 frames](videos/L21_speed_2438_level21.mp4) (40.23 s from start to clear, both
+fruits eaten). Route: `best/L21_speed_2438.json`, 100 moves with 12 turn-backs and 4 deliberately late presses.
+It is frame-exact and passes through ghosts on purpose (booeys), so it is not meant for human play. The fastest
+possible clear with no ghosts at all is about 2337 frames. Found by `harness/climb.py`: change one move of the
+best route, search again from there, and keep the result if it is faster. The log is in `harness/RUNS.md`.
+
 ## Running it
 
 You need MAME 0.289 in `mame-0.289/` and your own legally obtained `pacman.zip` ROM in
