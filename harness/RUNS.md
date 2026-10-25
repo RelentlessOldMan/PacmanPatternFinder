@@ -289,3 +289,13 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   or the turn pressed 2/4/6/8 frames late; the search itself only presses late to rescue deaths).
   `sweep_neigh.sh neigh_2458.txt n1`: --prefix each, re-search the rest (guide settings, beam 150) ->
   `neigh/n1_*`, `sweep_neigh_n1.txt`.
+- n1 result (stopped at 322 + in-flight of 737, 2026-10-25 03:07): **2448 frames (40.39 s)**, move 66 "L" pressed 2
+  frames late ("L2") then the rest re-searched: `result_L21_neigh_2448.json` (= `neigh/n1_66_L2.json`), 99 moves,
+  both fruits, minwin 5. Many other neighbors tie at 2458 with different routes.
+- Round 2 (hill climb): `neigh_2448.txt` = the 2448's 740 neighbors minus 219 already run in n1 with the same prefix
+  (the search is deterministic) -> `sweep_neigh.sh neigh_2448.txt n2`, `sweep_neigh_n2.txt`.
+- n2 (stopped at ~100 of 521): **2438 frames (40.23 s)**, move 78 "R" pressed 8 frames late ("R8"), rest re-searched:
+  `result_L21_neigh_2438.json` (= `neigh/n2_78_R8.json`), 100 moves, both fruits, minwin 5.
+- New `climb.py`: automates the hill climb (first verified improvement becomes the base at once; searched prefixes
+  skipped). `climb.py result_L21_neigh_2438.json c1 --done <n1, n2 lists>` -> `climb/c1_*`, `climb_c1.txt`
+  (every result), `climb_c1_best.txt` + `result_L21_climb_<frames>.json` (each new best).
