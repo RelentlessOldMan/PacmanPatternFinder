@@ -65,7 +65,10 @@ kill it versus 31 for the 118/88 (`harness/goodrich_late.py`).
 Video: [level 21 in 2438 frames](videos/L21_speed_2438_level21.mp4) (40.23 s from start to clear, both
 fruits eaten). Route: `best/L21_speed_2438.json`, 100 moves with 12 turn-backs and 4 deliberately late presses.
 It is frame-exact (the late presses make ghosts miss by a few pixels; it never passes through one), so it is
-not meant for human play. The fastest
+not meant for human play. The late presses, counting moves from 1 and frames from when Pac-Man is within
+4 pixels of the turn (at a corner he stops at the wall and waits): move 60 R, 9 frames late; move 67 L, 2 late;
+move 69 D, 1 late; move 79 R, 8 late. Every other move is pressed as early as possible, and the turn-backs
+happen on exact tiles. The fastest
 possible clear with no ghosts at all is about 2337 frames. Found by `harness/climb.py`: change one move of the
 best route, search again from there, and keep the result if it is faster. The log is in `harness/RUNS.md`.
 
