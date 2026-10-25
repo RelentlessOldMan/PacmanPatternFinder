@@ -309,3 +309,9 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   neighbors): 2438 is a one-move local optimum with late presses 2/4/6/8.
 - neigh.py/climb.py `--ks` (late presses tried), climb.py `--guide`. `climb.py result_L21_neigh_2438.json c3 --ks 1..12
   --done-climb c1 c2 --done ...`: 1062 new neighbors -> `climb_c3.txt`.
+- `climb.py result_L21_neigh_2438.json c4 --jobs 2 --guide result_floor_L21_avoid1.json` (alongside c3): the same
+  neighbors re-searched following the avoid1 ghost-free walk (another step set) -> `climb_c4.txt`.
+- c3 done (1062, late presses 1..12): no improvement over 2438.
+- `climb.py result_L21_neigh_2438.json c5 --jobs 2 --beam 200 --guide-cost 7 --guide-slack 32` (alongside c4): other
+  re-search settings -> `climb_c5.txt`.
+- Video: `videos/L21_speed_2438_level21.mp4` (video_route.py; stock MAME 0.289 replays it: clear, 2438).

@@ -9,6 +9,8 @@ ap.add_argument("route"); ap.add_argument("tag")
 ap.add_argument("--jobs", type=int, default=4); ap.add_argument("--beam", type=int, default=150)
 ap.add_argument("--ks", default="2,4,6,8", help="late presses tried (neigh.py)")
 ap.add_argument("--guide", default="result_floor_L21_2fruit_trips.json", help="the re-search's --guide")
+ap.add_argument("--guide-cost", default="10"); ap.add_argument("--guide-slack", default="25")
+ap.add_argument("--extra", default="", help="more search.py flags for the re-search")
 ap.add_argument("--sideways", type=int, default=0,
                 help="when a round runs out, expand up to N clears that tie the best (other routes, same time)")
 ap.add_argument("--done", nargs="*", default=[], help="earlier neigh summaries: (neighbors.txt, sweep.txt) pairs")
@@ -17,7 +19,7 @@ ap.add_argument("--done-climb", nargs="*", default=[], metavar="TAG",
 args = ap.parse_args()
 C = ("--levels 21 --minwin 1 --corner-minwin 1 --no-late --late-budget 0 --family-depth 6 --family-cap 30 --backtracks 60 "
      "--solutions 50 --workers 3 --reverse-any --need-fruits 2 --frame-cost 1.0 --booey 12 --cluster-cost 40 "
-     f"--guide {args.guide} --guide-cost 10 --guide-slack 25 --beam {args.beam}").split()
+     f"--guide {args.guide} --guide-cost {args.guide_cost} --guide-slack {args.guide_slack} --beam {args.beam} {args.extra}").split()
 os.makedirs("climb", exist_ok=True)
 lock = threading.Lock()
 done = set()  # prefixes searched
