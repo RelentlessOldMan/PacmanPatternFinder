@@ -1,8 +1,11 @@
 """server.lua's command protocol on pacemu (emu/) instead of MAME: one command per line on stdin, one
 reply line on stdout. worker.Worker starts this when given mame="emu". Frame rules: see emu/seg.h.
 
+PACMAN_NOGHOSTS=1 in the environment: ghosts can't touch Pac-Man (ROM patch; for speed floors).
+
 File saves go to state/emu/<name>.sta (raw pacemu states; MAME's go to state/pacman/). Not supported: rec, prof, idle.
 """
+import os
 import sys
 import ctypes
 from pathlib import Path
@@ -22,6 +25,8 @@ for name, n in (("pm_joy", 1), ("pm_set_idle", 1), ("pm_to_level", 1), ("pm_butt
     getattr(D, name).argtypes = [ctypes.c_void_p] + [ctypes.c_int] * n
 D.pm_get_joy.argtypes = [ctypes.c_void_p]
 D.pm_mark.argtypes = [ctypes.c_void_p]
+D.pm_rom.argtypes = [ctypes.c_void_p]
+D.pm_rom.restype = ctypes.POINTER(ctypes.c_uint8)
 D.pm_set_maze.argtypes = [ctypes.c_char_p]
 
 LETTER = {"R": 0, "D": 1, "L": 2, "U": 3}
@@ -51,6 +56,13 @@ class Server:
         self.slots = {}
         self.frame = 0
         self.wait(2)  # lib.lua: the first notifier starts the script, which waits a frame before "ready"
+        if os.environ.get("PACMAN_NOGHOSTS"):
+            # 0x1763 LD A,B (the ghost on Pac-Man's tile, 0 = none) -> XOR A: no ghost ever touches him.
+            # Patched after boot: the boot ROM test would fail on it. States hold no ROM, so this holds across loads.
+            # Off during newgame (it hangs with it on, in the attract demo).
+            self.rom = D.pm_rom(self.h)
+            assert self.rom[0x1763] == 0x78
+            self.rom[0x1763] = 0xAF
 
     # --- frames, joystick, save/load -------------------------------------------------
     def wait(self, n=1):
@@ -168,9 +180,14 @@ class Server:
             self.mload(f.read_bytes(), b or None)
             tc, tr = self.tile(); return f"ok {tc} {tr} {self.dots()}"
         if cmd == "newgame":
+            patch = getattr(self, "rom", None)
+            if patch:
+                patch[0x1763] = 0x78
             self.wait(600); self.tap(in0=0xDF); self.wait(60); self.tap(in1=0xDF)
             while self.rd(0x4E04) != 3:
                 self.wait(1)
+            if patch:
+                patch[0x1763] = 0xAF
             return f"ok {self.frame}"
         if cmd == "level":
             f0 = D.pm_frames(self.h); D.pm_to_level(self.h, int(a)); self.frame += D.pm_frames(self.h) - f0

@@ -167,3 +167,14 @@ Deaths mostly late mixes, L19, L5, L12.
 `rank_sols.py --budget 2` over L5-20 on the 99 + 5 shortest p84 full clears. The 99: 66 single late
 killers, 2749 killing mixes, weak moves 84 and 90-97 (top right). Full clear 131: 162 / 4946, worst move
 118 (bottom right, L12/13).
+
+### L21 ghost-free floor (no fruit): `floor.py`, `PACMAN_NOGHOSTS=1`
+- New `PACMAN_NOGHOSTS=1` (emu_server.py): ROM 0x1763 `LD A,B` -> `XOR A` after boot, so no ghost touches Pac-Man
+  (off during `newgame`, which hangs in the attract demo with it on). Pac-Man's own timing is unchanged: the 2685
+  route replays at 2685 with it on.
+- New `floor.py`: fewest tile steps from the start visiting every dot (scipy milp, flow-connected), then ~300 Euler
+  orderings driven frame by frame on pacemu (earliest presses, like seg "E"; turn back on any tile). The driver
+  reproduces the 2685 route at exactly 2685 frames.
+- `result_floor_L21_nofruit.json` / `floor_L21_nofruit.log`: 30 min milp limit: 291 steps (proven >= 287 from an
+  earlier cut-based attempt, stopped). Best ordering 2062 frames (34.02 s), vs our 2684 and the ~2521 record.
+

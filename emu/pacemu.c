@@ -328,6 +328,7 @@ EXPORT void pm_frame(pm *m) {
 }
 
 EXPORT uint8_t *pm_ram(pm *m) { return m->s.ram; }
+EXPORT uint8_t *pm_rom(pm *m) { return m->rom; } /* patchable after boot (the boot test checksums it) */
 EXPORT int pm_state_size(void) { return (int)sizeof(pm_state); }
 EXPORT void pm_save(pm *m, void *buf) { memcpy(buf, &m->s, sizeof(pm_state)); }
 EXPORT void pm_load(pm *m, const void *buf) { memcpy(&m->s, buf, sizeof(pm_state)); hook(m); apply_inputs(m); }
