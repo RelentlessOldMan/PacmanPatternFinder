@@ -299,3 +299,13 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
 - New `climb.py`: automates the hill climb (first verified improvement becomes the base at once; searched prefixes
   skipped). `climb.py result_L21_neigh_2438.json c1 --done <n1, n2 lists>` -> `climb/c1_*`, `climb_c1.txt`
   (every result), `climb_c1_best.txt` + `result_L21_climb_<frames>.json` (each new best).
+- c1 stopped at ~285/465 (no improvement; several 2438 ties) to add `--sideways N` (when a round runs out, expand
+  clears that tie the best) and `--done-climb TAG` (resume: skip a climb's searched prefixes, take its ties).
+  Resumed as `climb.py result_L21_neigh_2438.json c2 --sideways 30 --done-climb c1 --done ...` -> `climb_c2.txt`.
+- `chain_avoid.sh`: avoid1 = 291 steps, walks 2336/2337 (`result_floor_L21_avoid1.json`); avoid2's milp walk had no
+  Euler ordering that drives clean (no result), so 3-4 failed too. (Claude Code's memory guard also reaped some idle
+  watch loops at ~03:30: another process held 12.8 GB.)
+- c2 finished round 0 (465 total): no improvement. Sideways: every 2438 "tie" re-searched to the same route (no new
+  neighbors): 2438 is a one-move local optimum with late presses 2/4/6/8.
+- neigh.py/climb.py `--ks` (late presses tried), climb.py `--guide`. `climb.py result_L21_neigh_2438.json c3 --ks 1..12
+  --done-climb c1 c2 --done ...`: 1062 new neighbors -> `climb_c3.txt`.

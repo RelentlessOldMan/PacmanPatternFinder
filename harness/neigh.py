@@ -1,11 +1,12 @@
-"""neigh.py <route.json> [out.txt]: the one-move neighbors of a route, as --prefix strings: for each move i, the
+"""neigh.py <route.json> [out.txt] [ks]: the one-move neighbors of a route, as --prefix strings: for each move i, the
 route's first i moves then one alternative: another way at that node, a turn-back ("x", "x<i>"), or a turn
-pressed 2/4/6/8 frames late (the search only tries late presses to rescue a death). One per line: i alt prefix."""
+pressed k frames late (ks: comma list, default 2,4,6,8) (the search only tries late presses to rescue a death). One per line: i alt prefix."""
 import json, random, sys
 import maze
 from emu_server import Server
 from search import parse_seg, rev_spots, tokens
 
+KS = [int(k) for k in (sys.argv[3] if len(sys.argv) > 3 else "2,4,6,8").split(",")]
 route = tokens(json.load(open(sys.argv[1]))["route"])
 srv = Server()
 srv.handle("newgame"); srv.handle("level 21"); srv.handle("msave s"); srv.handle("mload s L")
@@ -19,7 +20,7 @@ for i, m in enumerate(route):
         if d != maze.REV[heading]:
             alts.add(d)
             if d != heading:
-                alts |= {d + str(k) for k in (2, 4, 6, 8)}
+                alts |= {d + str(k) for k in KS}
     alts.discard(m)
     out += [(i, a, "".join(route[:i]) + a) for a in sorted(alts)]
     if m[0] == "x":
