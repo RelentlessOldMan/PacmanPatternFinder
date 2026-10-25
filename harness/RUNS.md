@@ -325,3 +325,7 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
 - 2438's late presses (moves from 1): 60 R9 (from the 2458), 67 L2 (round 1), 69 D1 (a --booey rescue in round 1's re-search), 79 R8 (round 2). neigh/climb file labels (`n1_66_L2`, `n2_78_R8`) number moves from 0.
 - Annotated video: `video_route.py ... --annotate` -> videos/L21_speed_2438_level21_annotated.mp4 (move n/100, press, late presses in yellow, frame count); replay cleared at 2438.
 - Annotated video redone with one line under the maze (move n + press, late presses yellow, frame count); still clears at 2438.
+- c4, c5 done (740 each), c6 done 11:19 (780 pairs, ks 2,8): no gain. c6: 50 tie 2438, then 22x2439, 5x2440,
+  6x2441; 143 no-clear. 2438 is a local best for single changes and for 2/8-frame pairs.
+- c7: `climb.py result_L21_neigh_2438.json c7 --jobs 4 --neigh neigh2.py --neigh-args "4,6 50 6"` (same pairs, presses
+  4 or 6 late) -> `climb_c7.txt`.
