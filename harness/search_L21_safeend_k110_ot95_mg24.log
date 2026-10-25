@@ -1,0 +1,11 @@
+[cw] Started pid 16800 (throttled).
+[cw] Throttled to 1 core at below-normal priority: Overwatch (Overwatch.exe) is running.
+start 21 ok f=10724 tile=13,23 dir=2 dots=0 level=21 4E04=3 score=0
+prefix: 110/110 moves, 232 dots, 0 late variants dropped
+d=110 jobs=3 kids=3 fails={} on={} best=232 fruit=2 t=1s ram=62 states (peak 310 ~0.0GB) moved=0 busy=16% copy=0s
+d=111 endgame: 24 planned cleanups tried -> none cleared {'dead:L21': '18x avg11left', 'dead:late': '6x avg8left'}
+d=114 endgame: 31 planned cleanups tried -> none cleared {'dead:L21': '18x avg7left', 'dead:late': '13x avg7left'}
+d=117 endgame: 52 planned cleanups tried -> none cleared {'dead:late': '29x avg7left', 'dead:L21': '23x avg6left'}
+d=120 endgame: 125 planned cleanups tried -> none cleared {'dead:late': '67x avg6left', 'dead:L21': '52x avg5left', 'shortwin:L21': '6x avg3left'}
+d=120 jobs=22 kids=15 fails={'ghost': 6, 'dead': 1} on={'late': 1} best=237 fruit=2 t=19s ram=385 states (peak 847 ~0.0GB) moved=26 busy=90% copy=0s
+d=123 endgame: 124 planned cleanups tried -> none cleared {'dead:late': '85x avg6left', 'dead:L21': '34x avg6left', 'shortwin:L21': '5x avg3left'}

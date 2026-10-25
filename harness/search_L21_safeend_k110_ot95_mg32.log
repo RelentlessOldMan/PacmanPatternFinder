@@ -1,0 +1,8 @@
+[cw] Started pid 22448 (throttled).
+[cw] Throttled to 1 core at below-normal priority: Overwatch (Overwatch.exe) is running.
+start 21 ok f=10724 tile=13,23 dir=2 dots=0 level=21 4E04=3 score=0
+prefix: 110/110 moves, 232 dots, 0 late variants dropped
+d=110 jobs=3 kids=2 fails={'ghost': 1} on={} best=232 fruit=2 t=1s ram=44 states (peak 310 ~0.0GB) moved=0 busy=16% copy=0s
+d=111 jobs=5 kids=0 fails={'dead': 5} on={'late': 3, 'L21': 2} best=- fruit=- t=1s ram=0 states (peak 310 ~0.0GB) moved=4 busy=24% copy=0s
+RESULT cleared=False dots=232 frames=2850 fruits=2 moves=110 turns=85 minwin=6 route=LLDLLDRRURULURRRDLDLUULLDLULURDLDRRUUURULURDLLDLDRDRUUULDLULLDDRDRDRDRRDLDRDLLULULURUUURULURRRDLDLLDLDDDLULURU
+[cw] Exited with code 0.

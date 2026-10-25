@@ -329,3 +329,14 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   6x2441; 143 no-clear. 2438 is a local best for single changes and for 2/8-frame pairs.
 - c7: `climb.py result_L21_neigh_2438.json c7 --jobs 4 --neigh neigh2.py --neigh-args "4,6 50 6"` (same pairs, presses
   4 or 6 late) -> `climb_c7.txt`.
+
+### L21 118: safer upper-left ending (user hits blue's loop at the end)
+- User's own ending (after move 112 at (6,5): R R U L L D R U) dies ON TIME at move 117 (8,1): blue loops
+  down the left side, along row 5, up col 6 and right along the top row into Pac-Man; pink follows behind.
+- `result_L21_safeend_k{96,102,110}_mg32` (prefix = 118's first K on time, --min-ghost 32 from K, --branch 4
+  --late-budget 1): K96/K102 dead at once; K110 39 clears, best 124/93 (3289 fr): after 110 `LUULLLLLULDRDD` (left
+  tunnel -> up col 21 -> row 5 leftward -> top-left corner -> down col 6), ghosts >= 32 px on time.
+- `rank_sols` b1 L21 (`cmp_L21_118_vs_safe124`): 118 31 killers (ending: 108-110 late -> die at 114; 77 L2 ->
+  117); safe124 34 (all 11 new at move 112, the tunnel: moves 96-107 3-4 late, also 14/62/77). Not better.
+- `result_L21_safeend_k110_ot95_mg{32,24}`: same but late presses tested from move 96 (--prefix-on-time 95).
+  mg32: no clear (every move-111 option dies in some late-press sim from moves 96-110). mg24 running.

@@ -1,0 +1,8 @@
+[cw] Queued #4: Overwatch (Overwatch.exe) is running; 3 job(s) may run while gaming, and all are taken. Waiting for our turn.
+[cw] Started pid 69792 (throttled).
+[cw] Throttled to 1 core at below-normal priority: Overwatch (Overwatch.exe) is running.
+start 21 ok f=10724 tile=13,23 dir=2 dots=0 level=21 4E04=3 score=0
+prefix: 102/102 moves, 216 dots, 0 late variants dropped
+d=102 jobs=3 kids=0 fails={'ghost': 3} on={} best=- fruit=- t=0s ram=0 states (peak 113 ~0.0GB) moved=2 busy=13% copy=0s
+RESULT cleared=False dots=216 frames=2596 fruits=2 moves=102 turns=79 minwin=6 route=LLDLLDRRURULURRRDLDLUULLDLULURDLDRRUUURULURDLLDLDRDRUUULDLULLDDRDRDRDRRDLDRDLLULULURUUURULURRRDLDLLDLD
+[cw] Exited with code 0.

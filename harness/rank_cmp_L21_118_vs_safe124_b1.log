@@ -1,0 +1,10 @@
+[cw] Started pid 7400 (throttled).
+[cw] Throttled to 1 core at below-normal priority: Overwatch (Overwatch.exe) is running.
+2/2 live on time on every level 21
+late presses: 1/2 route-levels done
+late presses: 2/2 route-levels done
+
+Up to 1 late presses, on levels 21 (killer mixes summed):
+ 31 single late presses kill,    31 mixes in all,  9 moves die (worst L21:31)  118 moves 0 turns  LURDLLDLDRDRUUULDLULLDDRDRDRDRRDLDRDLLULULURUUURULURRRDLDLLDLDDDLULURUUUULDRRR
+ 34 single late presses kill,    34 mixes in all,  8 moves die (worst L21:34)  124 moves 0 turns  LURDLLDLDRDRUUULDLULLDDRDRDRDRRDLDRDLLULULURUUURULURRRDLDLLDLDDDLULURULUULLLLLULDRDD
+[cw] Exited with code 0.
