@@ -1,0 +1,27 @@
+guide4_gc7_sl20_cc40 | clear 110/110 moves 2721 frames 44.90s | 
+guide4_gc7_sl20_cc50 | clear 119/119 moves 2599 frames 42.88s | L2 
+guide4_gc7_sl20_cc30 | ok 63/63 moves 1267 frames 20.91s | 
+guide4_gc7_sl25_cc40 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide4_gc7_sl25_cc30 | clear 116/116 moves 2869 frames 47.34s | 
+guide4_gc7_sl25_cc50 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide4_gc7_sl32_cc40 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide4_gc7_sl32_cc30 | clear 142/142 moves 3075 frames 50.74s | L5 
+guide4_gc7_sl32_cc50 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide4_gc10_sl20_cc30 | clear 129/129 moves 3025 frames 49.91s | 
+guide4_gc10_sl20_cc50 | clear 107/107 moves 2495 frames 41.17s | U8 
+guide4_gc10_sl25_cc40 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide4_gc10_sl25_cc30 | clear 109/109 moves 2558 frames 42.21s | U4 
+guide4_gc10_sl20_cc40 | clear 148/148 moves 3382 frames 55.80s | U8 
+guide4_gc10_sl25_cc50 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide4_gc10_sl32_cc30 | clear 109/109 moves 2561 frames 42.26s | U6 
+guide4_gc10_sl32_cc40 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide4_gc10_sl32_cc50 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide4_gc14_sl20_cc30 | clear 129/129 moves 3025 frames 49.91s | 
+guide4_gc14_sl20_cc40 | clear 131/131 moves 3028 frames 49.96s | 
+guide4_gc14_sl20_cc50 | clear 134/134 moves 3094 frames 51.05s | 
+guide4_gc14_sl25_cc30 | clear 129/129 moves 3076 frames 50.75s | L5 
+guide4_gc14_sl25_cc40 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide4_gc14_sl25_cc50 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide4_gc14_sl32_cc40 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide4_gc14_sl32_cc30 | clear 119/119 moves 2661 frames 43.91s | 
+guide4_gc14_sl32_cc50 | clear 100/100 moves 2458 frames 40.56s | R9 

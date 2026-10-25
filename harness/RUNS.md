@@ -269,3 +269,5 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   trips s2 stalled (61 moves). 2458 (noise-free) stands.
 - Video: `videos/L21_speed_2458_level21.mp4` (new `harness/video_route.py`: plays a route via replay_route.play in
   stock MAME 0.289, so x / late moves work): clears at exactly 2458 frames in MAME too.
+  Result (`sweep_guide4.txt`): 10 of 27 settings land on the same 2458 route (every W 25/32 with cc 40/50, and G 7
+  W 25 cc 40/50); nothing better. Slack 20 and cc 30 are worse. The 2458 is a stable optimum for this search.
