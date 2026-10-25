@@ -285,3 +285,7 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
 - floor.py `--avoid JSON..`: milp cut: use a step outside each saved walk's step set, for new ghost-free guides.
   `chain_avoid.sh`: 4 chained (each avoids all before), milp 10 min, both fruits, keep 12 ->
   `result_floor_L21_avoid{1..4}.json` / `floor_L21_avoid{1..4}.log`.
+- `neigh.py` -> `neigh_2458.txt`: the 737 one-move neighbors of the 2458 (at each move: another exit, a turn-back,
+  or the turn pressed 2/4/6/8 frames late; the search itself only presses late to rescue deaths).
+  `sweep_neigh.sh neigh_2458.txt n1`: --prefix each, re-search the rest (guide settings, beam 150) ->
+  `neigh/n1_*`, `sweep_neigh_n1.txt`.
