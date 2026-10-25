@@ -1,0 +1,38 @@
+prefix_k5_b300 | clear 107/107 moves 2535 frames 41.83s | U2 
+prefix_k10_b300 | clear 115/115 moves 2764 frames 45.61s | L2 L4 
+prefix_k5_b600 | clear 107/107 moves 2535 frames 41.83s | U2 
+prefix_k15_b300 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k10_b600 | clear 117/117 moves 2765 frames 45.62s | 
+prefix_k15_b600 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k20_b300 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k25_b300 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k20_b600 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k25_b600 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k30_b300 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k30_b600 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k35_b300 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k40_b300 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k45_b300 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k35_b600 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k40_b600 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k45_b600 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k50_b300 | clear 108/108 moves 2583 frames 42.62s | 
+prefix_k55_b300 | clear 104/104 moves 2507 frames 41.37s | L3 
+prefix_k50_b600 | clear 105/105 moves 2528 frames 41.71s | L6 U2 
+prefix_k60_b300 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k60_b600 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k65_b300 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k55_b600 | clear 108/108 moves 2583 frames 42.62s | 
+prefix_k70_b300 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k65_b600 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k75_b300 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k70_b600 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k75_b600 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k80_b300 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k85_b300 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k80_b600 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k85_b600 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k90_b300 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k90_b600 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k95_b300 | clear 100/100 moves 2458 frames 40.56s | R9 
+prefix_k95_b600 | clear 100/100 moves 2458 frames 40.56s | R9 

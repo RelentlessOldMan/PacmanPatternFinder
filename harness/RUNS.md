@@ -271,3 +271,17 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   stock MAME 0.289, so x / late moves work): clears at exactly 2458 frames in MAME too.
   Result (`sweep_guide4.txt`): 12 of 27 settings land on the same 2458 route (every W 25/32 with cc 40/50 at G 10/14, and G 7
   W 25 cc 40/50); nothing better. Slack 20 and cc 30 are worse. The 2458 is a stable optimum for this search.
+
+### L21 speed: sub-40 push (target <= 2423 frames, user 2026-10-25)
+- 2458 vs the 2337 ghost-free walk per dot count (scratchpad lag.py -> `lag_2458.json`, `lag_floor.json`): ghost
+  losses ~10-40 frames each around moves 8, 16-18, 25, 43-44, 53-55, 64-65, 71-73 (the fruit trips sit at
+  different moves in the two, which muddles the rest). End gap 121.
+- `sweep_prefix.sh` -> `sweep_prefix.txt`: --prefix = the 2458's first K moves (K 5..95 step 5), re-search on with
+  the guide settings, beam {300,600}.
+- Result: nothing under 2458. K >= 15 (except 50, 55) all rebuild the same 2458 route exactly; K 5/10/50/55 get
+  2507-2765. The search re-converges on 2458 from anywhere along it.
+- `--booey-depth N` (search.py): a death also retries the move 2 (.. N) back pressed late (then the moves after it on
+  time). `result_L21_guide_bd2.json` (best settings + depth 2): 2458 again (12 two-back rescues).
+- floor.py `--avoid JSON..`: milp cut: use a step outside each saved walk's step set, for new ghost-free guides.
+  `chain_avoid.sh`: 4 chained (each avoids all before), milp 10 min, both fruits, keep 12 ->
+  `result_floor_L21_avoid{1..4}.json` / `floor_L21_avoid{1..4}.log`.

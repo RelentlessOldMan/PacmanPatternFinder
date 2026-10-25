@@ -31,9 +31,10 @@ def arcs(ts):
     return [(t, maze.step(*t, d), d) for t in sorted(ts) for d in maze.DIRS if maze.step(*t, d) in ts]
 
 
-def solve(ts, A, time_limit=1800, fruit_visits=0):
+def solve(ts, A, time_limit=1800, fruit_visits=0, avoid=()):
     """Fewest steps from START visiting every dot, ending anywhere. Returns {arc index: count}.
-    Connected by flow: START sends one unit to every dot, only along steps the walk takes."""
+    Connected by flow: START sends one unit to every dot, only along steps the walk takes.
+    avoid: arc sets of earlier walks; each must be left at least once (a step on an arc outside it)."""
     T = sorted(ts)
     nt, na = len(T), len(A)
     idx = {t: i for i, t in enumerate(T)}
@@ -42,7 +43,7 @@ def solve(ts, A, time_limit=1800, fruit_visits=0):
     X, F, E = 0, na, 2 * na
     n = 2 * na + nt
     cost = np.zeros(n); cost[X:X + na] = 1
-    M = lil_matrix((2 * nt + 2 + na, n)); lo, hi = [], []
+    M = lil_matrix((2 * nt + 2 + na + len(avoid), n)); lo, hi = [], []
     k = 0
     for t in T:  # steps: out - in + end = [t is START]
         M[k, E + idx[t]] = 1
@@ -59,6 +60,11 @@ def solve(ts, A, time_limit=1800, fruit_visits=0):
     for j in range(na):  # flow only where Pac-Man steps
         M[k, F + j] = 1; M[k, X + j] = -nd; lo.append(-np.inf); hi.append(0); k += 1
     lo.append(fruit_visits); hi.append(np.inf); k += 1
+    for S in avoid:
+        for j in range(na):
+            if j not in S:
+                M[k, X + j] = 1
+        lo.append(1); hi.append(np.inf); k += 1
     ub = np.concatenate([np.full(na, 4), np.full(na, nd), np.ones(nt)])
     integ = np.concatenate([np.ones(na), np.zeros(na), np.ones(nt)])
     res = milp(cost, constraints=LinearConstraint(M.tocsr(), lo, hi), integrality=integ,
@@ -190,6 +196,16 @@ def add_fruit(srv, walk, info, n, ts, tries=10):
     return best
 
 
+def avoid_sets(files, A):
+    """--avoid: the arc set of every walk saved in each file."""
+    out = []
+    for f in files:
+        r = json.load(open(f))
+        for w in [r["walk"]] + [k["walk"] for k in r.get("walks", [])]:
+            out.append(set(walk_arcs([tuple(t) for t in w], A)))
+    return out
+
+
 def walk_arcs(walk, A):
     """The step counts (like solve's result) of a saved walk."""
     j = {(a, b): i for i, (a, b, _) in enumerate(A)}
@@ -208,6 +224,8 @@ def main():
     ap.add_argument("--fruit-visits", type=int, default=0, help="the milp walk enters the fruit tile this often")
     ap.add_argument("--time-limit", type=int, default=1800, help="milp seconds")
     ap.add_argument("--steps-from", metavar="JSON", help="reuse the steps of a saved floor result (skip the milp)")
+    ap.add_argument("--avoid", nargs="*", default=[], metavar="JSON",
+                    help="milp: use a step outside each of these saved walks (all their \"walks\") for new step sets")
     ap.add_argument("--keep", type=int, default=1, help="also save the N fastest distinct walks (\"walks\")")
     ap.add_argument("--out", default="result_floor.json")
     args = ap.parse_args()
@@ -215,7 +233,7 @@ def main():
     from emu_server import Server
     ts = tiles()
     A = arcs(ts)
-    x = walk_arcs([tuple(t) for t in json.load(open(args.steps_from))["walk"]], A) if args.steps_from else solve(ts, A, args.time_limit, args.fruit_visits)
+    x = walk_arcs([tuple(t) for t in json.load(open(args.steps_from))["walk"]], A) if args.steps_from else solve(ts, A, args.time_limit, args.fruit_visits, avoid_sets(args.avoid, A))
     srv = Server()
     srv.handle("newgame"); srv.handle(f"level {args.level}"); srv.handle("msave s")
     rng = random.Random(args.seed)

@@ -404,14 +404,24 @@ def run_rev(w, sims, held, spot, expect=None):
 
 
 BOOEY = 0  # --booey K: a move that dies is retried after redoing the move before it up to K frames late
+BOOEY_DEPTH = 1  # --booey-depth: also redo the move 2 (.. N) before it late
 
 
-def run_booey(w, sims, held, prev, opt, expect=None):
-    """--booey: Pac-Man died taking `opt` right after `prev`. Redo `prev` pressed k = 1..BOOEY frames late
-    (seg "4 k": k frames after he is within 4 px of the node; at a corner he waits at the wall), which moves
-    him a few pixels against the ghosts, then `opt` again: a head-on ghost that killed him can swap tiles with
+def ancestors(c, n):
+    """c's parent, grandparent, .. (up to n)."""
+    out = []
+    while c.parent is not None and len(out) < n:
+        c = c.parent
+        out.append(c)
+    return out
+
+
+def run_booey(w, sims, held, prev, rest, expect=None):
+    """--booey: Pac-Man died on the last of `rest`, the moves after `prev`. Redo `prev` pressed k = 1..BOOEY frames
+    late (seg "4 k": k frames after he is within 4 px of the node; at a corner he waits at the wall), which moves
+    him a few pixels against the ghosts, then `rest` on time: a head-on ghost that killed him can swap tiles with
     him in one frame (a booey: no collision), or be dodged. The first k that survives wins.
-    Returns (status, k, ([mid state], [state]), ([mid result], [result])), or (status, 0, None, None)."""
+    Returns (status, k, [[state] per move], [[result] per move]), or (status, 0, None, None)."""
     (sim,) = sims  # one on-time sim (--no-late, one level)
     for k in range(1, BOOEY + 1):
         got = load_state(w, base(sim), held)
@@ -421,15 +431,20 @@ def run_booey(w, sims, held, prev, opt, expect=None):
         a = parse_seg(w.cmd(f"seg {prev} 4 {k}"))
         if a["st"] != "ok":
             return "booey-" + a["st"], 0, None, None  # missed the turn (or died first): later presses do too
-        mid = new_name()
-        save_state(w, mid)
-        load_state(w, mid, prev)  # (as the next move of a search would)
-        b = parse_seg(w.cmd(f"seg {opt} E 0"))
-        if b["st"] in ("ok", "clear"):
-            name = new_name()
-            save_state(w, name)
-            return b["st"], k, ([mid], [name]), ([a], [b])
-        forget(w, [mid])
+        names, results, h = [new_name()], [a], prev
+        save_state(w, names[0])
+        for m in rest:
+            load_state(w, names[-1], h)  # (as the next move of a search would)
+            b = parse_seg(w.cmd(f"seg {m} E 0"))
+            if b["st"] not in ("ok", "clear"):
+                break
+            names.append(new_name())
+            save_state(w, names[-1])
+            results.append(b)
+            h = m
+        else:
+            return results[-1]["st"], k, [[n] for n in names], [[r] for r in results]
+        forget(w, names)
     return "booey-dead", 0, None, None
 
 
@@ -921,27 +936,32 @@ def search(pool, sims0, args, log=print, resume=None):
                     deaths.append((c, opt))
                 continue
             consider(make_child(c, path, opt, sims, res), st, res)
-        # --booey: a move that died is retried with the move before it pressed late (see run_booey)
+        # --booey: a move that died is retried with the move 1 (.. BOOEY_DEPTH) before it pressed late (run_booey)
         bjobs = []
         for c, opt in deaths if BOOEY else []:
-            p, prev = c.parent, c.route[-1] if c.route else ""
-            if p is None or len(prev) != 1 or prev == "x" or prev == p.heading:
-                continue  # (a late press only changes anything on a turn)
-            bjobs.append((c, opt, pool.submit(run_booey, p.sims, p.heading, prev, opt,
-                                              f"ok {p.tile[0]} {p.tile[1]} {len(p.eaten)}" if p.route else None,
-                                              need=p.sims)))
-        for c, opt, fut in bjobs:
+            anc = [c] + ancestors(c, BOOEY_DEPTH)
+            for back in range(1, len(anc)):
+                p, moves = anc[back], c.route[len(c.route) - back:] + [opt]
+                prev, rest = moves[0], moves[1:]
+                if any(len(m) != 1 or m == "x" for m in moves) or prev == p.heading:
+                    continue  # (a late press only changes anything on a turn; replayed moves must be plain)
+                bjobs.append((p, moves, pool.submit(run_booey, p.sims, p.heading, prev, rest,
+                                                    f"ok {p.tile[0]} {p.tile[1]} {len(p.eaten)}" if p.route else None,
+                                                    need=p.sims)))
+        for p, moves, fut in bjobs:
             st, k, sims, res = fut.result()
             if res is None:
                 fails[st] = fails.get(st, 0) + 1
                 continue
-            p = c.parent
-            mid = make_child(p, maze.next_node(*p.tile, p.heading)[1], c.route[-1] + str(k), sims[0], res[0])
-            ch = make_child(mid, maze.next_node(*mid.tile, mid.heading)[1], opt, sims[1], res[1])
+            ch = p
+            for tok, s, r in zip([moves[0] + str(k)] + moves[1:], sims, res):
+                ch = make_child(ch, maze.next_node(*ch.tile, ch.heading)[1], tok, s, r)
             fails["booey"] = fails.get("booey", 0) + 1  # (not a failure: rescues, counted with them)
-            if res[1][0]["mind"] < 6:
+            if len(moves) > 2:
+                fails["booey2"] = fails.get("booey2", 0) + 1
+            if res[-1][0]["mind"] < 6:
                 fails["booey-through"] = fails.get("booey-through", 0) + 1
-            consider(ch, st, res[1])
+            consider(ch, st, res[-1])
         ranked = sorted(children.values(), key=lambda c: -c.score)
         per, fam, beam, held_back = {}, {}, [], []
         for c in ranked:
@@ -1002,8 +1022,8 @@ def search(pool, sims0, args, log=print, resume=None):
         top = beam[0] if beam else None
         peak_ram = max(peak_ram, len(OWNER))
         if RAM:
-            free_ram(pool, {base(s) for c in beam + ([solution] if solution else []) + [c.parent for c in beam if c.parent]
-                            + [c.parent for _, snap in snapshots for c in snap if c.parent] for s in c.sims})
+            free_ram(pool, {base(s) for c in beam + ([solution] if solution else []) + [a for c in beam for a in ancestors(c, BOOEY_DEPTH)]
+                            + [a for _, snap in snapshots for c in snap for a in ancestors(c, BOOEY_DEPTH)] for s in c.sims})
         if depth % 10 == 0 or solution or not beam:
             ram = (f" ram={len(OWNER)} states (peak {peak_ram} ~{peak_ram * 0.0077 / 1024:.1f}GB)"
                    f" moved={pool.moved}" if RAM else "")
@@ -1013,7 +1033,8 @@ def search(pool, sims0, args, log=print, resume=None):
                 + (f" copy={COPY_SECONDS[0]:.0f}s" if RAM else ""))
         keep = ({s for c in beam for s in c.sims} | set(solution.sims if solution else []) | set(sims0)
                 | {s for _, snap in snapshots for c in snap for s in c.sims}
-                | {s for c in beam + [c for _, snap in snapshots for c in snap] if c.parent for s in c.parent.sims})
+                | {s for c in beam + [c for _, snap in snapshots for c in snap] for a in ancestors(c, BOOEY_DEPTH)
+                   for s in a.sims})
         cleanup(keep)
         if solution is not None or not beam:
             return solution or (min(found.values(), key=solution_cost) if found else None), best_partial
@@ -1066,6 +1087,8 @@ def main():
     ap.add_argument("--reverse", action="store_true", help="also try turning back mid-corridor (\"x\": on the last dot before an eaten stretch)")
     ap.add_argument("--fruit-pull", type=float, default=0.0, help="score per tile of distance to a fruit that is out")
     ap.add_argument("--score-noise", type=float, default=0.0, help="add a random 0..X (per --seed) to each beam score")
+    ap.add_argument("--booey-depth", type=int, default=1,
+                    help="--booey: also try pressing the move 2 (.. N) before the deadly one late")
     ap.add_argument("--guide", metavar="FILE[:i]",
                     help="follow a floor.py walk's dot order (i: its \"walks\" entry); see --guide-cost")
     ap.add_argument("--guide-cost", type=float, default=20.0,
@@ -1120,11 +1143,11 @@ def main():
                     help="--min-ghost: only from move N+1 on")
     ap.add_argument("--out", default="result.json")
     args = ap.parse_args()
-    global SUBDIR, RAM, CLUSTER_COST, GAP_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, FIRST_FRUIT, RAM_CAP, ALL_GHOSTS, FRAME_COST, REVERSE, REVERSE_ANY, SCORE_NOISE, SEED, FRUIT_PULL, BOOEY, GUIDE_COST, GUIDE_SLACK
+    global SUBDIR, RAM, CLUSTER_COST, GAP_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, FIRST_FRUIT, RAM_CAP, ALL_GHOSTS, FRAME_COST, REVERSE, REVERSE_ANY, SCORE_NOISE, SEED, FRUIT_PULL, BOOEY, BOOEY_DEPTH, GUIDE_COST, GUIDE_SLACK
     CLUSTER_COST, CORNER_MINWIN, GAP_COST = args.cluster_cost, args.corner_minwin, args.gap_cost
     SCORE_NOISE, SEED, FRUIT_PULL = args.score_noise, args.seed, args.fruit_pull
     FRAME_COST, REVERSE, REVERSE_ANY = args.frame_cost, args.reverse or args.reverse_any, args.reverse_any
-    BOOEY = args.booey
+    BOOEY, BOOEY_DEPTH = args.booey, args.booey_depth
     GUIDE_COST, GUIDE_SLACK = args.guide_cost, args.guide_slack
     if args.guide:
         load_guide(args.guide)
