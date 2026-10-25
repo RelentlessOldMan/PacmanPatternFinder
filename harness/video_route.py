@@ -1,13 +1,15 @@
-"""video_route.py <route.json> <level> <name>: record a route played exactly on time in stock MAME 0.289
+"""video_route.py <route.json> <level> <name> [--annotate]: record a route played exactly on time in stock MAME 0.289
 (replay_route.play, so "x" turn-backs and late presses like "R9" work) to snap/<name>.avi, then
-videos/<name>.mp4 with ffmpeg."""
+videos/<name>.mp4 with ffmpeg. --annotate adds a bar under the maze: the move number and press, with late presses
+("R pressed 9 frames late") and turn-backs called out."""
 import json, subprocess, sys
 from pathlib import Path
 from replay_route import play
-from search import Pool, make_starts, cleanup
+from search import Pool, make_starts, cleanup, tokens
 
 ROOT = Path(__file__).resolve().parent.parent
 route, level, name = json.load(open(sys.argv[1]))["route"], int(sys.argv[2]), sys.argv[3]
+annotate = "--annotate" in sys.argv
 pool = Pool(1)
 start = make_starts(pool, [level])[0]
 
@@ -17,19 +19,56 @@ class Srv:  # replay_route.play talks to an emu_server-style handle()
         self.handle = w.cmd
 
 
+ends = []  # frame (from the start state's load) each move ends on
+
+
 def run(w):
     w.cmd(f"load {start} L")
     w.cmd(f"rec {name}.avi")
-    out = play(Srv(w), route)
+    out = play(Srv(w), route, lambda i, m, st, fr: ends.append(fr))
     w.cmd("wait 240")
     w.cmd("rec")
-    return out
+    return out, ends
 
 
-print(pool.submit(run).result(), flush=True)
+out, ends = pool.submit(run).result()  # (ends comes back: the pool may run this elsewhere)
+print(out, flush=True)
 pool.close()
 cleanup(set(), "*")
-subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(ROOT / "snap" / f"{name}.avi"), "-vf",
-                "scale=iw*3:ih*3:flags=neighbor", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "18", "-c:a", "aac",
+
+
+def esc(s):
+    return s.replace("\\", "\\\\").replace(":", "\\:").replace("'", "\\'").replace(",", "\\,")
+
+
+vf = "scale=iw*3:ih*3:flags=neighbor"
+if annotate:
+    FONT = "C\\:/Windows/Fonts/consola.ttf"
+    BAR = 150
+    parts = [vf, f"pad=iw:ih+{BAR}:0:0:color=black"]
+    toks, word = tokens(route), {"L": "left", "R": "right", "U": "up", "D": "down"}
+    total = len(toks)
+    for i, m in enumerate(toks):
+        a, b = (ends[i - 1] if i else 0), ends[i] - 1
+        if m[0] == "x":
+            what, color = "turn back on an exact tile", "white"
+        elif len(m) > 1:
+            what, color = f"{word[m[0]]} pressed {m[1:]} frame{'s' if m[1:] != '1' else ''} late", "yellow"
+        else:
+            what, color = word[m], "gray"
+        hold = b + (60 if len(m) > 1 and m[0] != "x" else 0)  # keep a late press up a second
+        parts.append(f"drawtext=fontfile='{FONT}':text='{esc(f'move {i + 1}/{total}')}':x=24:y=h-{BAR - 18}:"
+                     f"fontsize=40:fontcolor=white:enable='between(n,{a},{b})'")
+        parts.append(f"drawtext=fontfile='{FONT}':text='{esc(what)}':x=24:y=h-{BAR - 78}:fontsize=40:"
+                     f"fontcolor={color}:enable='between(n,{a},{hold})'")
+    parts.append(f"drawtext=fontfile='{FONT}':text='%{{eif\\:n\\:d}} fr':x=w-tw-24:y=h-{BAR - 18}:fontsize=40:"
+                 f"fontcolor=white")
+    script = ROOT / "snap" / f"{name}.filter"
+    script.write_text(",\n".join(parts))
+    vargs = ["-filter_script:v", str(script)]
+else:
+    vargs = ["-vf", vf]
+subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(ROOT / "snap" / f"{name}.avi"), *vargs,
+                "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "18", "-c:a", "aac",
                 str(ROOT / "videos" / f"{name}.mp4")], check=True)
 print("videos/" + name + ".mp4")

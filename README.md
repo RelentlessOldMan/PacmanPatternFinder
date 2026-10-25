@@ -63,7 +63,8 @@ kill it versus 31 for the 118/88 (`harness/goodrich_late.py`).
 ### Level 21+ speed run (just for fun)
 
 Video: [level 21 in 2438 frames](videos/L21_speed_2438_level21.mp4) (40.23 s from start to clear, both
-fruits eaten). Route: `best/L21_speed_2438.json`, 100 moves with 12 turn-backs and 4 deliberately late presses.
+fruits eaten); [annotated version](videos/L21_speed_2438_level21_annotated.mp4) with the move number,
+each press and the frame count under the maze. Route: `best/L21_speed_2438.json`, 100 moves with 12 turn-backs and 4 deliberately late presses.
 It is frame-exact (the late presses make ghosts miss by a few pixels; it never passes through one), so it is
 not meant for human play. The late presses, counting moves from 1 and frames from when Pac-Man is within
 4 pixels of the turn (at a corner he stops at the wall and waits): move 60 R, 9 frames late; move 67 L, 2 late;

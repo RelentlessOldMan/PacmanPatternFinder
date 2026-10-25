@@ -323,3 +323,4 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   climb.py `--neigh/--neigh-args`. `climb.py result_L21_neigh_2438.json c6 --jobs 2 --neigh neigh2.py --neigh-args
   "2,8 50 6"`: 780 pairs -> `climb_c6.txt`.
 - 2438's late presses (moves from 1): 60 R9 (from the 2458), 67 L2 (round 1), 69 D1 (a --booey rescue in round 1's re-search), 79 R8 (round 2). neigh/climb file labels (`n1_66_L2`, `n2_78_R8`) number moves from 0.
+- Annotated video: `video_route.py ... --annotate` -> videos/L21_speed_2438_level21_annotated.mp4 (move n/100, press, late presses in yellow, frame count); replay cleared at 2438.
