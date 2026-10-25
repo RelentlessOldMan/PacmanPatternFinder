@@ -1,0 +1,9 @@
+[cw] Started pid 3828 (throttled).
+[cw] Throttled to 1 core at below-normal priority: Overwatch (Overwatch.exe) is running.
+try 0: 2346 frames (38.71s) steps=335 fruits=2 windows=[[568, 1151], [1662, 2231]]
+try 1: 2342 frames (38.64s) steps=335 fruits=2 windows=[[568, 1151], [1662, 2231]]
+try 2: 2340 frames (38.61s) steps=335 fruits=2 windows=[[568, 1151], [1660, 2231]]
+try 6: 2337 frames (38.56s) steps=335 fruits=2 windows=[[568, 1151], [1655, 2231]]
+[cw] Full speed again.
+BEST 2337 frames 38.56s steps=335 fruits=2
+[cw] Exited with code 0.

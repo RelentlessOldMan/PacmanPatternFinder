@@ -1,0 +1,9 @@
+nf2_fc1.0_cc40 | clear 109/109 moves 2562 frames 42.27s
+nf2_fc1.0_cc60 | clear 122/122 moves 2877 frames 47.47s
+nf2_fc1.0_cc90 | clear 126/126 moves 2970 frames 49.01s
+nf2_fc1.25_cc60 | clear 138/138 moves 3094 frames 51.05s
+nf2_fc1.25_cc90 | clear 135/135 moves 2943 frames 48.56s
+nf2_fc1.25_cc40 | ok 136/136 moves 2891 frames 47.70s
+nf2_fc1.6_cc60 | clear 158/158 moves 3209 frames 52.95s
+nf2_fc1.6_cc90 | clear 165/165 moves 3263 frames 53.84s
+nf2_fc1.6_cc40 | ok 381/381 moves 7185 frames 118.55s

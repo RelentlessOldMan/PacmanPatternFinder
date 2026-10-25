@@ -1,0 +1,6 @@
+[cw] Started pid 49072 (full).
+try 0: 2342 frames (38.64s) steps=335 fruits=2 windows=[[568, 1151], [1662, 2231]]
+try 4: 2340 frames (38.61s) steps=335 fruits=2 windows=[[568, 1151], [1660, 2231]]
+try 7: 2338 frames (38.58s) steps=335 fruits=2 windows=[[568, 1151], [1656, 2231]]
+try 33: 2337 frames (38.56s) steps=335 fruits=2 windows=[[568, 1151], [1655, 2231]]
+[cw] Exited with code -1.

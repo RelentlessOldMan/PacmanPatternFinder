@@ -182,7 +182,9 @@ killers, 2749 killing mixes, weak moves 84 and 90-97 (top right). Full clear 131
 ### L21 ghost-free floor, both fruits
 - `floor.py --steps-from result_floor_L21_nofruit.json --fruits 2`: the 291-step walk plus a side trip to the fruit
   tile while each fruit is out. Seeds 1-5 (`floor_L21_2fruit_trips{,_s2..s5}.log`): all 2337 frames (38.56 s),
-  335 steps; seeds 2-5 stopped early as duplicates. `--fruit-visits 2` milp: `floor_L21_2fruit_fv2/fv3.log`.
+  335 steps; seeds 2-5 stopped early as duplicates (`result_floor_L21_2fruit_trips.json`). `--fruit-visits 2` milp
+  (`floor_L21_2fruit_fv2.log`): 295 steps, best 2346 with trips. `--fruit-visits 3`: 297 steps, no walk drove clean
+  (crashed at the end: no best).
 - Driving that ghost-free walk with ghosts on: dead at step 68/291 (frame 490, 60 dots).
 
 ### L21 speed with any-dot turn-backs (`--reverse-any`)
@@ -203,3 +205,11 @@ killers, 2749 killing mixes, weak moves 84 and 90-97 (top right). Full clear 131
   **fc 1.0 cc 40: 2562 frames (42.27 s), 109 moves, both fruits** (`result_L21_revany_fc1.0_cc40.json`, replayed).
   fc 1.25 cc 40: 2421 (39.95 s) but one fruit. cc 0 is bad at high fc (3003-3146).
 - `sweep_revany3.sh` -> `sweep_revany3.txt`: need-fruits 2, fc {1.0,1.25,1.6} x cc {40,60,90}.
+  Result (`sweep_revany3.txt`): best 2562 again (fc 1.0 cc 40, same route); the rest 2877-3263, fc 1.6 fails.
+- `sweep_fruitfix.sh` -> `sweep_fruitfix.txt`: the 2421 route (it skips fruit 1, out moves ~23-47) as `--prefix`
+  K = 20..44 moves, then need-fruits 2, cc 40, fc 1.0/1.25: best 2642; K 44 fails. No gain.
+- New `--score-noise X` (search.py): a fixed random 0..X per (--seed, route) on each beam score, so seeds differ.
+  `sweep_noise.sh` -> `sweep_noise.txt`: fc {1.0,1.25} x noise {15,40} x seeds 1-8, need-fruits 2, cc 40.
+  Result: **2560 frames (42.24 s), 108 moves, both fruits** (`result_L21_nz_fc1.0_n40_s3.json`, replayed), new best;
+  many seeds land on the 2562 again. fc 1.25 worse. s6/s8 "2443/2502" are 243-dot partials (stalled), not clears.
+- `sweep_wide.sh` -> `sweep_wide.txt`: beam {600,1000} x fc {0.9,1.0,1.1} x cc {30,40,50}, need-fruits 2.

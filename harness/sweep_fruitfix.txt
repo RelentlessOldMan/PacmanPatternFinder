@@ -1,0 +1,10 @@
+fix_k20_fc1.0 | clear 114/114 moves 2642 frames 43.59s
+fix_k26_fc1.0 | clear 119/119 moves 2744 frames 45.28s
+fix_k26_fc1.25 | clear 135/135 moves 2889 frames 47.67s
+fix_k32_fc1.0 | clear 119/119 moves 2779 frames 45.85s
+fix_k32_fc1.25 | clear 128/128 moves 2827 frames 46.65s
+fix_k38_fc1.0 | clear 127/127 moves 2943 frames 48.56s
+fix_k20_fc1.25 | ok 164/164 moves 3435 frames 56.68s
+fix_k38_fc1.25 | clear 125/125 moves 2918 frames 48.15s
+fix_k44_fc1.0 | ok 106/106 moves 2463 frames 40.64s
+fix_k44_fc1.25 | ok 106/106 moves 2463 frames 40.64s

@@ -540,6 +540,7 @@ def solution_cost(c):
 
 
 FRAME_COST = 0.25  # --frame-cost
+SCORE_NOISE, SEED = 0.0, 1  # --score-noise, --seed
 SUBDIR = "pacman"  # where this run's workers keep savestate files under STATE_DIR (emu: "emu")
 
 
@@ -580,7 +581,9 @@ def make_child(c, path, opt, sims, res):
                              frames=r0["fr"])])
     ch.ghosts = c.ghosts + min(r["ghosts"] for r in res)
     ch.after = c.after + 1 if c.after >= 0 else (0 if done(ch) else -1)
-    ch.score = score(ch) + (100000 + 1000 * ch.after if ch.after >= 0 else 0)
+    # --score-noise: a fixed (per --seed and route) random nudge, so restarts explore
+    noise = random.Random(f"{SEED} {''.join(ch.route)}").uniform(0, SCORE_NOISE) if SCORE_NOISE else 0
+    ch.score = score(ch) + noise + (100000 + 1000 * ch.after if ch.after >= 0 else 0)
     return ch
 
 
@@ -964,6 +967,7 @@ def main():
                     help="exhaust.py --dump file: per level, a sim replaying each distinct lateness history "
                          "(e.g. every way the opening can end), on time after it")
     ap.add_argument("--reverse", action="store_true", help="also try turning back mid-corridor (\"x\": on the last dot before an eaten stretch)")
+    ap.add_argument("--score-noise", type=float, default=0.0, help="add a random 0..X (per --seed) to each beam score")
     ap.add_argument("--reverse-any", action="store_true", help="--reverse, and turn back on any uneaten dot ahead (\"x<i>\")")
     ap.add_argument("--frame-cost", type=float, default=0.25, help="score penalty per frame (a dot is worth 10)")
     ap.add_argument("--turn-cost", type=float, default=0, help="score penalty per turn (a dot is worth 10)")
@@ -1009,8 +1013,9 @@ def main():
                     help="--min-ghost: only from move N+1 on")
     ap.add_argument("--out", default="result.json")
     args = ap.parse_args()
-    global SUBDIR, RAM, CLUSTER_COST, GAP_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, FIRST_FRUIT, RAM_CAP, ALL_GHOSTS, FRAME_COST, REVERSE, REVERSE_ANY
+    global SUBDIR, RAM, CLUSTER_COST, GAP_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, FIRST_FRUIT, RAM_CAP, ALL_GHOSTS, FRAME_COST, REVERSE, REVERSE_ANY, SCORE_NOISE, SEED
     CLUSTER_COST, CORNER_MINWIN, GAP_COST = args.cluster_cost, args.corner_minwin, args.gap_cost
+    SCORE_NOISE, SEED = args.score_noise, args.seed
     FRAME_COST, REVERSE, REVERSE_ANY = args.frame_cost, args.reverse or args.reverse_any, args.reverse_any
     assert not (REVERSE and args.branch), "--reverse: no --branch yet"
     LATE_VARIANTS = not args.no_late and not args.jitter_sims and not args.fixed_sims and not args.history_sims

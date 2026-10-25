@@ -1,0 +1,4 @@
+[cw] Started pid 46180 (full).
+try 0: 2338 frames (38.58s) steps=335 fruits=2 windows=[[568, 1151], [1656, 2231]]
+try 2: 2337 frames (38.56s) steps=335 fruits=2 windows=[[568, 1151], [1655, 2231]]
+[cw] Exited with code -1.

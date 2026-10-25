@@ -1,0 +1,70 @@
+[cw] Started pid 51008 (full).
+start 21 ok f=10724 tile=13,23 dir=2 dots=0 level=21 4E04=3 score=0
+d=0 jobs=2 kids=2 fails={} on={} best=2 fruit=0 t=0s ram=2 states (peak 2 ~0.0GB) moved=0 busy=290% copy=0s
+d=10 jobs=753 kids=735 fails={'dead': 15} on={'L21': 15} best=38 fruit=0 t=5s ram=300 states (peak 1139 ~0.0GB) moved=101 busy=85% copy=0s
+d=20 jobs=832 kids=729 fails={'dead': 83} on={'L21': 83} best=49 fruit=0 t=12s ram=300 states (peak 1139 ~0.0GB) moved=341 busy=84% copy=0s
+d=30 jobs=680 kids=492 fails={'dead': 186} on={'L21': 186} best=100 fruit=0 t=19s ram=300 states (peak 1139 ~0.0GB) moved=571 busy=84% copy=0s
+d=40 jobs=826 kids=641 fails={'dead': 168} on={'L21': 168} best=104 fruit=0 t=25s ram=300 states (peak 1139 ~0.0GB) moved=847 busy=84% copy=0s
+d=50 jobs=757 kids=530 fails={'dead': 224} on={'L21': 224} best=155 fruit=0 t=31s ram=300 states (peak 1139 ~0.0GB) moved=1120 busy=83% copy=0s
+d=60 jobs=677 kids=518 fails={'dead': 153} on={'L21': 153} best=177 fruit=0 t=37s ram=300 states (peak 1139 ~0.0GB) moved=1398 busy=82% copy=0s
+d=70 jobs=653 kids=507 fails={'dead': 110} on={'L21': 110} best=175 fruit=1 t=42s ram=300 states (peak 1139 ~0.0GB) moved=1673 busy=82% copy=0s
+d=72 endgame: 12 planned cleanups tried -> none cleared {'dead:L21': '12x avg39left'}
+d=78 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg35left'}
+d=80 jobs=631 kids=556 fails={'dead': 32} on={'L21': 32} best=206 fruit=1 t=48s ram=300 states (peak 1139 ~0.0GB) moved=1879 busy=81% copy=0s
+d=81 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg34left'}
+d=84 endgame: 138 planned cleanups tried -> none cleared {'dead:L21': '138x avg30left'}
+d=87 endgame: 133 planned cleanups tried -> none cleared {'dead:L21': '133x avg30left'}
+d=90 endgame: 140 planned cleanups tried -> none cleared {'dead:L21': '140x avg32left'}
+d=90 jobs=565 kids=413 fails={'dead': 121} on={'L21': 121} best=212 fruit=1 t=58s ram=300 states (peak 1139 ~0.0GB) moved=2023 busy=76% copy=0s
+d=93 endgame: 138 planned cleanups tried -> none cleared {'dead:L21': '138x avg31left'}
+d=96 endgame: 143 planned cleanups tried -> none cleared {'dead:L21': '143x avg31left'}
+d=99 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg31left'}
+d=100 jobs=677 kids=539 fails={'dead': 122} on={'L21': 122} best=209 fruit=1 t=66s ram=300 states (peak 1139 ~0.0GB) moved=2181 busy=72% copy=0s
+d=102 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '142x avg23left', 'shortwin:L21': '1x avg1left'}
+d=105 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '143x avg21left', 'shortwin:L21': '1x avg1left'}
+d=108 endgame: 143 planned cleanups tried -> none cleared {'dead:L21': '143x avg20left'}
+d=110 jobs=643 kids=328 fails={'dead': 307} on={'L21': 307} best=222 fruit=1 t=76s ram=300 states (peak 1139 ~0.0GB) moved=2307 busy=70% copy=0s
+d=111 endgame: 142 planned cleanups tried -> none cleared {'dead:L21': '140x avg16left', 'shortwin:L21': '1x avg1left'}
+d=114 endgame: 137 planned cleanups tried -> none cleared {'dead:L21': '123x avg8left', 'shortwin:L21': '10x avg1left'}
+d=117 endgame: 125 planned cleanups tried -> none cleared {'dead:L21': '122x avg8left', 'shortwin:L21': '2x avg1left'}
+d=120 endgame: 141 planned cleanups tried -> none cleared {'dead:L21': '125x avg8left', 'shortwin:L21': '6x avg2left'}
+d=120 jobs=569 kids=373 fails={'dead': 178} on={'L21': 178} best=235 fruit=1 t=86s ram=300 states (peak 1139 ~0.0GB) moved=2448 busy=67% copy=0s
+d=123 endgame: 136 planned cleanups tried -> none cleared {'dead:L21': '128x avg7left', 'shortwin:L21': '6x avg1left'}
+d=126 endgame: 117 planned cleanups tried -> none cleared {'dead:L21': '103x avg6left', 'shortwin:L21': '10x avg2left'}
+d=129 endgame: 118 planned cleanups tried -> none cleared {'dead:L21': '112x avg6left', 'shortwin:L21': '4x avg1left'}
+d=130 jobs=576 kids=437 fails={'dead': 109, 'shortwin': 3, 'nofruit': 3} on={'L21': 112} best=236 fruit=1 t=93s ram=300 states (peak 1139 ~0.0GB) moved=2523 busy=66% copy=0s
+d=132 endgame: 90 planned cleanups tried -> none cleared {'dead:L21': '87x avg4left', 'shortwin:L21': '3x avg1left'}
+d=135 endgame: 94 planned cleanups tried -> none cleared {'dead:L21': '88x avg5left', 'shortwin:L21': '2x avg2left'}
+d=138 endgame: 84 planned cleanups tried -> none cleared {'dead:L21': '55x avg4left', 'shortwin:L21': '20x avg2left'}
+d=140 jobs=594 kids=461 fails={'dead': 63, 'nofruit': 11, 'shortwin': 7} on={'L21': 70} best=240 fruit=1 t=99s ram=300 states (peak 1139 ~0.0GB) moved=2668 busy=66% copy=0s
+d=141 endgame: 70 planned cleanups tried -> none cleared {'dead:L21': '53x avg4left', 'shortwin:L21': '11x avg2left'}
+d=144 endgame: 90 planned cleanups tried -> none cleared {'dead:L21': '80x avg3left', 'shortwin:L21': '8x avg3left'}
+d=147 endgame: 68 planned cleanups tried -> none cleared {'dead:L21': '44x avg4left', 'shortwin:L21': '17x avg1left'}
+d=150 endgame: 67 planned cleanups tried -> none cleared {'dead:L21': '42x avg4left', 'shortwin:L21': '14x avg1left'}
+d=150 jobs=599 kids=451 fails={'nofruit': 10, 'shortwin': 7, 'dead': 28} on={'L21': 35} best=243 fruit=1 t=105s ram=300 states (peak 1139 ~0.0GB) moved=2818 busy=65% copy=0s
+d=153 endgame: 75 planned cleanups tried -> none cleared {'dead:L21': '47x avg4left', 'shortwin:L21': '19x avg2left'}
+d=156 endgame: 70 planned cleanups tried -> none cleared {'dead:L21': '42x avg3left', 'shortwin:L21': '21x avg2left'}
+d=159 endgame: 58 planned cleanups tried -> none cleared {'dead:L21': '42x avg3left', 'shortwin:L21': '12x avg2left'}
+d=160 jobs=562 kids=430 fails={'nofruit': 11, 'shortwin': 9, 'dead': 29} on={'L21': 38} best=239 fruit=1 t=111s ram=300 states (peak 1139 ~0.0GB) moved=2937 busy=65% copy=0s
+d=162 endgame: 66 planned cleanups tried -> none cleared {'dead:L21': '46x avg3left', 'shortwin:L21': '11x avg2left'}
+d=165 endgame: 58 planned cleanups tried -> none cleared {'dead:L21': '28x avg4left', 'shortwin:L21': '16x avg2left'}
+d=168 endgame: 55 planned cleanups tried -> none cleared {'dead:L21': '35x avg3left', 'shortwin:L21': '14x avg2left'}
+d=169 no progress past 243 dots: backtrack #1 to d=165, 218/300 candidates left after dropping the dead family
+d=165 endgame: 72 planned cleanups tried -> none cleared {'dead:L21': '66x avg3left', 'shortwin:L21': '4x avg2left'}
+d=168 endgame: 73 planned cleanups tried -> none cleared {'dead:L21': '63x avg4left', 'shortwin:L21': '5x avg2left'}
+d=170 jobs=542 kids=414 fails={'dead': 84, 'nofruit': 6, 'shortwin': 5} on={'L21': 89} best=242 fruit=1 t=118s ram=300 states (peak 1148 ~0.0GB) moved=3137 busy=65% copy=0s
+d=171 endgame: 73 planned cleanups tried -> none cleared {'dead:L21': '48x avg3left', 'shortwin:L21': '17x avg2left'}
+d=174 endgame: 77 planned cleanups tried -> none cleared {'dead:L21': '63x avg3left', 'shortwin:L21': '10x avg2left'}
+d=177 endgame: 82 planned cleanups tried -> none cleared {'dead:L21': '73x avg4left', 'shortwin:L21': '5x avg2left'}
+d=180 endgame: 94 planned cleanups tried -> none cleared {'dead:L21': '86x avg3left', 'shortwin:L21': '6x avg1left'}
+d=180 jobs=568 kids=428 fails={'dead': 82, 'shortwin': 7, 'nofruit': 7} on={'L21': 89} best=241 fruit=1 t=124s ram=300 states (peak 1148 ~0.0GB) moved=3258 busy=64% copy=0s
+d=183 endgame: 98 planned cleanups tried -> none cleared {'dead:L21': '81x avg4left', 'shortwin:L21': '11x avg2left'}
+d=186 endgame: 98 planned cleanups tried -> none cleared {'dead:L21': '96x avg3left', 'shortwin:L21': '1x avg3left'}
+d=189 endgame: 92 planned cleanups tried -> none cleared {'dead:L21': '86x avg3left', 'shortwin:L21': '3x avg2left'}
+d=190 jobs=567 kids=446 fails={'dead': 51, 'shortwin': 7, 'nofruit': 7} on={'L21': 58} best=240 fruit=1 t=130s ram=300 states (peak 1148 ~0.0GB) moved=3403 busy=64% copy=0s
+d=192 endgame: 84 planned cleanups tried -> none cleared {'dead:L21': '82x avg4left', 'shortwin:L21': '2x avg1left'}
+d=195 endgame: 92 planned cleanups tried -> none cleared {'dead:L21': '90x avg4left', 'shortwin:L21': '1x avg3left'}
+d=198 endgame: 82 planned cleanups tried -> none cleared {'dead:L21': '80x avg4left', 'shortwin:L21': '2x avg1left'}
+d=200 stalled: no progress past 243 dots for 30 moves
+RESULT cleared=False dots=243 frames=2976 fruits=1 moves=139 turns=111 minwin=5 route=ULLDx1LDRDRUUUULURx1URDx2RDRUx1Rx1URRDLx1DLDDLx1RDLDRDLx3ULLUUxLDLx1ULURULUURRURURUxRxDxLLLLLx1DRDLDLDDRDRDLx1RRxUx1LULULDLLDRRURULLLxULUUURRURULLLLDxL
+[cw] Exited with code 0.
