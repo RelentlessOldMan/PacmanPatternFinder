@@ -5,7 +5,7 @@ position heading left. None of them reverses.
 
 | Levels | File | Moves / turns | Time | What it does |
 |---|---|---|---|---|
-| 1 | `L1_allghosts_129.json` | 129 / 95 | 4646 frames (~77 s) | full clear, both fruits, all 16 ghosts (4 per energizer) |
+| 1 | `L1_allghosts_129.json` | 129 / 95 | 4646 frames (~77 s) | full clear, both fruits, all 16 ghosts |
 | 2 | `L2_allghosts_139.json` | 139 / 102 | 4676 frames (~77 s) | full clear, both fruits, all 16 ghosts |
 | 3 | `L3_allghosts_147.json` | 147 / 107 | 4568 frames (~75 s) | full clear, both fruits, all 16 ghosts |
 | 4 | `L4_allghosts_171.json` | 171 / 130 | 5089 frames (~84 s) | full clear, both fruits, all 16 ghosts |

@@ -16,7 +16,7 @@ heading left. Details, timing data and older patterns are in [`best/`](best/READ
 
 | Levels | File | Moves / turns | Notes |
 |---|---|---|---|
-| 1 | `best/L1_allghosts_129.json` | 129 / 95 | **all ghosts**: 4 after each of the 4 energizers (16), both fruits, full clear |
+| 1 | `best/L1_allghosts_129.json` | 129 / 95 | all 16 ghosts, both fruits, full clear |
 | 2 | `best/L2_allghosts_139.json` | 139 / 102 | all 16 ghosts, both fruits, full clear |
 | 3 | `best/L3_allghosts_147.json` | 147 / 107 | all 16 ghosts, both fruits, full clear |
 | 4 | `best/L4_allghosts_171.json` | 171 / 130 | all 16 ghosts, both fruits, full clear |
