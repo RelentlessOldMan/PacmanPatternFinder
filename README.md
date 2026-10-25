@@ -87,6 +87,8 @@ happen on exact tiles. The fastest
 possible clear with no ghosts at all is about 2337 frames. Found by `harness/climb.py`: change one move of the
 best route, search again from there, and keep the result if it is faster. The log is in `harness/RUNS.md`.
 
+![Level 21 speed run](best/L21_speed_2438_screen.png)
+
 ## Running it
 
 You need MAME 0.289 in `mame-0.289/` and your own legally obtained `pacman.zip` ROM in
