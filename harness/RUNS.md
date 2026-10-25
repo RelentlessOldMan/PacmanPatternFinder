@@ -178,3 +178,20 @@ killers, 2749 killing mixes, weak moves 84 and 90-97 (top right). Full clear 131
 - `result_floor_L21_nofruit.json` / `floor_L21_nofruit.log`: 30 min milp limit: 291 steps (proven >= 287 from an
   earlier cut-based attempt, stopped). Best ordering 2062 frames (34.02 s), vs our 2684 and the ~2521 record.
 
+
+### L21 ghost-free floor, both fruits
+- `floor.py --steps-from result_floor_L21_nofruit.json --fruits 2`: the 291-step walk plus a side trip to the fruit
+  tile while each fruit is out. Seeds 1-5 (`floor_L21_2fruit_trips{,_s2..s5}.log`): all 2337 frames (38.56 s),
+  335 steps; seeds 2-5 stopped early as duplicates. `--fruit-visits 2` milp: `floor_L21_2fruit_fv2/fv3.log`.
+- Driving that ghost-free walk with ghosts on: dead at step 68/291 (frame 490, 60 dots).
+
+### L21 speed with any-dot turn-backs (`--reverse-any`)
+- New `--reverse-any` (search.py): besides "x", moves "x<i>" turn back on any uneaten dot ahead (index i on the
+  path to the next node). Server `reverse` now also counts fruits eaten. After a turn-back the child's tile is the
+  one its next load sees (the load frame can cross a tile edge; fixes BADLOADs). replay_route.py plays "x<i>".
+- `result_L21_revany_test.json` / `search_L21_revany_test.log` (beam 30, need-fruits 2): stalled 243/244.
+- `result_L21_revany_b{300,1000}` (need-fruits 2, no family/backtrack flags): 3216 / 3031. Without
+  `--family-depth 6 --family-cap 30 --backtracks 60 --solutions 50` the search is much worse.
+- `result_L21_revany_fam_{b300,b1000,nf2_b300,nf2_b1000}` (with those flags, fc 0.25): **2621** (43.25 s, 106 moves,
+  both fruits, replayed) at beam 300, with or without need-fruits; 2694 at beam 1000. New best (was 2685).
+- `sweep_revany.sh` -> `sweep_revany.txt`: fc {0.15,0.25,0.4} x beam {200,400} x family-cap {20,30,50} x seed {1,2}.

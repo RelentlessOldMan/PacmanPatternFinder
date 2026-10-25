@@ -202,12 +202,19 @@ class Server:
             tc, tr = self.tile()
             return (f"ok f={self.frame} tile={tc},{tr} dir={self.rd(0x4D30)} dots={self.dots()} "
                     f"level={self.rd(0x4E13) + 1} 4E04={self.rd(0x4E04)} score={self.score()}")
-        if cmd == "reverse":  # reply mind= the closest ghost (pixels, like seg's mind) on the way
+        if cmd == "reverse":  # reply mind= the closest ghost (pixels, like seg's mind) on the way, fruits= eaten
             n = 0
             tc, tr = self.tile()
-            mind = self.gdist()
+            mind, fruits, last = self.gdist(), 0, self.score()
+
+            def frame():
+                nonlocal mind, fruits, last
+                self.wait(1); mind = min(mind, self.gdist())
+                sc = self.score()
+                fruits += sc - last in (100, 300, 500, 700, 1000, 2000, 3000, 5000)
+                last = sc
             while (tc, tr) != (int(b), int(c)):
-                self.wait(1); n += 1; tc, tr = self.tile(); mind = min(mind, self.gdist())
+                frame(); n += 1; tc, tr = self.tile()
                 if self.rd(0x4DA5) or n > 600:
                     break
             if self.rd(0x4DA5):
@@ -216,11 +223,11 @@ class Server:
                 return "timeout"
             self.joy(a); n = 0
             while self.rd(0x4D30) != LETTER[a] and n < 10:
-                self.wait(1); n += 1; mind = min(mind, self.gdist())
+                frame(); n += 1
             if self.rd(0x4DA5):
                 return "dead"
             tc, tr = self.tile()
-            return f"ok f={self.frame} tile={tc},{tr} dots={self.dots()} mind={mind}"
+            return f"ok f={self.frame} tile={tc},{tr} dots={self.dots()} mind={mind} fruits={fruits}"
         return "err " + line
 
 

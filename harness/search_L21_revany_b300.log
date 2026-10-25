@@ -1,0 +1,19 @@
+[cw] Started pid 22220 (full).
+start 21 ok f=10724 tile=13,23 dir=2 dots=0 level=21 4E04=3 score=0
+d=0 jobs=2 kids=2 fails={} on={} best=2 fruit=0 t=0s ram=2 states (peak 2 ~0.0GB) moved=0 busy=238% copy=0s
+d=10 jobs=806 kids=751 fails={'dead': 36} on={'L21': 36} best=47 fruit=0 t=4s ram=300 states (peak 1135 ~0.0GB) moved=253 busy=76% copy=0s
+d=20 jobs=725 kids=657 fails={'dead': 64} on={'L21': 64} best=78 fruit=0 t=11s ram=300 states (peak 1135 ~0.0GB) moved=581 busy=80% copy=0s
+d=30 jobs=859 kids=683 fails={'dead': 162} on={'L21': 162} best=107 fruit=1 t=18s ram=300 states (peak 1226 ~0.0GB) moved=1137 busy=79% copy=0s
+d=40 jobs=785 kids=563 fails={'dead': 213} on={'L21': 213} best=140 fruit=1 t=25s ram=300 states (peak 1226 ~0.0GB) moved=1475 busy=80% copy=0s
+d=50 jobs=751 kids=609 fails={'dead': 137} on={'L21': 137} best=167 fruit=1 t=31s ram=300 states (peak 1226 ~0.0GB) moved=1849 busy=80% copy=0s
+d=60 jobs=693 kids=542 fails={'dead': 141} on={'L21': 141} best=187 fruit=2 t=35s ram=300 states (peak 1226 ~0.0GB) moved=2175 busy=79% copy=0s
+d=69 endgame: 12 planned cleanups tried -> none cleared {'dead:L21': '12x avg38left'}
+d=70 jobs=653 kids=531 fails={'dead': 91} on={'L21': 91} best=201 fruit=2 t=39s ram=300 states (peak 1226 ~0.0GB) moved=2461 busy=79% copy=0s
+d=72 endgame: 141 planned cleanups tried -> none cleared {'dead:L21': '141x avg35left'}
+d=75 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '144x avg30left'}
+d=78 endgame: 144 planned cleanups tried -> none cleared {'dead:L21': '143x avg25left', 'shortwin:L21': '1x avg1left'}
+d=80 jobs=636 kids=445 fails={'dead': 172} on={'L21': 172} best=222 fruit=2 t=47s ram=300 states (peak 1226 ~0.0GB) moved=2703 busy=73% copy=0s
+d=81 endgame: 144 planned cleanups tried -> CLEARED x1 {'dead:L21': '143x avg21left'}
+d=81 jobs=590 kids=417 fails={'dead': 150} on={'L21': 150} best=222 fruit=2 t=48s ram=301 states (peak 1226 ~0.0GB) moved=2723 busy=72% copy=0s
+RESULT cleared=True dots=244 frames=3216 fruits=2 moves=125 turns=98 minwin=5 route=ULLLDRDLDRRRULURULLULDRDLDRDRURULURRUURUULLDLULLDRDDDRURURUURxUxLLxDLDLULULDLUURDDLURRRRRDLDLLDLDDDLLDRULULDLLDRRURURURDLDLUU
+[cw] Exited with code 0.

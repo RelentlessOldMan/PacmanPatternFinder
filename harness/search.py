@@ -8,6 +8,7 @@ early-press window (passing previous node -> 4px before turn) is long enough: --
 Every candidate move is run from each requested level's start state; a move survives only if
 it survives on all of them, which is how one route gets shared across a group of levels.
 """
+import re
 import argparse
 import collections
 import itertools
@@ -338,6 +339,27 @@ def run_child(w, sims, held, opt, minwin, route=(), expect=None, corner=False):
 
 
 REVERSE = False  # --reverse: "x" moves (turn back mid-corridor) are allowed
+REVERSE_ANY = False  # --reverse-any: also "x<i>": turn back on any uneaten dot ahead (path index i)
+
+
+def tokens(route):
+    """A route string or list as moves: "L", "x", "x3", ..."""
+    return re.findall(r"x\d*|[LRUD]", route) if isinstance(route, str) else list(route)
+
+
+def rev_spots(tile, heading, eaten, any_dot=False):
+    """The turn-back moves from here: [(move, spot, tiles walked)]. "x" (rev_spot); with any_dot also
+    "x<i>": turn back on path[i], any uneaten dot before the next node (the rest is left for later)."""
+    out = []
+    rv = rev_spot(tile, heading, eaten)
+    if rv:
+        out.append(("x",) + rv)
+    if any_dot:
+        node, path = maze.next_node(*tile, heading)
+        for i, t in enumerate(path):
+            if i and t != node and t in maze.DOTS and t not in eaten and not (rv and t == rv[0]):
+                out.append((f"x{i}", t, path[:i + 1]))
+    return out
 
 
 def rev_spot(tile, heading, eaten):
@@ -352,7 +374,7 @@ def rev_spot(tile, heading, eaten):
 
 def run_rev(w, sims, held, spot, expect=None):
     """An "x" move on every sim: keep going to `spot`, then push the opposite way (server "reverse").
-    Returns like run_child; the result has no fruit or ghost counts."""
+    Returns like run_child; the result has no ghost counts."""
     out, res = [], []
     for i, sim in enumerate(sims):
         got = load_state(w, base(sim), held)
@@ -366,12 +388,15 @@ def run_rev(w, sims, held, spot, expect=None):
             forget(w, out)
             return p[0], i, None
         tc, tr = map(int, p[2][5:].split(","))
-        dots, mind = int(p[3][5:]), int(p[4][5:])
+        dots, mind, fruits = int(p[3][5:]), int(p[4][5:]), int(p[5][7:])
         res.append(dict(st="clear" if dots >= 244 else "ok", ghosts=0, fr=int(p[1][2:]) - f0, node=spot, mind=mind,
-                        dots=dots, tile=(tc, tr), win=99, fruits=0, lead=0, gone=0))
+                        dots=dots, tile=(tc, tr), win=99, fruits=fruits, lead=0, gone=0))
         name = new_name()
         save_state(w, name)
         out.append(name)
+        if res[-1]["st"] == "ok":  # the tile as the next move's load sees it (its frame can cross a tile edge)
+            g = load_state(w, name, maze.REV[held]).split()
+            res[-1]["tile"] = (int(g[1]), int(g[2]))
     return ("clear" if all(r["st"] == "clear" for r in res) else "ok"), out, res
 
 
@@ -545,7 +570,7 @@ def make_starts(pool, levels):
 
 def make_child(c, path, opt, sims, res):
     r0 = res[0]
-    ch = Cand(c.route + [opt], r0["tile"], maze.REV[c.heading] if opt == "x" else opt,
+    ch = Cand(c.route + [opt], r0["tile"], maze.REV[c.heading] if opt[0] == "x" else opt,
               c.eaten | (frozenset(path) & maze.DOTS) | (frozenset([r0["tile"]]) & maze.DOTS),
               c.frames + max(r["fr"] for r in res) + 1,  # + the frame the move's state load runs
               c.risk + max(0, 24 - min(r["mind"] for r in res)),
@@ -779,9 +804,8 @@ def search(pool, sims0, args, log=print, resume=None):
                     jobs.append((c, path, opt, pool.submit(run_child, c.sims, c.heading, opt, args.minwin, c.route,
                                                          f"ok {c.tile[0]} {c.tile[1]} {len(c.eaten)}" if c.route else None,
                                                          len(maze.exits(*node)) == 2, need=c.sims)))
-            rv = REVERSE and rev_spot(c.tile, c.heading, c.eaten)
-            if rv:
-                jobs.append((c, rv[1], "x", pool.submit(run_rev, c.sims, c.heading, rv[0],
+            for mv, spot, walked in (rev_spots(c.tile, c.heading, c.eaten, REVERSE_ANY) if REVERSE else []):
+                jobs.append((c, walked, mv, pool.submit(run_rev, c.sims, c.heading, spot,
                                                         f"ok {c.tile[0]} {c.tile[1]} {len(c.eaten)}" if c.route else None,
                                                         need=c.sims)))
         children, fails, by_sim = {}, {}, {}
@@ -930,6 +954,7 @@ def main():
                     help="exhaust.py --dump file: per level, a sim replaying each distinct lateness history "
                          "(e.g. every way the opening can end), on time after it")
     ap.add_argument("--reverse", action="store_true", help="also try turning back mid-corridor (\"x\": on the last dot before an eaten stretch)")
+    ap.add_argument("--reverse-any", action="store_true", help="--reverse, and turn back on any uneaten dot ahead (\"x<i>\")")
     ap.add_argument("--frame-cost", type=float, default=0.25, help="score penalty per frame (a dot is worth 10)")
     ap.add_argument("--turn-cost", type=float, default=0, help="score penalty per turn (a dot is worth 10)")
     ap.add_argument("--late-rel", action="store_true",
@@ -974,9 +999,9 @@ def main():
                     help="--min-ghost: only from move N+1 on")
     ap.add_argument("--out", default="result.json")
     args = ap.parse_args()
-    global SUBDIR, RAM, CLUSTER_COST, GAP_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, FIRST_FRUIT, RAM_CAP, ALL_GHOSTS, FRAME_COST, REVERSE
+    global SUBDIR, RAM, CLUSTER_COST, GAP_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, FIRST_FRUIT, RAM_CAP, ALL_GHOSTS, FRAME_COST, REVERSE, REVERSE_ANY
     CLUSTER_COST, CORNER_MINWIN, GAP_COST = args.cluster_cost, args.corner_minwin, args.gap_cost
-    FRAME_COST, REVERSE = args.frame_cost, args.reverse
+    FRAME_COST, REVERSE, REVERSE_ANY = args.frame_cost, args.reverse or args.reverse_any, args.reverse_any
     assert not (REVERSE and (args.branch or args.prefix)), "--reverse: no --branch or --prefix yet"
     LATE_VARIANTS = not args.no_late and not args.jitter_sims and not args.fixed_sims and not args.history_sims
     TURN_COST, JITTER, JITTER_CORNER = args.turn_cost, args.jitter, args.jitter_corner

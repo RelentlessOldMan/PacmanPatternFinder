@@ -1,18 +1,19 @@
 """replay_route.py <route.json|route> <level>: play a route on pacemu exactly on time and print its frames
-(ready to clear) and the outcome. Routes may hold "x" moves (search.py --reverse: turn back on the last
-dot before an eaten stretch)."""
+(ready to clear) and the outcome. Routes may hold "x" / "x<i>" moves (search.py --reverse / --reverse-any:
+turn back mid-corridor)."""
 import json, sys
 import maze
 from emu_server import Server
-from search import parse_seg, rev_spot
+from search import parse_seg, rev_spots, tokens
 
 
 def play(srv, route, on_move=None):
     """Play route from the level start; returns (status, moves played, frames)."""
     tile, heading, eaten, frames = (13, 23), "L", set(), 1  # the start state's load runs a frame
+    route = tokens(route)
     for i, m in enumerate(route):
-        if m == "x":
-            spot, walked = rev_spot(tile, heading, eaten)
+        if m[0] == "x":
+            spot, walked = {mv: (sp, wk) for mv, sp, wk in rev_spots(tile, heading, eaten, True)}[m]
             f0 = int(srv.handle("peek").split()[1][2:])
             p = srv.handle(f"reverse {maze.REV[heading]} {spot[0]} {spot[1]}").split()
             if p[0] != "ok":
@@ -41,4 +42,4 @@ if __name__ == "__main__":
     srv.handle("newgame"); srv.handle(f"level {sys.argv[2]}")
     srv.handle("msave s"); srv.handle("mload s L")
     st, n, fr = play(srv, route)
-    print(st, f"{n}/{len(route)} moves", fr, "frames", f"{fr / 60.606:.2f}s")
+    print(st, f"{n}/{len(tokens(route))} moves", fr, "frames", f"{fr / 60.606:.2f}s")
