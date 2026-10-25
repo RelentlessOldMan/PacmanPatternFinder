@@ -227,7 +227,8 @@ class Server:
             if self.rd(0x4DA5):
                 return "dead"
             tc, tr = self.tile()
-            return f"ok f={self.frame} tile={tc},{tr} dots={self.dots()} mind={mind} fruits={fruits}"
+            gone = (self.rd(0x4E0C) != 0) + (self.rd(0x4E0D) != 0) - (self.rd(0x4DD2) != 0 or self.rd(0x4DD3) != 0)
+            return f"ok f={self.frame} tile={tc},{tr} dots={self.dots()} mind={mind} fruits={fruits} gone={gone}"
         return "err " + line
 
 

@@ -213,3 +213,19 @@ killers, 2749 killing mixes, weak moves 84 and 90-97 (top right). Full clear 131
   Result: **2560 frames (42.24 s), 108 moves, both fruits** (`result_L21_nz_fc1.0_n40_s3.json`, replayed), new best;
   many seeds land on the 2562 again. fc 1.25 worse. s6/s8 "2443/2502" are 243-dot partials (stalled), not clears.
 - `sweep_wide.sh` -> `sweep_wide.txt`: beam {600,1000} x fc {0.9,1.0,1.1} x cc {30,40,50}, need-fruits 2.
+  Result: best 2562 again (b600 fc1.1 cc40). Wider beams don't help. Most of the fast-looking ones (2431-2499) are
+  243-dot partials holding ONE fruit: with need-fruits 2 they can never count (the level ends on the last dot), yet
+  they fill the beam.
+- Fruitless pruning (search.py): a child whose fruit came and went uneaten (seg's `gone` - fruits eaten > 2 - need)
+  is dropped. Server `reverse` (emu + Lua) now replies fruits= and gone= too.
+  `sweep_prune.sh` -> `sweep_prune.txt` (beam {300,600,1000} x fc {0.8..1.1} x cc {30,40}): best 2562; 7 of 24 runs
+  die by move ~40 (no candidate reached fruit 1 in time: the score never pulls toward an uneaten fruit).
+- New `--fruit-pull P`: score -P per tile from the fruit while one is out. `sweep_pull.sh` -> `sweep_pull.txt`:
+  P {3,8,15} x fc {0.9,1.0,1.1} x cc {30,40}, beam 300.
+  Result: worse at every setting (best 2600 at P 3; P 15 up to 3802). Dropped.
+- `sweep_noise2.sh` -> `sweep_noise2.txt`: fc 1.0 cc 40 beam 300 need-fruits 2, noise {25,40,60} x seeds 9-24 (48
+  runs, with fruitless pruning): best 2562 (several seeds), 2576, 2577. The 2560 stands.
+
+**L21 speed, standing best (2026-10-24): `result_L21_nz_fc1.0_n40_s3.json`, 2560 frames = 42.24 s, 108 moves, both
+fruits, full clear, replayed on pacemu.** Closest ghost 21 px on any move (no booey needed); tightest window 5 frames.
+vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no fruit, 2337 both fruits.

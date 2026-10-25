@@ -388,9 +388,9 @@ def run_rev(w, sims, held, spot, expect=None):
             forget(w, out)
             return p[0], i, None
         tc, tr = map(int, p[2][5:].split(","))
-        dots, mind, fruits = int(p[3][5:]), int(p[4][5:]), int(p[5][7:])
+        dots, mind, fruits, gone = int(p[3][5:]), int(p[4][5:]), int(p[5][7:]), int(p[6][5:])
         res.append(dict(st="clear" if dots >= 244 else "ok", ghosts=0, fr=int(p[1][2:]) - f0, node=spot, mind=mind,
-                        dots=dots, tile=(tc, tr), win=99, fruits=fruits, lead=0, gone=0))
+                        dots=dots, tile=(tc, tr), win=99, fruits=fruits, lead=0, gone=gone))
         name = new_name()
         save_state(w, name)
         out.append(name)
@@ -522,12 +522,19 @@ def allowed(c, node, opt):
     return opt != maze.REV[c.heading] and (c.after >= 0 or maze.step(*node, opt) not in AVOID)
 
 
+FRUIT_TILE = (13, 17)
+FRUIT_PULL = 0.0  # --fruit-pull: score per tile of distance to an uneaten fruit that is out
+
+
 def score(c):
     left = GOAL - c.eaten
     near = maze.bfs_dist(c.tile, left)
+    # a fruit is out once its dot count (70, 170) is reached until eaten (one that left uneaten is pruned: --need-fruits)
+    out = (len(c.eaten) >= 70 and c.fruits < 1) or (len(c.eaten) >= 170 and c.fruits < 2)
+    pull = FRUIT_PULL * maze.bfs_dist(c.tile, {FRUIT_TILE}) if FRUIT_PULL and out else 0
     # each stranded pocket of dots costs a long trip back later (with a faster red ghost)
     return (len(c.eaten) * 10 - c.frames * FRAME_COST - near * 6 - c.risk * 2 + c.fruits * 400
-            + c.ghosts * 300 * ALL_GHOSTS - maze.clusters(left) * CLUSTER_COST - n_turns(c) * TURN_COST - (maze.gaps(left) * GAP_COST if GAP_COST else 0))
+            + c.ghosts * 300 * ALL_GHOSTS - pull - maze.clusters(left) * CLUSTER_COST - n_turns(c) * TURN_COST - (maze.gaps(left) * GAP_COST if GAP_COST else 0))
 
 
 def n_turns(c):
@@ -833,6 +840,9 @@ def search(pool, sims0, args, log=print, resume=None):
             if len(ch.route) > args.min_ghost_from and ch.segs[-1]["mind"] < args.min_ghost:
                 fails["ghost"] = fails.get("ghost", 0) + 1  # --min-ghost: a ghost came too close
                 continue
+            if max(r["gone"] for r in res) - ch.fruits > 2 - NEED_FRUITS:
+                fails["fruitless"] = fails.get("fruitless", 0) + 1  # --need-fruits: a fruit came and went uneaten
+                continue
             r0 = res[0]
             if r0["dots"] != len(ch.eaten) and args.debug:
                 print(f"DOTMISMATCH game={r0['dots']} mine={len(ch.eaten)} route={''.join(ch.route)}", flush=True)
@@ -967,6 +977,7 @@ def main():
                     help="exhaust.py --dump file: per level, a sim replaying each distinct lateness history "
                          "(e.g. every way the opening can end), on time after it")
     ap.add_argument("--reverse", action="store_true", help="also try turning back mid-corridor (\"x\": on the last dot before an eaten stretch)")
+    ap.add_argument("--fruit-pull", type=float, default=0.0, help="score per tile of distance to a fruit that is out")
     ap.add_argument("--score-noise", type=float, default=0.0, help="add a random 0..X (per --seed) to each beam score")
     ap.add_argument("--reverse-any", action="store_true", help="--reverse, and turn back on any uneaten dot ahead (\"x<i>\")")
     ap.add_argument("--frame-cost", type=float, default=0.25, help="score penalty per frame (a dot is worth 10)")
@@ -1013,9 +1024,9 @@ def main():
                     help="--min-ghost: only from move N+1 on")
     ap.add_argument("--out", default="result.json")
     args = ap.parse_args()
-    global SUBDIR, RAM, CLUSTER_COST, GAP_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, FIRST_FRUIT, RAM_CAP, ALL_GHOSTS, FRAME_COST, REVERSE, REVERSE_ANY, SCORE_NOISE, SEED
+    global SUBDIR, RAM, CLUSTER_COST, GAP_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, FIRST_FRUIT, RAM_CAP, ALL_GHOSTS, FRAME_COST, REVERSE, REVERSE_ANY, SCORE_NOISE, SEED, FRUIT_PULL
     CLUSTER_COST, CORNER_MINWIN, GAP_COST = args.cluster_cost, args.corner_minwin, args.gap_cost
-    SCORE_NOISE, SEED = args.score_noise, args.seed
+    SCORE_NOISE, SEED, FRUIT_PULL = args.score_noise, args.seed, args.fruit_pull
     FRAME_COST, REVERSE, REVERSE_ANY = args.frame_cost, args.reverse or args.reverse_any, args.reverse_any
     assert not (REVERSE and args.branch), "--reverse: no --branch yet"
     LATE_VARIANTS = not args.no_late and not args.jitter_sims and not args.fixed_sims and not args.history_sims

@@ -1,0 +1,18 @@
+[cw] Started pid 54052 (full).
+start 21 ok f=10724 tile=13,23 dir=2 dots=0 level=21 4E04=3 score=0
+d=0 jobs=2 kids=2 fails={} on={} best=2 fruit=0 t=0s ram=2 states (peak 2 ~0.0GB) moved=0 busy=217% copy=0s
+d=10 jobs=732 kids=706 fails={'dead': 26} on={'L21': 26} best=38 fruit=0 t=4s ram=300 states (peak 1188 ~0.0GB) moved=141 busy=85% copy=0s
+d=20 jobs=759 kids=682 fails={'dead': 75} on={'L21': 75} best=69 fruit=0 t=10s ram=300 states (peak 1188 ~0.0GB) moved=344 busy=84% copy=0s
+d=30 jobs=874 kids=768 fails={'dead': 100} on={'L21': 100} best=71 fruit=1 t=15s ram=300 states (peak 1188 ~0.0GB) moved=507 busy=84% copy=0s
+d=40 jobs=808 kids=677 fails={'dead': 122} on={'L21': 122} best=109 fruit=1 t=22s ram=300 states (peak 1194 ~0.0GB) moved=637 busy=85% copy=0s
+d=50 jobs=788 kids=658 fails={'dead': 121} on={'L21': 121} best=144 fruit=1 t=27s ram=300 states (peak 1194 ~0.0GB) moved=835 busy=85% copy=0s
+d=60 jobs=737 kids=516 fails={'dead': 212} on={'L21': 212} best=169 fruit=1 t=31s ram=300 states (peak 1194 ~0.0GB) moved=1038 busy=84% copy=0s
+d=70 jobs=743 kids=639 fails={'dead': 86} on={'L21': 86} best=167 fruit=1 t=36s ram=300 states (peak 1194 ~0.0GB) moved=1270 busy=84% copy=0s
+d=80 jobs=613 kids=553 fails={'dead': 51} on={'L21': 51} best=169 fruit=1 t=40s ram=300 states (peak 1194 ~0.0GB) moved=1434 busy=83% copy=0s
+d=89 no progress past 169 dots: backtrack #1 to d=85, 211/300 candidates left after dropping the dead family
+d=90 jobs=598 kids=489 fails={'dead': 94} on={'L21': 94} best=169 fruit=1 t=46s ram=300 states (peak 1252 ~0.0GB) moved=1603 busy=83% copy=0s
+d=100 jobs=616 kids=514 fails={'dead': 77} on={'L21': 77} best=169 fruit=1 t=50s ram=300 states (peak 1252 ~0.0GB) moved=1728 busy=83% copy=0s
+d=110 jobs=586 kids=495 fails={'dead': 57} on={'L21': 57} best=169 fruit=1 t=54s ram=300 states (peak 1252 ~0.0GB) moved=1884 busy=82% copy=0s
+d=120 stalled: no progress past 169 dots for 30 moves
+RESULT cleared=False dots=169 frames=1482 fruits=1 moves=59 turns=50 minwin=6 route=ULLLDRDLDRUx1RURURDx1Ux1LLURRx1ULDLUULURx1URRDRURDx2RDLx2DLUx1DDRDx1
+[cw] Exited with code 0.

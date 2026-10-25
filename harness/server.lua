@@ -372,12 +372,19 @@ H.run(function()
       reply(string.format("ok %d f=%d", ram_hash(), H.frame))
     elseif cmd == "reverse" then
       -- "reverse <D> <col> <row>": keep going until Pac-Man is on that tile, then push D (a
-      -- turnaround in mid-corridor, which seg can't do). Replies "ok f= tile= dots= mind=" (mind: the closest ghost on the way, like seg's), or "dead"/"timeout".
+      -- turnaround in mid-corridor, which seg can't do). Replies "ok f= tile= dots= mind= fruits= gone=" (mind: the closest ghost on the way, like seg's; fruits: eaten
+      -- on the way; gone: fruits shown and gone, like seg's), or "dead"/"timeout".
       local tc, tr, n = pac_tile()
-      local md = ghost_min_dist()
+      local md, fr, last = ghost_min_dist(), 0, score()
+      local function step()
+        H.wait(1); md = math.min(md, ghost_min_dist())
+        local d = score() - last
+        if d == 100 or d == 300 or d == 500 or d == 700 or d == 1000 or d == 2000 or d == 3000 or d == 5000 then fr = fr + 1 end
+        last = last + d
+      end
       n = 0
       while not (tc == tonumber(b) and tr == tonumber(c)) do
-        H.wait(1); n = n + 1; tc, tr = pac_tile(); md = math.min(md, ghost_min_dist())
+        step(); n = n + 1; tc, tr = pac_tile()
         if dead() then break end
         if n > 600 then break end
       end
@@ -386,10 +393,11 @@ H.run(function()
       else
         -- the game takes the push on a later frame: wait for it so a following seg sees the new heading
         H.joy(a); n = 0
-        while H.rd(0x4D30) ~= LETTER[a] and n < 10 do H.wait(1); n = n + 1; md = math.min(md, ghost_min_dist()) end
+        while H.rd(0x4D30) ~= LETTER[a] and n < 10 do step(); n = n + 1 end
         tc, tr = pac_tile()
+        local gone = (rd(0x4E0C) ~= 0 and 1 or 0) + (rd(0x4E0D) ~= 0 and 1 or 0) - ((rd(0x4DD2) ~= 0 or rd(0x4DD3) ~= 0) and 1 or 0)
         if dead() then reply("dead")
-        else reply(string.format("ok f=%d tile=%d,%d dots=%d mind=%d", H.frame, tc, tr, dots(), md)) end
+        else reply(string.format("ok f=%d tile=%d,%d dots=%d mind=%d fruits=%d gone=%d", H.frame, tc, tr, dots(), md, fr, gone)) end
       end
     elseif cmd == "peek" then
       local tc, tr = pac_tile()
