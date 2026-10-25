@@ -318,3 +318,4 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
 - Status 2026-10-25 08:22: c4 648/740 and c5 391/740 done, no improvement over 2438 (left running; results in
   `climb_c4.txt`, `climb_c5.txt`). **L21 speed, standing best: `result_L21_neigh_2438.json`, 2438 frames = 40.23 s**
   (sub-40 needs <= 2423).
+- Correction: the 2438 never passes through a ghost (closest 7 px, move 70); its late presses are dodges.

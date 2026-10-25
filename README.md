@@ -64,7 +64,8 @@ kill it versus 31 for the 118/88 (`harness/goodrich_late.py`).
 
 Video: [level 21 in 2438 frames](videos/L21_speed_2438_level21.mp4) (40.23 s from start to clear, both
 fruits eaten). Route: `best/L21_speed_2438.json`, 100 moves with 12 turn-backs and 4 deliberately late presses.
-It is frame-exact and passes through ghosts on purpose (booeys), so it is not meant for human play. The fastest
+It is frame-exact (the late presses make ghosts miss by a few pixels; it never passes through one), so it is
+not meant for human play. The fastest
 possible clear with no ghosts at all is about 2337 frames. Found by `harness/climb.py`: change one move of the
 best route, search again from there, and keep the result if it is faster. The log is in `harness/RUNS.md`.
 
