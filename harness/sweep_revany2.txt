@@ -1,0 +1,9 @@
+fc0.6_cc40 | clear 114/114 moves 2828 frames 46.66s
+fc0.6_cc20 | clear 118/118 moves 2872 frames 47.39s
+fc0.6_cc0 | clear 121/121 moves 3003 frames 49.55s
+fc1.0_cc0 | clear 141/141 moves 3146 frames 51.91s
+fc1.0_cc40 | clear 109/109 moves 2562 frames 42.27s
+fc1.0_cc20 | clear 112/112 moves 2751 frames 45.39s
+fc1.25_cc20 | clear 111/111 moves 2662 frames 43.92s
+fc1.25_cc40 | clear 100/100 moves 2421 frames 39.95s
+fc1.25_cc0 | clear 146/146 moves 3137 frames 51.76s

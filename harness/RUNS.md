@@ -195,3 +195,11 @@ killers, 2749 killing mixes, weak moves 84 and 90-97 (top right). Full clear 131
 - `result_L21_revany_fam_{b300,b1000,nf2_b300,nf2_b1000}` (with those flags, fc 0.25): **2621** (43.25 s, 106 moves,
   both fruits, replayed) at beam 300, with or without need-fruits; 2694 at beam 1000. New best (was 2685).
 - `sweep_revany.sh` -> `sweep_revany.txt`: fc {0.15,0.25,0.4} x beam {200,400} x family-cap {20,30,50} x seed {1,2}.
+  Result: none better than 2621 (range 2621-3103); `--seed` changes nothing (it only drives the endgame).
+- `--prefix` now plays turn-back moves. `result_L21_polish_test` (prefix = first 60 moves of the 2621, beam 300):
+  2686, so re-searching a tail from a fixed prefix doesn't find the original's own ending.
+- Beam score is dots*10 - frames*fc: at fc 0.25 a dot's ~8 frames cost only 2, so the beam grabs dots and ignores
+  time. `sweep_revany2.sh` -> `sweep_revany2.txt` (fc {0.6,1.0,1.25} x `--cluster-cost` {0,20,40}, beam 300):
+  **fc 1.0 cc 40: 2562 frames (42.27 s), 109 moves, both fruits** (`result_L21_revany_fc1.0_cc40.json`, replayed).
+  fc 1.25 cc 40: 2421 (39.95 s) but one fruit. cc 0 is bad at high fc (3003-3146).
+- `sweep_revany3.sh` -> `sweep_revany3.txt`: need-fruits 2, fc {1.0,1.25,1.6} x cc {40,60,90}.

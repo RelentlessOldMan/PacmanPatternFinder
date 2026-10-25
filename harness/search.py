@@ -728,13 +728,23 @@ def search(pool, sims0, args, log=print, resume=None):
     dropped = 0
     global LATE_BUDGET
     budget = LATE_BUDGET
-    for opt in ("" if resume else args.prefix):
+    for opt in ([] if resume else tokens(args.prefix or "")):
         c = beam[0]
         # --prefix-on-time [N]: no late presses in the first N moves (default all); BRANCH stays on so the
         # sims keep their fruit counts
         on_time = args.prefix_on_time is not None and len(c.route) < args.prefix_on_time
         LATE_BUDGET = 0 if on_time else budget
         node, path = maze.next_node(*c.tile, c.heading)
+        if opt[0] == "x":  # a turn-back (--reverse)
+            mv = {m: (sp, wk) for m, sp, wk in rev_spots(c.tile, c.heading, c.eaten, True)}.get(opt)
+            st, sims, res = pool.submit(run_rev, c.sims, c.heading, mv[0],
+                                        f"ok {c.tile[0]} {c.tile[1]} {len(c.eaten)}" if c.route else None,
+                                        need=c.sims).result() if mv else ("nospot", 0, None)
+            if res is None:
+                log(f"prefix fails at move {len(c.route) + 1} ({opt}): {st}")
+                break
+            beam = [make_child(c, mv[1], opt, sims, res)]
+            continue
         while True:
             st, sims, res = pool.submit(run_child, c.sims, c.heading, opt, args.minwin, c.route,
                                         f"ok {c.tile[0]} {c.tile[1]} {len(c.eaten)}" if c.route else None,
@@ -750,7 +760,7 @@ def search(pool, sims0, args, log=print, resume=None):
         beam = [make_child(c, path, opt, sims, res)]
     LATE_BUDGET = budget
     if args.prefix:
-        log(f"prefix: {len(beam[0].route)}/{len(args.prefix)} moves, {len(beam[0].eaten)} dots, {dropped} late variants dropped")
+        log(f"prefix: {len(beam[0].route)}/{len(tokens(args.prefix))} moves, {len(beam[0].eaten)} dots, {dropped} late variants dropped")
     best_partial, best_depth, solution = beam[0], len(beam[0].route), None
     found = {}  # --solutions: route -> clearing candidate
 
@@ -1002,7 +1012,7 @@ def main():
     global SUBDIR, RAM, CLUSTER_COST, GAP_COST, CORNER_MINWIN, LATE_VARIANTS, TURN_COST, JITTER, JITTER_CORNER, LATE_REL, GOAL, AVOID, BRANCH, BRANCH_CAP, SAFE_AFTER, LATE_BUDGET, NEED_FRUITS, FIRST_FRUIT, RAM_CAP, ALL_GHOSTS, FRAME_COST, REVERSE, REVERSE_ANY
     CLUSTER_COST, CORNER_MINWIN, GAP_COST = args.cluster_cost, args.corner_minwin, args.gap_cost
     FRAME_COST, REVERSE, REVERSE_ANY = args.frame_cost, args.reverse or args.reverse_any, args.reverse_any
-    assert not (REVERSE and (args.branch or args.prefix)), "--reverse: no --branch or --prefix yet"
+    assert not (REVERSE and args.branch), "--reverse: no --branch yet"
     LATE_VARIANTS = not args.no_late and not args.jitter_sims and not args.fixed_sims and not args.history_sims
     TURN_COST, JITTER, JITTER_CORNER = args.turn_cost, args.jitter, args.jitter_corner
     LATE_REL = args.late_rel
