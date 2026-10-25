@@ -258,7 +258,7 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   Slack 10 and cc 0 are much worse (2655-3104).
 - `sweep_guide2.sh` -> `sweep_guide2.txt`: G 10 W 25 cc 40 guided by each of the 12 kept floor walks (2337-2346).
 
-**L21 speed, standing best (2026-10-25): `result_L21_guide_gc10_sl25_cc40.json`, 2458 frames = 40.56 s.**
+**L21 speed, standing best (2026-10-25): `result_L21_neigh_2438.json`, 2438 frames = 40.23 s (was 2458, `result_L21_guide_gc10_sl25_cc40.json`).**
   Result (`sweep_guide2.txt`): all 12 give the same 2458 route: the kept walks share one milp step set and agree on
   their first ~97 dots, then differ in 2-11 places of 244, too little to matter with slack 25.
 - `sweep_guide3.sh` -> `sweep_guide3.txt`: guide 2337 walk (trips) and the fv2 walk (other step set, 2346), noise 40
@@ -315,3 +315,6 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
 - `climb.py result_L21_neigh_2438.json c5 --jobs 2 --beam 200 --guide-cost 7 --guide-slack 32` (alongside c4): other
   re-search settings -> `climb_c5.txt`.
 - Video: `videos/L21_speed_2438_level21.mp4` (video_route.py; stock MAME 0.289 replays it: clear, 2438).
+- Status 2026-10-25 08:22: c4 648/740 and c5 391/740 done, no improvement over 2438 (left running; results in
+  `climb_c4.txt`, `climb_c5.txt`). **L21 speed, standing best: `result_L21_neigh_2438.json`, 2438 frames = 40.23 s**
+  (sub-40 needs <= 2423).
