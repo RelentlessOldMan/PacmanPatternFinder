@@ -1,5 +1,5 @@
 #!/bin/bash
-# sweep_guide.sh: L21 speed each kept floor walk as --guide (G 10, W 25, cc 40), booey 12; -> sweep_guide2.txt
+# sweep_guide2.sh: L21 speed each kept floor walk as --guide (G 10, W 25, cc 40), booey 12; -> sweep_guide2.txt
 cd "$(dirname "$0")"
 C="--levels 21 --minwin 1 --corner-minwin 1 --no-late --late-budget 0 --family-depth 6 --family-cap 30 --backtracks 60 --solutions 50 --workers 3 --reverse-any --beam 300 --need-fruits 2 --frame-cost 1.0 --booey 12"
 job(){ w=$1; gc=10 sl=25 cc=40; n=guide2_w${w}

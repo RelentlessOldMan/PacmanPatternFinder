@@ -1,0 +1,12 @@
+guide2_w0 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide2_w1 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide2_w2 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide2_w3 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide2_w4 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide2_w5 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide2_w6 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide2_w7 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide2_w8 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide2_w9 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide2_w10 | clear 100/100 moves 2458 frames 40.56s | R9 
+guide2_w11 | clear 100/100 moves 2458 frames 40.56s | R9 

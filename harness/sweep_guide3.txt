@@ -1,0 +1,16 @@
+guide3_trips_s1 | clear 117/117 moves 2562 frames 42.27s | U8 U3 U2 D3 
+guide3_fv2_s1 | clear 139/139 moves 3162 frames 52.17s | R5 
+guide3_fv2_s2 | clear 114/114 moves 2584 frames 42.64s | D3 
+guide3_trips_s2 | ok 61/61 moves 1209 frames 19.95s | U8 
+guide3_trips_s3 | clear 104/104 moves 2550 frames 42.08s | D1 
+guide3_fv2_s3 | clear 134/134 moves 3114 frames 51.38s | U6 
+guide3_trips_s4 | clear 105/105 moves 2607 frames 43.02s | 
+guide3_fv2_s4 | clear 141/141 moves 3204 frames 52.87s | L1 
+guide3_trips_s5 | clear 119/119 moves 2726 frames 44.98s | U11 
+guide3_fv2_s5 | clear 119/119 moves 2728 frames 45.01s | L3 
+guide3_trips_s6 | clear 107/107 moves 2495 frames 41.17s | U8 
+guide3_fv2_s6 | clear 128/128 moves 2966 frames 48.94s | D2 
+guide3_trips_s7 | clear 100/100 moves 2518 frames 41.55s | L5 D1 
+guide3_fv2_s7 | clear 116/116 moves 2754 frames 45.44s | D2 
+guide3_trips_s8 | clear 106/106 moves 2532 frames 41.78s | 
+guide3_fv2_s8 | clear 121/121 moves 2820 frames 46.53s | U1 

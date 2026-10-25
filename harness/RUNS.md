@@ -259,3 +259,13 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
 - `sweep_guide2.sh` -> `sweep_guide2.txt`: G 10 W 25 cc 40 guided by each of the 12 kept floor walks (2337-2346).
 
 **L21 speed, standing best (2026-10-25): `result_L21_guide_gc10_sl25_cc40.json`, 2458 frames = 40.56 s.**
+  Result (`sweep_guide2.txt`): all 12 give the same 2458 route: the kept walks share one milp step set and agree on
+  their first ~97 dots, then differ in 2-11 places of 244, too little to matter with slack 25.
+- `sweep_guide3.sh` -> `sweep_guide3.txt`: guide 2337 walk (trips) and the fv2 walk (other step set, 2346), noise 40
+  seeds 1-8.
+- `sweep_guide4.sh` -> `sweep_guide4.txt`: 2337 walk, no noise, G {7,10,14} x W {20,25,32} x cc {30,40,50}.
+  (Goal from the user: sub-40 s = 2423 frames or fewer.)
+  Result (`sweep_guide3.txt`): noise hurts guided search: best 2518 (trips s7), others 2532-3204; fv2 walk 3114+;
+  trips s2 stalled (61 moves). 2458 (noise-free) stands.
+- Video: `videos/L21_speed_2458_level21.mp4` (new `harness/video_route.py`: plays a route via replay_route.play in
+  stock MAME 0.289, so x / late moves work): clears at exactly 2458 frames in MAME too.
