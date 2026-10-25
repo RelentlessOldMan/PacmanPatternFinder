@@ -366,3 +366,14 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
 - `pattern_sheet.py` now draws routes with "x" turn-backs and late presses ("R9"): such routes are walked on pacemu
   (replay_route.play, `--level N`, default 21); the subtitle counts turn-backs and lists the late presses.
 - best/L21_speed_2438.png and best/L21_speed_2438_screen.png; the screen one is in the README speed-run section.
+
+## 2026-10-25 where the 2438 loses time (`lag_route.py`)
+- New `lag_route.py <route.json>`: per move frames, tiles, new dots, tiles over eaten ground ("empty"). Pac-Man's
+  speed depends only on his path, so ghosts cost time only through detours and waits.
+- 2438: 104 empty tiles vs 91 in the ghost-free 2337 walk (an empty tile is ~6.7 frames: 9 tiles in 60-61 frames).
+  Fruit trips: 2438 22 (moves 29-33) + 25 (76-82) = 47; floor 36 + 16 = 52. Everything else: 2438 57 vs floor 39.
+- 2438 empty stretches outside the fruit trips: moves 6+8 (6, dots 12-16), 16-18 (8, after the x1 at move 15,
+  dots 37), 25-26 (3), 36 (2), 43-44 (8), 48, 51 (2 each), 54-56 (8), 64-65 (6), 69 (4), 73, 88, 98 (2 each), 95, 100 (1).
+  Floor by then: 3 empty by dot 26, 9 by dot 60.
+- Late presses cost ~20 frames (move 60 R9: 38 fr for 4 tiles vs ~22; move 79 R8: 29 for 3 vs ~19).
+- Gap 101 frames ~ 13 extra empty tiles (~87) + waits; sub-40 needs ~2-3 fewer empty tiles net.
