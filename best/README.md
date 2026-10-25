@@ -10,9 +10,10 @@ position heading left. None of them reverses.
 | 3 | `L3_allghosts_147.json` | 147 / 107 | 4568 frames (~75 s) | full clear, both fruits, all 16 ghosts |
 | 4 | `L4_allghosts_171.json` | 171 / 130 | 5089 frames (~84 s) | full clear, both fruits, all 16 ghosts |
 | 5–20 | `L5-20_keep70_115.json` | 115 / 78 | 2971 frames (~50 s) | eats both fruits; leaves the corner pockets to eat by hand; its first 70 moves are the old 99 |
-| 21+ | `L21_full_118.json` | 118 / 88 | 2922 frames (~48 s) | full clear, both keys; its first 15 moves are the 5–20 route |
+| 21+ | `L21_full_118.json` | 118 / 88 | 3040 frames (~50 s) | full clear, both keys; its first 15 moves are the 5–20 route |
+| 21+ (safe) | `L21_safe141.json` | 141 / 104 | 3727 frames (~61 s) | the 118 to move 110, then a safe ending that survives blue being out of place (see below) |
 
-Pattern sheets: `L<N>_allghosts_<moves>_screen.png`, `L5-20_115_screen.png`, `L21_118_screen.png` (plain
+Pattern sheets: `L<N>_allghosts_<moves>_screen.png`, `L5-20_115_screen.png`, `L21_118_screen.png`, `L21_safe141_screen.png` (plain
 drawn versions without `_screen`). Videos: `../videos/`.
 
 **Timing data** (`harness/rank_sols.py`): each turn is replayed pressed 1–4 frames past the point where
@@ -45,3 +46,16 @@ Kept for reference. Except the 99, they were found by earlier versions of the se
 Their timing checks (`exhaust.py`) measured lateness from when Pac-Man left the previous junction, not
 from the turn, so they mostly tested pressing early. A real level-7 game pressing 2–4 frames past the
 turn died with one of them, which is why `rank_sols.py` measures from the turn.
+
+## Level 21+ safe ending
+
+`L21_safe141.json` is the 118 up to move 110, then a 31-move ending: after move 113 (up the middle-left corridor
+to the top row) go right along the top, up into the top-right corner, back left along row 5, down the long
+corridor, along the bottom, out the right tunnel, up the left side, and eat the top-left dots last.
+
+Why: the 118's ending (moves 111–118) is fine on time, but if earlier presses drift, blue's loop can meet you in
+the top left. `harness/drift_end.py` plays the 118 with every turn from move 80 to move 110 pressed 1–2 frames
+late with chance 0.3, then tries each ending. With the ending also pressed sloppily, the 141 survived 46/46 games,
+the 118's ending 33/46. With an on-time ending it survived 44/44. It was found by `search.py --history-sims` on 24
+such games (`harness/drift_hist.py`), so every one of them had to survive. Drift spread over the first half of the
+route usually kills the 118 at moves 37, 45–46 or 78 anyway; this only fixes the end.

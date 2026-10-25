@@ -360,3 +360,4 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   Fresh drift (`drift_L21_ends_v_s4_e1`, sloppy ending presses too): s141 46/46, s128 38/46, 118 33/46, user 23/46.
   `drift_L21_ends_v_s5_e0` (on-time ending): s141 44/44, s128 43/44. On time the closest ghost is 20 px (last move).
 - Video: `video_route.py result_L21_safe141.json 21 L21_safe141_level21 --annotate` -> clears at 3727 fr (61.5 s).
+- Annotated videos for every README video (L1-4, 5-20 L5/L20, 118, safe141, speed 2458; same names); best/L21_safe141*.png sheets; READMEs + HANDOFF list the safe ending; 118 time corrected to 3040 fr (~50 s).

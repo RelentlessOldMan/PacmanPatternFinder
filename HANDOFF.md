@@ -11,9 +11,12 @@ Rules: no reversing (double-backing) inside a pattern; on the high-value fruit l
 - **5–20:** `best/L5-20_keep70_115.json`, 115 moves / 78 turns: the user's memorized 99/67
   (`best/L5-20_nopockets_99.json`) for 70 moves, then new. Eats both fruits, leaves the corner pockets to eat by
   hand, and survives any single press 1-4 frames late on every level 5-20. How it was found: `harness/RUNS.md`.
-- **21+:** `best/L21_full_118.json`, 118 moves / 88 turns, full clear with both keys, ~48 s. Its first
+- **21+:** `best/L21_full_118.json`, 118 moves / 88 turns, full clear with both keys, ~50 s. Its first
   15 moves are the 5–20 route. Found with `l21_sweep.sh` (searches seeded with 5–20 prefixes) and
   picked with `rank_sols.py`.
+- **21+ safe ending:** `best/L21_safe141.json`, the 118 to move 110 then a 31-move ending that survives blue
+  being out of place (~61 s). Found with `search.py --history-sims` on drifted games from `drift_hist.py`;
+  checked with `drift_end.py` (see `best/README.md`).
 - `best/README.md` has the timing data; `harness/pattern_sheet.py` draws the pattern sheets.
 - Compared with Goodrich's published 9th key pattern (`harness/goodrich.py`, played with the
   `reverse` server command for its one mid-corridor turnaround): 117 moves / 84 turns, ~53 s; it clears
