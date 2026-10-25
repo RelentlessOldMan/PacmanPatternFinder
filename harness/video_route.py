@@ -1,7 +1,7 @@
 """video_route.py <route.json> <level> <name> [--annotate]: record a route played exactly on time in stock MAME 0.289
 (replay_route.play, so "x" turn-backs and late presses like "R9" work) to snap/<name>.avi, then
-videos/<name>.mp4 with ffmpeg. --annotate adds a bar under the maze: the move number and press, with late presses
-("R pressed 9 frames late") and turn-backs called out."""
+videos/<name>.mp4 with ffmpeg. --annotate adds one line under the maze: the move number and press (late presses like
+"right 9 frames late" in yellow) and the frame count."""
 import json, subprocess, sys
 from pathlib import Path
 from replay_route import play
@@ -44,24 +44,21 @@ def esc(s):
 vf = "scale=iw*3:ih*3:flags=neighbor"
 if annotate:
     FONT = "C\\:/Windows/Fonts/consola.ttf"
-    BAR = 150
+    BAR, SIZE = 60, 28
     parts = [vf, f"pad=iw:ih+{BAR}:0:0:color=black"]
     toks, word = tokens(route), {"L": "left", "R": "right", "U": "up", "D": "down"}
-    total = len(toks)
+    y = f"h-{BAR}+(({BAR}-{SIZE})/2)"
     for i, m in enumerate(toks):
         a, b = (ends[i - 1] if i else 0), ends[i] - 1
         if m[0] == "x":
-            what, color = "turn back on an exact tile", "white"
+            what, color = "turn back", "white"
         elif len(m) > 1:
-            what, color = f"{word[m[0]]} pressed {m[1:]} frame{'s' if m[1:] != '1' else ''} late", "yellow"
+            what, color = f"{word[m[0]]} {m[1:]} frame{'s' if m[1:] != '1' else ''} late", "yellow"
         else:
-            what, color = word[m], "gray"
-        hold = b + (60 if len(m) > 1 and m[0] != "x" else 0)  # keep a late press up a second
-        parts.append(f"drawtext=fontfile='{FONT}':text='{esc(f'move {i + 1}/{total}')}':x=24:y=h-{BAR - 18}:"
-                     f"fontsize=40:fontcolor=white:enable='between(n,{a},{b})'")
-        parts.append(f"drawtext=fontfile='{FONT}':text='{esc(what)}':x=24:y=h-{BAR - 78}:fontsize=40:"
-                     f"fontcolor={color}:enable='between(n,{a},{hold})'")
-    parts.append(f"drawtext=fontfile='{FONT}':text='%{{eif\\:n\\:d}} fr':x=w-tw-24:y=h-{BAR - 18}:fontsize=40:"
+            what, color = word[m], "white"
+        parts.append(f"drawtext=fontfile='{FONT}':text='{esc(f'move {i + 1}  {what}')}':x=24:y={y}:"
+                     f"fontsize={SIZE}:fontcolor={color}:enable='between(n,{a},{b})'")
+    parts.append(f"drawtext=fontfile='{FONT}':text='%{{eif\\:n\\:d}} fr':x=w-tw-24:y={y}:fontsize={SIZE}:"
                  f"fontcolor=white")
     script = ROOT / "snap" / f"{name}.filter"
     script.write_text(",\n".join(parts))
