@@ -502,3 +502,9 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
     Verified by `verify_inputs.py`: the run's per-frame joystick replayed alone on a fresh pacemu clears in 2410, no
     catch; same frame convention as replay_route.py (frames since the load + 1; the 2438 gives 2438).
     Saved as `best/L21_speed_2410.json` (walk, late presses, per-frame inputs). avoid1m and keep40m: no clear.
+- `polish.py ../best/L21_speed_2410.json result_L21_polish_2410.json --jobs 4` -> `polish_2410.log`: hill climb on the
+  2410 walk (loop reversals / 2-opt anywhere, span 30, no longer; late presses -3..+8, new ones 1..12; beam 6 within
+  best+3, fruit-miss fails).
+- `reorder4_{fv2,keep40,avoid1}m.log`: reorder.py wider (beam 32, before 60, slack 10, kmax 20, budget 90).
+  - **Result `reorder4_avoid1m.log`: 2394 frames (39.50 s), both fruits (1185, 2096) - NEW BEST.** avoid1 mirrored +
+    2-opt(75,79), 2-opt(110,117), late 238:8. Verified by input replay (`verify_inputs.py`). `best/L21_speed_2394.json`.

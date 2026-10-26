@@ -1,0 +1,4 @@
+[cw] Started pid 28176 (full).
+base ('caught', 670, 93, 0)
+round 1: 390 tried, best progress 145 / 349 (frame 1006, [('2opt', 84, 87)]), 9s, best clear -
+round 2: 4425 tried, best progress 185 / 351 (frame 1249, [('2opt', 84, 87), ('2opt', 102, 104)]), 163s, best clear -
