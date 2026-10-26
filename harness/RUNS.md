@@ -377,3 +377,56 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   Floor by then: 3 empty by dot 26, 9 by dot 60.
 - Late presses cost ~20 frames (move 60 R9: 38 fr for 4 tiles vs ~22; move 79 R8: 29 for 3 vs ~19).
 - Gap 101 frames ~ 13 extra empty tiles (~87) + waits; sub-40 needs ~2-3 fewer empty tiles net.
+
+## 2026-10-25 L21 speed: rebuild a block of moves (`window.py`, `window_search.py`)
+- `window.py <route> a b out [--free] [--ks] [--slack]`: depth-first over every way through moves a..b on pacemu (exits,
+  turn-backs, late turns), pruned on frames + 6/dot; default: the same dots as the old moves, then the old suffix as is.
+  Its own frame count is 1 low (msave's wait) but constant; ways are replayed from the start before reporting.
+- 2438 moves 5-18, same dots: `--ks 0`: only the old way (353, suffix clears 2438). `--slack 15`, ks 0-8: one more
+  way (369, suffix dies at move 22). The opening is tight for its own dot set.
+- `--free --ks 0` (any dots, done at >= 27; fastest way to each end state; score = frames - 6.7/extra dot):
+  `win_L21_2438_5-18_free_k0.{json,log}`: 59683 nodes, 13520 ways, 117 s; top 40 kept, e.g. RDRDRURUL 271 fr for
+  40 dots (old 352 for 37). All die on the old suffix (other dots).
+- `window_search.py win_L21_2438_5-18_free_k0.json w518 --jobs 3`: each of the 40 --prefix'ed (moves 1-4 + the way),
+  the rest re-searched with the climb settings (beam 150) -> `winsearch/w518_*`, `winsearch_w518.txt`.
+- w518 re-searches (stopped after 8 of 40): 2756, 2826, 2883, 2903, 2946, 3013, 3013, no-clear. Fast openings leave
+  the dots badly; the 2438's early detours pay off later.
+- window.py fixes: same-dots ways must also end where the old moves pick up (tile + heading); fruits tracked (seg's
+  fruits= is per move: summed); frame count: after msave/mload every move's count misses 1 frame (the load's wait;
+  measured, scratchpad fcheck.py), so the search adds 1 a move; now matches replay exactly.
+- `sweep_window.sh` -> `sweep_window.txt` (12-move same-dots windows every 4 moves, ks 0-8; run before the fruit/frame
+  fixes, results replayed so valid): 19 ways, none faster with the old suffix. "Faster" ways were the old window with
+  a late press dropped (49-60 R9, 73-84 R8: they die later) or (73-84, before the fruit fix) skipping fruit 2.
+- New `--finish LIMIT` (every way from move a to the game's clear with both fruits in <= LIMIT frames), `--max-nodes`.
+  2438 --finish 2422: from 89, 85: 0 ways (39, 145 nodes); 81: 0 (837 nodes; 2438 itself is the only finish under 2439).
+- `sweep_finish.sh` -> `sweep_finish.txt`: --finish 2422 from a = 81, 77, .., 41, 300k-node cap each.
+
+## 2026-10-25 finish sweep 2 (sweep_finish2.sh -> sweep_finish2.txt)
+- The first finish sweep was wrong: window.py keyed duplicates on (tile, heading, dots, fruits) without the ghosts, so a
+  faster way that dies later hid a slower one that lives. From move 73 with limit 2438 it never found the 2438's own
+  ending. Its "no sub-40 after move 73" does not hold.
+- window.py now: duplicates also keyed on the ghost bytes (0x4D00-07); dots kept as a bitmask; prunes on frames +
+  6.2 x MST tiles (Pac-Man + dots left, maze distance; mst_bound.py, calibrated on 4 clears, worst 7.70 fr/tile) - 20;
+  tries the old route's move first; --trace says where the old route gets cut. From 73 at limit 2438 it now finds the
+  2438 in 3001 nodes.
+- Sweep: --finish 2422 from 81, 77, 73, 65, 61, 57 (69 skipped: its old move is D1, not in ks), cap 1.5M nodes.
+
+## 2026-10-25 full game on pacemu (full_run.py 255 -> full_run.json)
+- One continuous game from coin-up: all-ghost routes on 1-4, the 131-move full clear (result_pockets_p84.json, 1 fruit,
+  no ghosts) on 5-20, the 2438 on 21-255, then stand still on 256 until game over (4 lives: 3 + bonus at 10,000).
+- Every level cleared. Coin to level 1 start 931 fr; between levels 352-356 fr, with an intermission 862-987 fr
+  (after 2, 5, 9, 13, 17); 256: a death every ~828 fr, game over 3036 fr in.
+- Total 746,849 fr = 3:25:23 at 60.606 Hz. A ghost eaten freezes the game ~60 fr (measured on L1), so eating all 16
+  on 5-16 and 18 adds >= 12,480 fr (3:26) before detours: 3:28:49, David Race's perfect-game record time.
+
+### L21 speed: David Race's pattern as a seed (2026-10-25)
+- Traced Race's level-21 route from his 2013 record video (N4CtIgDZs9E, ~1557-1603 s; dot-eat times read off the
+  CRT footage) -> `race21_walk.json` (312 tiles, all 244 dots, never on the fruit tile). Opening: right, down col 18,
+  bottom row to the left, up the left side; one booey through Clyde at (2-3,26) ~frame 247.
+- Replaying his path frame by frame on pacemu dies at (3,26) to Clyde for start delays 0-20 x late presses on the
+  four turns before it (~4,600 variants): the pass-through needs pixel-exact alignment (Pac-Man x 8m vs Clyde 8m-1).
+- `sweep_race.sh` -> `sweep_race.txt`: guided search on his dot order, G {10,3} x need-fruits {2,0}, W 25 cc 40 booey 12.
+  Result (`sweep_race.txt`): all replay as full clears, none near 2438. Best 2535 (f0 G 3, 1 fruit), then 2782
+  (G 10, both fruits; f2 and f0 found the same route), 2978 (f2 G 3). The search can't open like Race does (an
+  immediate reverse to the right at the start, which the move format can't express), so it falls off his order
+  from the first move.
