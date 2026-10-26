@@ -109,3 +109,4 @@
 71 L | clear 111/111 moves 2642 frames 43.59s
 58 U4 | clear 105/105 moves 2580 frames 42.57s
 72 R6 | clear 99/99 moves 2448 frames 40.39s
+14 D2 | clear 127/127 moves 2845 frames 46.94s

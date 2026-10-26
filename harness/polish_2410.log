@@ -2,3 +2,12 @@
 start ('clear', 2410, 349, 2)
 round 1: 877 tried, 35 within best+3, best 2410, 24s
 round 2: 5178 tried, 166 within best+3, best 2410, 176s
+round 3: 5121 tried, 149 within best+3, best 2410, 336s
+round 4: 5131 tried, 134 within best+3, best 2410, 507s
+round 5: 5127 tried, 129 within best+3, best 2410, 679s
+round 6: 5106 tried, 107 within best+3, best 2410, 861s
+round 7: 5075 tried, 110 within best+3, best 2410, 1039s
+round 8: 5122 tried, 141 within best+3, best 2410, 1226s
+round 9: 5128 tried, 134 within best+3, best 2410, 1415s
+round 10: 5087 tried, 108 within best+3, best 2410, 1603s
+round 11: 5075 tried, 84 within best+3, best 2410, 1800s

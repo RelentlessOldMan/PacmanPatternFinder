@@ -76,18 +76,18 @@ kill it versus 31 for the 118/88 (`harness/goodrich_late.py`).
 
 ### Level 21+ speed run (just for fun)
 
-Video: [level 21 in 2438 frames](videos/L21_speed_2438_level21_annotated.mp4) (40.23 s from start to clear,
-both fruits eaten; [without the annotation](videos/L21_speed_2438_level21.mp4)). The previous best,
-[2458 frames](videos/L21_speed_2458_level21.mp4) (40.56 s), is `harness/result_L21_guide_gc10_sl25_cc40.json`. Route: `best/L21_speed_2438.json`, 100 moves with 12 turn-backs and 4 deliberately late presses.
-It is frame-exact (the late presses make ghosts miss by a few pixels; it never passes through one), so it is
-not meant for human play. The late presses, counting moves from 1 and frames from when Pac-Man is within
-4 pixels of the turn (at a corner he stops at the wall and waits): move 60 R, 9 frames late; move 67 L, 2 late;
-move 69 D, 1 late; move 79 R, 8 late. Every other move is pressed as early as possible, and the turn-backs
-happen on exact tiles. The fastest
-possible clear with no ghosts at all is about 2337 frames. Found by `harness/climb.py`: change one move of the
-best route, search again from there, and keep the result if it is faster. The log is in `harness/RUNS.md`.
+Video: [level 21 in 2367 frames](videos/L21_speed_2367_level21.mp4) (39.06 s from start to clear, both fruits
+eaten). Route: `best/L21_speed_2367.json`. It is frame-exact and not meant for human play: it is stored as the
+tile walk Pac-Man takes plus the joystick direction held on every frame, and replaying just those inputs in
+stock MAME 0.289 clears in 2367 frames (`harness/video_walk.py`).
 
-![Level 21 speed run](best/L21_speed_2438_screen.png)
+How it was found: start from a shortest ghost-free walk that eats every dot (`harness/floor.py`), mirror it left to
+right (the maze is symmetric, but the ghosts are not, so the mirrored walk meets them later), then reorder it:
+reverse stretches of the walk, reconnect them by shortest paths, and press a few turns a few frames late, playing
+every candidate with the real ghosts and keeping the ones that get furthest (`harness/reorder.py`). A fruit that
+disappears uneaten counts as a failure. The 2367 is one such walk, mirrored, with six stretches reversed and two
+turns pressed late. The fastest possible clear with no ghosts at all is about 2337 frames. The log is in
+`harness/RUNS.md`.
 
 ## Running it
 

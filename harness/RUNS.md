@@ -530,3 +530,11 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   - polish_2367 finished: 50 rounds, ~5,150 neighbours a round, no gain (2367 is a local optimum for these moves).
   - Seed sweep (to 06:42): keep40 2391, avoid1 2394/2415, w6 seeds no gain; best stays **2367**.
   - Stopped at 07:00 (user's reset). Final overnight best: **2367** (`best/L21_speed_2367.json`).
+
+## 2026-10-26: 2367 video; 2438 retired
+- `server.lua` gets `joy <dir>` (hold a direction until the next joy); new `harness/video_walk.py` replays a walk
+  route's per-frame `inputs` in stock MAME 0.289 and records it. `video_walk.py ../best/L21_speed_2367.json
+  L21_speed_2367_level21 --annotate` -> clear, 244 dots, score 12600 (both fruits), 2367 frames since load + 1.
+  Video: `videos/L21_speed_2367_level21.mp4`.
+- Removed the 2438/2458 videos and `best/L21_speed_2438.*` (user: no longer needed); README speed section now
+  describes the 2367.

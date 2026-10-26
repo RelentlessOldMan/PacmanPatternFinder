@@ -305,6 +305,9 @@ H.run(function()
       if a ~= "" then manager.machine.video:begin_recording(a, "avi") else manager.machine.video:end_recording() end
       reply("ok")
     elseif cmd == "wait" then H.wait(tonumber(a)); reply("ok")
+    elseif cmd == "joy" then
+      -- hold a direction ("U","D","L","R"; nothing = centered) until the next joy: per-frame input replays
+      H.joy(a ~= "" and a or nil); reply("ok")
     elseif cmd == "prof" then
       -- profiling: seconds spent in this script's frame steps since the last "prof"
       reply(string.format("ok %.6f", H.lua_ticks / emu.osd_ticks_per_second())); H.lua_ticks = 0

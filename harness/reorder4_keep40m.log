@@ -9,3 +9,9 @@ round 4: 3986 tried, best progress 295 / 341 (frame 2031, [('2opt', 23, 29), (11
   CLEAR 2391 fruits 2 via [('2opt', 23, 31), (11, 73), ('late', 132, 9), (165, 291), ('2opt', 230, 250)]
   CLEAR 2391 fruits 2 via [('2opt', 23, 31), (11, 73), ('late', 132, 9), (165, 291), ('2opt', 231, 249)]
 round 5: 4922 tried, best progress 331 / 347 (frame 2290, [('2opt', 23, 31), (11, 73), ('2opt', 86, 116), ('late', 172, 6), ('2opt', 259, 280)]), 965s, best clear 2391
+round 6: 3387 tried, best progress 334 / 347 (frame 2285, [('2opt', 23, 31), (11, 73), ('2opt', 114, 120), (167, 293), ('2opt', 214, 249), (218, 272)]), 1304s, best clear 2391
+round 7: 2642 tried, best progress 334 / 347 (frame 2286, [('2opt', 23, 31), (11, 73), ('late', 126, 8), (165, 291), ('2opt', 212, 247), (216, 270), ('2opt', 312, 317)]), 1594s, best clear 2391
+round 8: 1720 tried, best progress 344 / 347 (frame 2390, [('2opt', 23, 31), (11, 73), ('late', 126, 8), (165, 291), ('2opt', 212, 247), (216, 270), ('2opt', 314, 316), ('late', 321, 20)]), 1816s, best clear 2391
+round 9: 690 tried, best progress - / - (frame -, ), 1894s, best clear 2391
+done (2391, [('2opt', 23, 31), (11, 73), ('late', 126, 8), (165, 291), ('2opt', 230, 250)])
+[cw] Exited with code 0.

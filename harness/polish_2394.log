@@ -3,3 +3,34 @@ start ('clear', 2394, 345, 2)
 round 1: 809 tried, 110 within best+3, best 2394, 38s
 round 2: 4744 tried, 586 within best+3, best 2394, 260s
 round 3: 4673 tried, 551 within best+3, best 2394, 487s
+round 4: 4695 tried, 478 within best+3, best 2394, 701s
+round 5: 4671 tried, 476 within best+3, best 2394, 930s
+round 6: 4676 tried, 275 within best+3, best 2394, 1160s
+round 7: 4669 tried, 399 within best+3, best 2394, 1406s
+round 8: 4652 tried, 520 within best+3, best 2394, 1610s
+round 9: 4644 tried, 536 within best+3, best 2394, 1813s
+round 10: 4671 tried, 555 within best+3, best 2394, 2033s
+round 11: 4679 tried, 471 within best+3, best 2394, 2257s
+round 12: 4638 tried, 468 within best+3, best 2394, 2482s
+round 13: 4662 tried, 267 within best+3, best 2394, 2703s
+round 14: 4672 tried, 392 within best+3, best 2394, 2925s
+round 15: 4661 tried, 372 within best+3, best 2394, 3141s
+round 16: 4646 tried, 382 within best+3, best 2394, 3356s
+round 17: 4679 tried, 405 within best+3, best 2394, 3572s
+round 18: 4669 tried, 364 within best+3, best 2394, 3786s
+round 19: 4642 tried, 361 within best+3, best 2394, 4001s
+round 20: 4652 tried, 246 within best+3, best 2394, 4219s
+round 21: 4657 tried, 410 within best+3, best 2394, 4443s
+round 22: 4654 tried, 493 within best+3, best 2394, 4660s
+round 23: 4642 tried, 501 within best+3, best 2394, 4873s
+round 24: 4665 tried, 520 within best+3, best 2394, 5079s
+round 25: 4666 tried, 430 within best+3, best 2394, 5287s
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Program Files\Python312\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\multiprocessing\spawn.py", line 132, in _main
+    self = reduction.pickle.load(from_parent)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\multiprocessing\connection.py", line 1166, in rebuild_pipe_connection
