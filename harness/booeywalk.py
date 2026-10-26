@@ -11,13 +11,15 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 srv = None
 P = DIRS = None
+FRUIT_FAIL = False  # reorder.py: a fruit that vanishes uneaten ends the run like a catch ("fruitmiss")
 
 
 def init(walk):
     global srv, P, DIRS
     import maze
     from emu_server import Server
-    srv = Server(); srv.handle("newgame"); srv.handle("level 21"); srv.handle("msave s")
+    if srv is None:
+        srv = Server(); srv.handle("newgame"); srv.handle("level 21"); srv.handle("msave s")
     P = [tuple(t) for t in walk]
     DIRS = [next(d for d in "LRUD" if maze.step(*P[i], d) == P[i + 1]) for i in range(len(P) - 1)]
 
@@ -31,6 +33,7 @@ def play(late, delay=0, stop_frame=4000):
     f0 = srv.frame - 1
     k, h, on_since, last_t = 0, "L", 0, None
     fruits, score = 0, srv.score()
+    fruit_up = False
     while True:
         t = srv.tile(); fr = srv.frame - f0
         if t != last_t: on_since, last_t = fr, t
@@ -55,8 +58,13 @@ def play(late, delay=0, stop_frame=4000):
         srv.joy(want); h = want or h
         srv.wait(1)
         s2 = srv.score()
-        if s2 - score == 5000: fruits += 1  # level 21's key
+        ate = s2 - score >= 5000  # level 21's key (5000; + a dot's 10 on the same frame)
+        if ate: fruits += 1
         score = s2
+        up = srv.rd(0x4DD2) != 0  # fruit sprite x; 0 when no fruit is out
+        if FRUIT_FAIL and fruit_up and not up and not ate:
+            return "fruitmiss", srv.frame - f0, k, fruits
+        fruit_up = up
         if srv.rd(0x4DA5): return "caught", srv.frame - f0, k, fruits
         if srv.dots() >= 244: return "clear", srv.frame - f0, k, fruits
         if srv.frame - f0 > stop_frame: return "stop", srv.frame - f0, k, fruits

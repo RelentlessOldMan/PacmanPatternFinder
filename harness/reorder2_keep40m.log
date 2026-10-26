@@ -1,0 +1,30 @@
+[cw] Started pid 48076 (full).
+base ('caught', 601, 83, 0)
+round 1: 232 tried, best progress 99 / 341 (frame 696, [('2opt', 64, 67)]), 5s, best clear -
+round 2: 1724 tried, best progress 135 / 341 (frame 933, [('2opt', 64, 67), (11, 73)]), 51s, best clear -
+round 3: 1555 tried, best progress 276 / 343 (frame 1923, [('2opt', 34, 36), (11, 73), ('2opt', 86, 116)]), 105s, best clear -
+round 4: 877 tried, best progress 315 / 345 (frame 2156, [('2opt', 54, 58), (11, 71), ('2opt', 89, 92), (174, 300)]), 154s, best clear -
+  CLEAR 2383 fruits 0 via [('2opt', 64, 67), (11, 73), ('2opt', 88, 116), (174, 300), (185, 301)]
+  CLEAR 2383 fruits 0 via [('2opt', 34, 36), (11, 73), ('2opt', 88, 116), (174, 300), (185, 301)]
+round 5: 771 tried, best progress 327 / 345 (frame 2279, [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 223, 6), (262, 284)]), 210s, best clear -
+  CLEAR 2407 fruits 1 via [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 223, 7), (262, 284), ('late', 303, 1)]
+  CLEAR 2407 fruits 1 via [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 223, 7), (262, 284), ('late', 303, 3)]
+  CLEAR 2407 fruits 1 via [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 223, 7), (262, 284), ('late', 306, 2)]
+  CLEAR 2407 fruits 1 via [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 223, 7), (262, 284), ('late', 309, 3)]
+  CLEAR 2407 fruits 1 via [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 223, 7), (262, 284), ('late', 316, 2)]
+  CLEAR 2407 fruits 1 via [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 234, 7), (262, 284), ('late', 303, 1)]
+  CLEAR 2407 fruits 1 via [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 234, 7), (262, 284), ('late', 303, 3)]
+  CLEAR 2407 fruits 1 via [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 234, 7), (262, 284), ('late', 306, 2)]
+  CLEAR 2407 fruits 1 via [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 234, 7), (262, 284), ('late', 309, 3)]
+  CLEAR 2407 fruits 1 via [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 234, 7), (262, 284), ('late', 316, 2)]
+round 6: 753 tried, best progress 329 / 345 (frame 2292, [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 223, 7), (262, 284), ('late', 303, 2)]), 267s, best clear -
+  CLEAR 2407 fruits 1 via [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 223, 7), (262, 284), ('late', 303, 2), ('late', 319, 1)]
+  CLEAR 2407 fruits 1 via [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 223, 7), (262, 284), ('late', 303, 2), ('late', 322, 1)]
+  CLEAR 2407 fruits 1 via [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 223, 7), (262, 284), ('late', 306, 3), ('late', 319, 1)]
+  CLEAR 2407 fruits 1 via [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 223, 7), (262, 284), ('late', 306, 3), ('late', 322, 1)]
+  CLEAR 2407 fruits 1 via [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 223, 7), (262, 284), ('late', 309, 2), ('late', 319, 1)]
+  CLEAR 2407 fruits 1 via [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 223, 7), (262, 284), ('late', 309, 2), ('late', 322, 1)]
+round 7: 718 tried, best progress 328 / 345 (frame 2299, [('2opt', 64, 67), (11, 73), ('2opt', 86, 115), ('late', 223, 8), ('late', 241, 12), ('late', 300, 9), ('late', 316, 1)]), 316s, best clear -
+round 8: 105 tried, best progress - / - (frame -, ), 324s, best clear -
+done None
+[cw] Exited with code 0.

@@ -1,0 +1,13 @@
+[cw] Started pid 25188 (full).
+base ('caught', 670, 93, 0)
+round 1: best progress 145 / 343 (frame 1006, [('2opt', 84, 87)]), 137 walks, 34s, best clear -
+round 2: best progress 154 / 343 (frame 1053, [('2opt', 85, 87), ('2opt', 85, 87)]), 226 walks, 63s, best clear -
+round 3: best progress 156 / 343 (frame 1092, [('2opt', 83, 95), ('2opt', 86, 101), ('2opt', 113, 133)]), 276 walks, 81s, best clear -
+round 4: best progress 162 / 343 (frame 1122, [('2opt', 83, 95), ('2opt', 86, 101), ('2opt', 113, 133), (118, 142)]), 341 walks, 99s, best clear -
+round 5: best progress 174 / 343 (frame 1200, [('2opt', 83, 95), ('2opt', 86, 101), ('2opt', 113, 133), ('2opt', 119, 142), ('2opt', 115, 119)]), 420 walks, 124s, best clear -
+round 6: best progress 211 / 343 (frame 1436, [('2opt', 83, 95), ('2opt', 86, 101), ('2opt', 113, 133), ('2opt', 119, 142), ('2opt', 115, 119), (171, 269)]), 494 walks, 149s, best clear -
+round 7: best progress 245 / 343 (frame 1664, [('2opt', 83, 95), ('2opt', 86, 101), ('2opt', 113, 133), ('2opt', 119, 142), ('2opt', 115, 119), (171, 269), (184, 274)]), 621 walks, 191s, best clear -
+round 8: best progress 224 / 343 (frame 1521, [('2opt', 83, 95), ('2opt', 86, 101), ('2opt', 113, 133), ('2opt', 119, 142), ('2opt', 115, 119), (172, 270), (182, 270), (168, 178)]), 633 walks, 200s, best clear -
+round 9: best progress - / 343 (frame -, ), 640 walks, 204s, best clear -
+done None
+[cw] Exited with code 0.

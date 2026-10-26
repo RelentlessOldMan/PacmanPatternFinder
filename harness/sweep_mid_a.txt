@@ -7,3 +7,6 @@ window moves 28-40: ULDLUUUx1LURUL, 30 dots, old frames at b 979
 7894 nodes, 1 ways through, 96s
   ULDLUUUx1LURUL               at b 979 (search 979, old 979) dots 99  suffix clear  2438
 == 38-50
+window moves 38-50: RULDxRRDRx1LLx, 36 dots, old frames at b 1225
+54108 nodes, 1 ways through, 826s
+  RULDxRRDRx1LLx               at b 1225 (search 1225, old 1225) dots 123  suffix clear  2438

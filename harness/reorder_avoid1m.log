@@ -1,0 +1,8 @@
+[cw] Started pid 49256 (full).
+base ('caught', 748, 107, 0)
+round 1: best progress 158 / 337 (frame 1092, [('2opt', 70, 73)]), 142 walks, 36s, best clear -
+round 2: best progress 230 / 337 (frame 1565, [('2opt', 104, 107), ('2opt', 114, 130)]), 478 walks, 122s, best clear -
+round 3: best progress 244 / 337 (frame 1685, [('2opt', 84, 86), ('2opt', 103, 107), ('2opt', 198, 202)]), 568 walks, 154s, best clear -
+round 4: best progress - / 337 (frame -, ), 618 walks, 172s, best clear -
+done None
+[cw] Exited with code 0.

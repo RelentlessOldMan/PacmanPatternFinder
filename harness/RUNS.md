@@ -476,3 +476,24 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   - pairs of late presses (1-20) on the last 6 turns before the floor walk's first catch -> `bw_pairs_first.log`.
   - Result `bw_pairs_first.log`: 0 of 6,000 pairs (turns 34-61, 1-20 frames late each) pass the floor walk's first
     catch. A fixed ghost-free walk can't be timed past Pinky there; its dot counts (speed phase) would have to change.
+  - Result `sweep_mid_a.txt`: 38-50 also has only the 2438's own way through (54k nodes, complete).
+- `reorder.py` (user's idea, 2026-10-26: the ghost-free walk doubles back a lot and the maze is symmetric, so
+  mirroring/reordering it keeps the length but changes eat order -> speed phase and positions at each catch).
+  Moves: reverse a stretch that starts and ends on one tile; 2-opt (reverse P[i..j], reconnect by shortest paths,
+  <= 6 extra tiles); `--mirror` starts from the left-right mirror. Beam 8 by progress with live ghosts.
+  First catch: keep40/trips 490 (idx 68); mirrored: keep40 601 (83), fv2 670 (93), avoid1 748 (107).
+  `reorder_keep40.log`, `reorder_trips.log`: no reordering passes the first catch (beam empty after 4 rounds).
+  Mirrored: `reorder_{keep40,trips,fv2,avoid1}m.log`.
+  - Results (v1, beam 8, reorders only): mirrored keep40/trips reach 271/337 (frame 1885), avoid1 244, fv2 245; then
+    every child is caught (beam empties).
+- Result `sweep_booey.txt` (--booey 24/40, --booey-depth 2/3 on guides): best 2529 (keep40 guide), no gain on 2438.
+- `reorder.py` v2: late presses (last 4 turns before the catch, 1-12 frames, budget 60) as moves too; a child must
+  pass its own parent's catch; at most 3 per progress value in the beam; one emulator per worker (Pool 2).
+  `reorder2_{keep40,fv2,avoid1}m.log` (beam 16, slack 8, mirrored).
+  - Result v2: avoid1 mirrored + 2-opt(94,100) + late 323:4, 329:5, 340:3 CLEARS IN 2391 but eats only the SECOND
+    fruit (frame 2080); the first (out at frame 570) vanishes at 1152 with Pac-Man 3 tiles short (walk idx 168 of 171).
+    Not a valid speed route. keep40m reached 315/345, fv2m 284/351 before the beams emptied.
+  - `booeywalk.py`: fruit counted on a score jump >= 5000; `FRUIT_FAIL` (reorder.py `--fruit-fail`) ends a run when a
+    fruit vanishes uneaten ("fruitmiss"), so the beam works on it like a catch. `reorder_check.py` rebuilds a walk
+    from its move list; `fruitfix.py` tries fruit-tile side trips.
+  - `reorder3_{keep40,fv2,avoid1}m.log`: v2 + --fruit-fail.
