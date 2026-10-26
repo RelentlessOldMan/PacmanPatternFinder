@@ -497,3 +497,8 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
     fruit vanishes uneaten ("fruitmiss"), so the beam works on it like a catch. `reorder_check.py` rebuilds a walk
     from its move list; `fruitfix.py` tries fruit-tile side trips.
   - `reorder3_{keep40,fv2,avoid1}m.log`: v2 + --fruit-fail.
+  - **Result `reorder3_fv2m.log`: 2410 frames (39.77 s), both fruits (frames 1146, 1834) - NEW BEST, sub-40.**
+    fv2 floor walk mirrored + 2-opt(85,87), late 94:12, rev(129,141), late 239:12, 2-opt(242,244), rev(284,340).
+    Verified by `verify_inputs.py`: the run's per-frame joystick replayed alone on a fresh pacemu clears in 2410, no
+    catch; same frame convention as replay_route.py (frames since the load + 1; the 2438 gives 2438).
+    Saved as `best/L21_speed_2410.json` (walk, late presses, per-frame inputs). avoid1m and keep40m: no clear.

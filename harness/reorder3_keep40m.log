@@ -1,1 +1,13 @@
 [cw] Started pid 23856 (full).
+base ('caught', 601, 83, 0)
+round 1: 232 tried, best progress 99 / 341 (frame 696, [('2opt', 64, 67)]), 5s, best clear -
+round 2: 1724 tried, best progress 135 / 341 (frame 933, [('2opt', 64, 67), (11, 73)]), 50s, best clear -
+round 3: 1555 tried, best progress 183 / 345 (frame 1233, [('2opt', 34, 36), (11, 73), ('2opt', 107, 109)]), 101s, best clear -
+round 4: 1015 tried, best progress 315 / 345 (frame 2156, [('2opt', 54, 58), (11, 71), ('2opt', 89, 92), (174, 300)]), 146s, best clear -
+round 5: 976 tried, best progress 319 / 345 (frame 2180, [('2opt', 54, 58), (11, 71), ('2opt', 89, 92), (173, 299), (185, 303)]), 199s, best clear -
+round 6: 874 tried, best progress 318 / 345 (frame 2183, [('2opt', 54, 58), (11, 71), ('2opt', 89, 92), (173, 299), (182, 300), (272, 294)]), 252s, best clear -
+round 7: 771 tried, best progress 326 / 345 (frame 2243, [('2opt', 54, 58), (11, 71), ('2opt', 89, 92), (173, 299), (181, 299), (270, 292), ('late', 300, 6)]), 302s, best clear -
+round 8: 640 tried, best progress 326 / 345 (frame 2243, [('2opt', 54, 58), (11, 71), ('2opt', 89, 92), (173, 299), (181, 299), (270, 292), ('late', 303, 1), ('late', 300, 4)]), 339s, best clear -
+round 9: 178 tried, best progress - / - (frame -, ), 350s, best clear -
+done None
+[cw] Exited with code 0.

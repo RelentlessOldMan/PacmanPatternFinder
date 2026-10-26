@@ -1,1 +1,9 @@
 [cw] Started pid 34728 (full).
+base ('caught', 748, 107, 0)
+round 1: 258 tried, best progress 187 / 345 (frame 1276, [('2opt', 61, 65)]), 7s, best clear -
+round 2: 825 tried, best progress 168 / 345 (frame 1152, [('2opt', 70, 73), ('2opt', 112, 115)]), 43s, best clear -
+round 3: 731 tried, best progress 168 / 345 (frame 1152, [('2opt', 70, 73), ('2opt', 117, 131), ('late', 147, 5)]), 74s, best clear -
+round 4: 646 tried, best progress 167 / 345 (frame 1152, [('2opt', 65, 69), ('late', 147, 2), ('late', 150, 2), ('late', 153, 4)]), 105s, best clear -
+round 5: 190 tried, best progress - / - (frame -, ), 114s, best clear -
+done None
+[cw] Exited with code 0.
