@@ -433,3 +433,6 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
 - New "x0" move (search.rev_spots, with --reverse-any): as the first move, turn right on the start tile, so a
   route can open like Race's (`x0RDLDL...`: right, down col 18, the bottom row; replays on pacemu).
 - `sweep_race2.sh` -> `sweep_race2.txt`: sweep_race.sh again with x0 available.
+  Result (`sweep_race2.txt`): none of the four picked x0 (all open U/L); 2618 (f0 G 3, 1 fruit), 2700, 2740 (f2 G 10),
+  2823. No gain over 2438.
+- `sweep_race3.sh` -> `sweep_race3.txt`: forced prefix `x0RDLDL` (Race's opening to the bottom row), G 3, f {2,0}.
