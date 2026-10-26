@@ -5,3 +5,6 @@ round 3: 5656 tried, best progress 183 / 345 (frame 1233, [('2opt', 62, 64), (11
 round 4: 5067 tried, best progress 291 / 345 (frame 2002, [('2opt', 62, 64), (11, 71), ('2opt', 110, 114), (171, 297)]), 605s, best clear -
 round 5: 4868 tried, best progress 331 / 347 (frame 2270, [('2opt', 26, 30), (11, 71), (50, 58), ('2opt', 152, 155), ('2opt', 197, 247)]), 897s, best clear -
 round 6: 3368 tried, best progress 332 / 347 (frame 2299, [('2opt', 26, 30), (11, 71), (50, 58), ('2opt', 152, 155), ('2opt', 197, 247), ('late', 327, 18)]), 1174s, best clear -
+round 7: 2647 tried, best progress 330 / 347 (frame 2232, [('2opt', 49, 51), (11, 73), ('late', 120, 19), (169, 295), ('2opt', 222, 270), ('2opt', 312, 317), (238, 276)]), 1400s, best clear -
+round 8: 978 tried, best progress - / - (frame -, ), 1480s, best clear -
+done None

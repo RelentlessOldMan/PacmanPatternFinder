@@ -529,3 +529,4 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   `sweep_noise.txt`, `ro6_*.log`: seeds 1-6, noise 40, on keep40 w6 / keep40 / avoid1, mirrored.
   - polish_2367 finished: 50 rounds, ~5,150 neighbours a round, no gain (2367 is a local optimum for these moves).
   - Seed sweep (to 06:42): keep40 2391, avoid1 2394/2415, w6 seeds no gain; best stays **2367**.
+  - Stopped at 07:00 (user's reset). Final overnight best: **2367** (`best/L21_speed_2367.json`).

@@ -2,3 +2,11 @@ base ('caught', 601, 83, 0)
 round 1: 408 tried, best progress 99 / 341 (frame 696, [('2opt', 64, 67)]), 10s, best clear -
 round 2: 5046 tried, best progress 169 / 347 (frame 1140, [('2opt', 54, 58), ('2opt', 81, 87)]), 144s, best clear -
 round 3: 5167 tried, best progress 220 / 343 (frame 1479, [('2opt', 54, 58), (11, 71), ('2opt', 63, 65)]), 345s, best clear -
+round 4: 4492 tried, best progress 291 / 343 (frame 2004, [('2opt', 60, 62), (11, 73), ('2opt', 96, 98), (171, 297)]), 562s, best clear -
+round 5: 4314 tried, best progress 327 / 347 (frame 2232, [('2opt', 67, 69), (11, 73), ('late', 120, 7), (169, 295), ('2opt', 208, 211)]), 807s, best clear -
+round 6: 3269 tried, best progress 328 / 345 (frame 2232, [('2opt', 60, 62), (11, 73), ('late', 120, 13), (169, 295), ('2opt', 220, 258), (224, 276)]), 1045s, best clear -
+round 7: 2766 tried, best progress 330 / 347 (frame 2232, [('2opt', 60, 62), (11, 73), ('late', 120, 13), (169, 295), ('2opt', 220, 258), (224, 276), ('2opt', 314, 316)]), 1262s, best clear -
+round 8: 1451 tried, best progress 330 / 347 (frame 2232, [('2opt', 60, 62), (11, 73), ('late', 120, 13), (169, 295), ('2opt', 218, 256), (218, 260), (221, 259), (224, 278)]), 1382s, best clear -
+round 9: 1102 tried, best progress 328 / 347 (frame 2232, [('2opt', 60, 62), (11, 73), ('late', 120, 13), (169, 295), ('2opt', 218, 256), (218, 260), (219, 261), (225, 279), ('late', 311, 6)]), 1477s, best clear -
+round 10: 300 tried, best progress - / - (frame -, ), 1504s, best clear -
+done None
