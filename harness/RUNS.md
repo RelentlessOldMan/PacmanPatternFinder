@@ -508,3 +508,7 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
 - `reorder4_{fv2,keep40,avoid1}m.log`: reorder.py wider (beam 32, before 60, slack 10, kmax 20, budget 90).
   - **Result `reorder4_avoid1m.log`: 2394 frames (39.50 s), both fruits (1185, 2096) - NEW BEST.** avoid1 mirrored +
     2-opt(75,79), 2-opt(110,117), late 238:8. Verified by input replay (`verify_inputs.py`). `best/L21_speed_2394.json`.
+- `polish.py ../best/L21_speed_2394.json result_L21_polish_2394.json --jobs 3` -> `polish_2394.log`.
+  - **Result `reorder4_keep40m.log`: 2391 frames (39.45 s), both fruits (1136, 2053) - NEW BEST.** keep40 mirrored +
+    2-opt(23,31), rev(11,73), late 126:8, rev(165,291), 2-opt(230,250). Input replay verified. `best/L21_speed_2391.json`
+    (`save_best.py`).

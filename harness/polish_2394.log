@@ -1,0 +1,5 @@
+[cw] Started pid 65888 (full).
+start ('clear', 2394, 345, 2)
+round 1: 809 tried, 110 within best+3, best 2394, 38s
+round 2: 4744 tried, 586 within best+3, best 2394, 260s
+round 3: 4673 tried, 551 within best+3, best 2394, 487s
