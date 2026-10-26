@@ -441,3 +441,26 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
 - `race_corner.py`: `x0RDLDLLUR` + every late press 0-12 on the last four moves (28,561 replays): none gets past
   (3,26); on-time, Clyde catches Pac-Man there at frame 249, the same as the frame-by-frame replay of his path.
   With his opening, his booey can't be reproduced on pacemu by press timing alone.
+
+### Booey study (2026-10-26, scripts in `booey/`)
+- ROM: the game step (0x1017) runs twice a frame (0x052C/0x052F). Each step: tile check (0x171D: Pac-Man's tile bytes
+  4D39/3A vs each ghost's) *before* anyone moves, then Pac-Man moves (0x1806), then the ghosts. So a booey is a tile
+  swap inside one half-frame step, where each actor moves 0 or 1 px. (The pixel check 0x1789 is for blue ghosts only.)
+- Who moves on a step: each actor's 32-bit speed pattern, rotated once per step; a carry out means move 1 px
+  (Pac-Man normal 4D46, Clyde normal 4D7A). Pac-Man's pattern does not rotate while he eats (4D9D: a dot skips 2
+  steps = 1 frame), but keeps rotating while he waits at a wall.
+- A booey needs both on the same step: (1) Pac-Man and the ghost on adjacent pixels across a tile edge, and (2) both
+  speed bits set. Press timing moves (1); only the number of dots eaten so far (mod 8 on L21's pattern) moves (2).
+- The ghost-proof map of Race's opening (PACMAN_NOGHOSTS) showed 184 "passes": false, it sampled once a frame.
+  With live ghosts, all ~10,000 variants (delay 0-20 x late at (1,29) 0-12 x late at (1,26) 0-40) are caught.
+- On row 26 Clyde steps onto a multiple of 8 with Pac-Man's bit also set at frames 242 h2 and 249 h1 (Pac-Man would
+  have to be ~4 px ahead of the fastest replay of Race's opening), 255 h2 (Pac-Man's bit is 0), and 262 h2.
+  `f262.py`: a turn 25-26 frames late at (1,26) puts Pac-Man on px 224 against Clyde's 223, but his bits there are
+  (1,0) where Clyde's are (0,1): caught.
+- Proof (`poke.py`): rotate Pac-Man's speed pattern by k steps at frame 240 (RAM poke, test only) and turn 26 late:
+  k = 1, 4, 6, 8, 10, 11, 13, 15 all booey through Clyde and live. The model holds on pacemu; Race's exact booey
+  needs a speed phase his route doesn't give on pacemu (or his game's level-21 state differs from ours).
+- `booeywalk.py <walk> <out>`: follow a fixed walk with live ghosts; at each catch, beam over late presses on the turns
+  before it. On the 2337 floor walk (`result_floor_L21_2fruit_trips.json`): first catch frame 490, Pinky head-on in
+  column 6 at (6,20), Pac-Man mid dot-stall. No single late press 1-40 on any of the 13 turns before it, nor a start
+  delay 0-29, gets through (Pinky chases, so he re-meets Pac-Man there). `bw_trips_b24.log`: round 1 empty.
