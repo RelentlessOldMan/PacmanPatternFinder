@@ -436,3 +436,8 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   Result (`sweep_race2.txt`): none of the four picked x0 (all open U/L); 2618 (f0 G 3, 1 fruit), 2700, 2740 (f2 G 10),
   2823. No gain over 2438.
 - `sweep_race3.sh` -> `sweep_race3.txt`: forced prefix `x0RDLDL` (Race's opening to the bottom row), G 3, f {2,0}.
+  Result (`sweep_race3.txt`): both 2764 (same route, both fruits). After the forced prefix the search turns up at
+  (12,29) instead of following Race along the bottom row: his corner never gets through.
+- `race_corner.py`: `x0RDLDLLUR` + every late press 0-12 on the last four moves (28,561 replays): none gets past
+  (3,26); on-time, Clyde catches Pac-Man there at frame 249, the same as the frame-by-frame replay of his path.
+  With his opening, his booey can't be reproduced on pacemu by press timing alone.
