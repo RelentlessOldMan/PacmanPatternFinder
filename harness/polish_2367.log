@@ -1,0 +1,54 @@
+[cw] Started pid 37556 (full).
+start ('clear', 2367, 345, 2)
+round 1: 893 tried, 28 within best+3, best 2367, 38s
+round 2: 5282 tried, 112 within best+3, best 2367, 245s
+round 3: 5265 tried, 102 within best+3, best 2367, 447s
+round 4: 5222 tried, 86 within best+3, best 2367, 643s
+round 5: 5146 tried, 88 within best+3, best 2367, 844s
+round 6: 5177 tried, 105 within best+3, best 2367, 1033s
+round 7: 5188 tried, 88 within best+3, best 2367, 1228s
+round 8: 5208 tried, 96 within best+3, best 2367, 1429s
+round 9: 5183 tried, 81 within best+3, best 2367, 1613s
+round 10: 5143 tried, 74 within best+3, best 2367, 1795s
+round 11: 5194 tried, 94 within best+3, best 2367, 1979s
+round 12: 5201 tried, 98 within best+3, best 2367, 2163s
+round 13: 5211 tried, 80 within best+3, best 2367, 2347s
+round 14: 5163 tried, 65 within best+3, best 2367, 2529s
+round 15: 5150 tried, 87 within best+3, best 2367, 2708s
+round 16: 5179 tried, 92 within best+3, best 2367, 2889s
+round 17: 5150 tried, 101 within best+3, best 2367, 3069s
+round 18: 5156 tried, 107 within best+3, best 2367, 3251s
+round 19: 5139 tried, 82 within best+3, best 2367, 3434s
+round 20: 5121 tried, 81 within best+3, best 2367, 3625s
+round 21: 5119 tried, 92 within best+3, best 2367, 3823s
+round 22: 5137 tried, 100 within best+3, best 2367, 4015s
+round 23: 5145 tried, 90 within best+3, best 2367, 4210s
+round 24: 5143 tried, 79 within best+3, best 2367, 4386s
+round 25: 5129 tried, 71 within best+3, best 2367, 4551s
+round 26: 5122 tried, 74 within best+3, best 2367, 4696s
+round 27: 5147 tried, 91 within best+3, best 2367, 4842s
+round 28: 5147 tried, 93 within best+3, best 2367, 4989s
+round 29: 5144 tried, 97 within best+3, best 2367, 5137s
+round 30: 5128 tried, 78 within best+3, best 2367, 5327s
+round 31: 5107 tried, 79 within best+3, best 2367, 5529s
+round 32: 5119 tried, 97 within best+3, best 2367, 5728s
+round 33: 5138 tried, 86 within best+3, best 2367, 5926s
+round 34: 5171 tried, 102 within best+3, best 2367, 6130s
+round 35: 5119 tried, 76 within best+3, best 2367, 6332s
+round 36: 5086 tried, 75 within best+3, best 2367, 6529s
+round 37: 5138 tried, 72 within best+3, best 2367, 6730s
+round 38: 5144 tried, 97 within best+3, best 2367, 6934s
+round 39: 5117 tried, 72 within best+3, best 2367, 7131s
+round 40: 5112 tried, 61 within best+3, best 2367, 7328s
+round 41: 5144 tried, 98 within best+3, best 2367, 7530s
+round 42: 5150 tried, 94 within best+3, best 2367, 7728s
+round 43: 5166 tried, 100 within best+3, best 2367, 7920s
+round 44: 5139 tried, 105 within best+3, best 2367, 8114s
+round 45: 5145 tried, 86 within best+3, best 2367, 8305s
+round 46: 5123 tried, 84 within best+3, best 2367, 8494s
+round 47: 5146 tried, 103 within best+3, best 2367, 8682s
+round 48: 5150 tried, 89 within best+3, best 2367, 8872s
+round 49: 5182 tried, 106 within best+3, best 2367, 9062s
+round 50: 5152 tried, 83 within best+3, best 2367, 9252s
+done 2367
+[cw] Exited with code 0.

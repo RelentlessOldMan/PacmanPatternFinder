@@ -30,3 +30,12 @@ nz_fc1.25_n40_s7 | ok 169/169 moves 3339 frames 55.09s
 nz_fc1.0_n40_s8 | ok 103/103 moves 2502 frames 41.28s
 nz_fc1.25_n40_s8 | ok 145/145 moves 3109 frames 51.30s
 nz_fc1.25_n15_s8 | ok 146/146 moves 2955 frames 48.76s
+a1s1 | done (2415, [('2opt', 69, 74), ('late', 131, 10), ('late', 287, 4), ('late', 317, 4), ('late', 328, 2)])
+w6s1 | done None
+k40s1 | done None
+w6s2 | done (2391, [('2opt', 23, 31), (11, 73), ('2opt', 113, 119), (167, 293), ('2opt', 246, 248), ('late', 308, 14)])
+k40s2 | done (2391, [('2opt', 23, 31), (11, 73), ('late', 126, 8), (165, 291), ('2opt', 230, 250)])
+a1s2 | done (2394, [('2opt', 76, 80), ('2opt', 125, 131), ('late', 238, 8)])
+a1s3 | done (2394, [('2opt', 76, 80), ('2opt', 110, 117), ('late', 238, 8)])
+k40s3 | done None
+w6s3 | done None

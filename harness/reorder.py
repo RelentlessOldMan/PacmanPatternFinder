@@ -85,6 +85,8 @@ def main():
     ap.add_argument("--jobs", type=int, default=3); ap.add_argument("--back", type=int, default=4)
     ap.add_argument("--kmax", type=int, default=12); ap.add_argument("--budget", type=int, default=60)
     ap.add_argument("--mirror", action="store_true", help="start from the left-right mirror of the walk"); ap.add_argument("--target", type=int, default=2438)
+    ap.add_argument("--seed", type=int, default=0, help="with --noise: random beam ranking")
+    ap.add_argument("--noise", type=float, default=0, help="add uniform 0..noise frames to each kid's rank key")
     ap.add_argument("--walk-index", type=int, help="use walks[i] of the floor file")
     ap.add_argument("--fruit-fail", action="store_true", help="a fruit vanishing uneaten counts as a catch")
     a = ap.parse_args()
@@ -131,7 +133,11 @@ def main():
                 continue
             if r[2] > pk:
                 nxt.append((w, late, hist, r))
-        nxt.sort(key=lambda x: (-x[3][2], x[3][1]))
+        import random
+        rng = random.Random(a.seed * 1000 + rnd)
+        nxt = [(x, x[3][2] * 8 - x[3][1] / 8 + rng.uniform(0, a.noise)) for x in nxt]  # ~8 frames a tile
+        nxt.sort(key=lambda y: -y[1])
+        nxt = [y[0] for y in nxt]
         # diversity: at most 3 kids per progress value
         cnt, beam = {}, []
         for x in nxt:

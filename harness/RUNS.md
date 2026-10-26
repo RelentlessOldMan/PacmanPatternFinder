@@ -521,3 +521,11 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   - **Result `ro5_k40w6m.log`: 2367 frames (39.06 s), both fruits (1136, 2022) - NEW BEST.** keep40 walks[6]
     mirrored + 2-opt(23,31), rev(11,73), 2-opt(112,127), rev(169,295), 2-opt(216,252), rev(219,271), late 311:6,
     324:3. Input replay verified. `best/L21_speed_2367.json`.
+- polish_2394/2391 stopped (no gain); `polish.py ../best/L21_speed_2367.json ...` -> `polish_2367.log`.
+- Result `sweep_reorder.txt`: keep40 walks 1-11 mirrored mostly converge on 2391 (same early reversals); w4 2402,
+  w11 2421, avoid1 w1 2394, trips 2391; unmirrored keep40 2417, avoid1 2436, fv2 2471. Best stays 2367 (w6).
+  polish_2367: 29 rounds, no gain.
+- `reorder.py --seed S --noise N` (beam ranked by progress*8 - frames/8 + uniform 0..N); `sweep_noise.sh` ->
+  `sweep_noise.txt`, `ro6_*.log`: seeds 1-6, noise 40, on keep40 w6 / keep40 / avoid1, mirrored.
+  - polish_2367 finished: 50 rounds, ~5,150 neighbours a round, no gain (2367 is a local optimum for these moves).
+  - Seed sweep (to 06:42): keep40 2391, avoid1 2394/2415, w6 seeds no gain; best stays **2367**.

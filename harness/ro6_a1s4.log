@@ -1,0 +1,5 @@
+base ('caught', 748, 107, 0)
+round 1: 402 tried, best progress 187 / 345 (frame 1276, [('2opt', 72, 76)]), 13s, best clear -
+round 2: 3770 tried, best progress 304 / 347 (frame 2118, [('2opt', 69, 74), ('late', 131, 8)]), 169s, best clear -
+round 3: 2799 tried, best progress 333 / 347 (frame 2309, [('2opt', 73, 77), ('2opt', 125, 131), ('late', 284, 16)]), 339s, best clear -
+round 4: 2439 tried, best progress 345 / 347 (frame 2414, [('2opt', 69, 74), ('late', 131, 10), ('late', 295, 5), ('late', 314, 4)]), 551s, best clear -
