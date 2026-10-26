@@ -85,11 +85,12 @@ def main():
     ap.add_argument("--jobs", type=int, default=3); ap.add_argument("--back", type=int, default=4)
     ap.add_argument("--kmax", type=int, default=12); ap.add_argument("--budget", type=int, default=60)
     ap.add_argument("--mirror", action="store_true", help="start from the left-right mirror of the walk"); ap.add_argument("--target", type=int, default=2438)
+    ap.add_argument("--walk-index", type=int, help="use walks[i] of the floor file")
     ap.add_argument("--fruit-fail", action="store_true", help="a fruit vanishing uneaten counts as a catch")
     a = ap.parse_args()
     B.FRUIT_FAIL = a.fruit_fail
     d = json.load(open(a.walk))
-    walk = [list(t) for t in d["walk"]]
+    walk = [list(t) for t in (d["walks"][a.walk_index]["walk"] if a.walk_index is not None else d["walk"])]
     if a.mirror:
         walk = [[13, 23]] + [[27 - c, r] for c, r in walk]
     base_len = len(walk)

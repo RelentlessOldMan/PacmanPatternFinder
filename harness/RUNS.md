@@ -512,3 +512,12 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   - **Result `reorder4_keep40m.log`: 2391 frames (39.45 s), both fruits (1136, 2053) - NEW BEST.** keep40 mirrored +
     2-opt(23,31), rev(11,73), late 126:8, rev(165,291), 2-opt(230,250). Input replay verified. `best/L21_speed_2391.json`
     (`save_best.py`).
+- `polish.py ../best/L21_speed_2391.json ...` -> `polish_2391.log`.
+  - Results reorder4: keep40m 2391, avoid1m 2394, fv2m 2442 (finished).
+- Stopped the 2438-based jobs (climb c8, sweep_mid_b at 33-45, sweep_finish2 at start 61 cap 2422): the reorder
+  walks are now 47 frames ahead of them. polish_2410 stopped after 11 rounds (no gain on 2410).
+- `sweep_reorder.sh` -> `sweep_reorder.txt`, `ro5_*.log`: reorder4 settings over keep40 walks[1..11] mirrored,
+  avoid1 walks[1] mirrored, trips mirrored, and keep40/avoid1/fv2 unmirrored (now with late presses).
+  - **Result `ro5_k40w6m.log`: 2367 frames (39.06 s), both fruits (1136, 2022) - NEW BEST.** keep40 walks[6]
+    mirrored + 2-opt(23,31), rev(11,73), 2-opt(112,127), rev(169,295), 2-opt(216,252), rev(219,271), late 311:6,
+    324:3. Input replay verified. `best/L21_speed_2367.json`.

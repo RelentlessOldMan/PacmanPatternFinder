@@ -1,0 +1,3 @@
+base ('caught', 601, 83, 0)
+round 1: 408 tried, best progress 99 / 341 (frame 696, [('2opt', 64, 67)]), 10s, best clear -
+round 2: 4989 tried, best progress 166 / 347 (frame 1133, [('2opt', 23, 29), ('2opt', 81, 87)]), 164s, best clear -
