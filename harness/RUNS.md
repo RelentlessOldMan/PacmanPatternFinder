@@ -542,3 +542,5 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   (stock 0.289, from power-on: coin, start, `best/L21_skip.lua` skips 1-20, then the per-frame inputs; the live
   start is one frame after the skip ends, matched by RAM hash to server.lua's start state). Record: CLEAR 2367,
   score 12600; playback with only L21_skip.lua: CLEAR 2367, score 12600.
+- Video re-encoded (`video_walk.py ... --annotate --encode-only`): bar shows the joystick held each frame and the
+  route frame count (stops at 2367). The video is 60.606 fps (Pac-Man's refresh), every emulated frame kept.

@@ -76,8 +76,8 @@ kill it versus 31 for the 118/88 (`harness/goodrich_late.py`).
 
 ### Level 21+ speed run (just for fun)
 
-Video: [level 21 in 2367 frames](videos/L21_speed_2367_level21.mp4) (39.06 s from start to clear, both fruits
-eaten). Route: `best/L21_speed_2367.json`. It is frame-exact and not meant for human play: it is stored as the
+Video: [level 21 in 2367 frames](videos/L21_speed_2367_level21.mp4) (39.06 s from start to clear, both fruits;
+the bar under the maze shows the joystick on every frame, at the game's own 60.606 fps). Route: `best/L21_speed_2367.json`. It is frame-exact and not meant for human play: it is stored as the
 tile walk Pac-Man takes plus the joystick direction held on every frame, and replaying just those inputs in
 stock MAME 0.289 clears in 2367 frames (`harness/video_walk.py`).
 
