@@ -81,6 +81,12 @@ eaten). Route: `best/L21_speed_2367.json`. It is frame-exact and not meant for h
 tile walk Pac-Man takes plus the joystick direction held on every frame, and replaying just those inputs in
 stock MAME 0.289 clears in 2367 frames (`harness/video_walk.py`).
 
+To watch it in your own MAME 0.289, download `best/L21_speed_2367.inp` and `best/L21_skip.lua` into one folder and run
+`mame pacman -autoboot_script L21_skip.lua -playback L21_speed_2367.inp -input_directory .` from it. A .inp only
+records inputs, so the skip script must run on playback too: it marks levels 1-20 cleared as each starts, at full
+speed, then the recorded run plays on level 21 at normal speed (made by `harness/record_inp.py`, which plays the
+.inp back and checks it clears in 2367 frames).
+
 How it was found: start from a shortest ghost-free walk that eats every dot (`harness/floor.py`), mirror it left to
 right (the maze is symmetric, but the ghosts are not, so the mirrored walk meets them later), then reorder it:
 reverse stretches of the walk, reconnect them by shortest paths, and press a few turns a few frames late, playing

@@ -538,3 +538,7 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   Video: `videos/L21_speed_2367_level21.mp4`.
 - Removed the 2438/2458 videos and `best/L21_speed_2438.*` (user: no longer needed); README speed section now
   describes the 2367.
+- `.inp` for download: `record_inp.py ../best/L21_speed_2367.json L21_speed_2367.inp` -> `best/L21_speed_2367.inp`
+  (stock 0.289, from power-on: coin, start, `best/L21_skip.lua` skips 1-20, then the per-frame inputs; the live
+  start is one frame after the skip ends, matched by RAM hash to server.lua's start state). Record: CLEAR 2367,
+  score 12600; playback with only L21_skip.lua: CLEAR 2367, score 12600.
