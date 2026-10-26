@@ -464,3 +464,15 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   before it. On the 2337 floor walk (`result_floor_L21_2fruit_trips.json`): first catch frame 490, Pinky head-on in
   column 6 at (6,20), Pac-Man mid dot-stall. No single late press 1-40 on any of the 13 turns before it, nor a start
   delay 0-29, gets through (Pinky chases, so he re-meets Pac-Man there). `bw_trips_b24.log`: round 1 empty.
+- `booey/poke_route.py` (diagnostic: speed phase poked by k = 0..15 steps before a move, then that move on time or late):
+  2438 move 60 (R9, a ghost wait): R0-R6 die in move 61 for every phase (not a booeyable catch). Move 79 (R8):
+  R5 and R7 with phase +14 (= one more dot eaten before it) live to move 99 (frame 2422) but die there; R6 phase +6 to 96.
+- Overnight 2026-10-26 (user: keep trying to beat 2438 until 7am):
+  - `sweep_mid.sh` (window.py, same dots, 400k cap) on the 2438's middle: `sweep_mid_a.txt` (19-30, 28-40, 38-50),
+    `sweep_mid_b.txt` (24-35, 33-45, 44-56).
+  - `sweep_booey.sh` -> `sweep_booey.txt`: guide settings with --booey 24/40 --booey-depth 2/3 over keep40, keep40:5,
+    avoid1, avoid1:1, fv2 guides.
+  - `climb.py result_L21_neigh_2438.json c8 --jobs 2 --extra "--booey 24 --booey-depth 2"` -> `climb_c8.txt`.
+  - pairs of late presses (1-20) on the last 6 turns before the floor walk's first catch -> `bw_pairs_first.log`.
+  - Result `bw_pairs_first.log`: 0 of 6,000 pairs (turns 34-61, 1-20 frames late each) pass the floor walk's first
+    catch. A fixed ghost-free walk can't be timed past Pinky there; its dot counts (speed phase) would have to change.

@@ -1,0 +1,5 @@
+== 24-35
+window moves 24-35: RRURULDLUUUx1, 21 dots, old frames at b 842
+4095 nodes, 1 ways through, 44s
+  RRURULDLUUUx1                at b 842 (search 842, old 842) dots 81  suffix clear  2438
+== 33-45

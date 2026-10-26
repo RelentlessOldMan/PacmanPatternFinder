@@ -1,0 +1,9 @@
+== 19-30
+window moves 19-30: DRULURRURULD, 33 dots, old frames at b 703
+2170 nodes, 1 ways through, 12s
+  DRULURRURULD                 at b 703 (search 703, old 703) dots 71  suffix clear  2438
+== 28-40
+window moves 28-40: ULDLUUUx1LURUL, 30 dots, old frames at b 979
+7894 nodes, 1 ways through, 96s
+  ULDLUUUx1LURUL               at b 979 (search 979, old 979) dots 99  suffix clear  2438
+== 38-50
