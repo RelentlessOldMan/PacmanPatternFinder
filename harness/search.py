@@ -342,6 +342,7 @@ def run_child(w, sims, held, opt, minwin, route=(), expect=None, corner=False):
 
 
 REVERSE = False  # --reverse: "x" moves (turn back mid-corridor) are allowed
+START = (13, 23)  # Pac-Man's start tile (heading L)
 REVERSE_ANY = False  # --reverse-any: also "x<i>": turn back on any uneaten dot ahead (path index i)
 
 
@@ -352,8 +353,11 @@ def tokens(route):
 
 def rev_spots(tile, heading, eaten, any_dot=False):
     """The turn-back moves from here: [(move, spot, tiles walked)]. "x" (rev_spot); with any_dot also
-    "x<i>": turn back on path[i], any uneaten dot before the next node (the rest is left for later)."""
+    "x<i>": turn back on path[i], any uneaten dot before the next node (the rest is left for later), and
+    "x0" as the first move: turn right on the start tile (David Race's openings go right at once)."""
     out = []
+    if any_dot and not eaten and tile == START and heading == "L":
+        out.append(("x0", tile, [tile]))
     rv = rev_spot(tile, heading, eaten)
     if rv:
         out.append(("x",) + rv)

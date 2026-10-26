@@ -430,3 +430,6 @@ vs ~2521 (41.6 s record): 39 frames (0.64 s) short. Ghost-free floors: 2062 no f
   (G 10, both fruits; f2 and f0 found the same route), 2978 (f2 G 3). The search can't open like Race does (an
   immediate reverse to the right at the start, which the move format can't express), so it falls off his order
   from the first move.
+- New "x0" move (search.rev_spots, with --reverse-any): as the first move, turn right on the start tile, so a
+  route can open like Race's (`x0RDLDL...`: right, down col 18, the bottom row; replays on pacemu).
+- `sweep_race2.sh` -> `sweep_race2.txt`: sweep_race.sh again with x0 available.
