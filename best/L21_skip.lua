@@ -1,7 +1,7 @@
--- L21_skip.lua: plays back best/L21_speed_2343.inp, which starts on level 21. A .inp only holds inputs, so the
+-- L21_skip.lua: plays back best/L21_speed_2316.inp, which starts on level 21. A .inp only holds inputs, so the
 -- recording was made with this script skipping levels 1-20 (each is marked cleared the moment it starts, and the
 -- game really advances), and it must run again on playback:
---   mame pacman -autoboot_script L21_skip.lua -playback L21_speed_2343.inp -input_directory .   (from the folder)
+--   mame pacman -autoboot_script L21_skip.lua -playback L21_speed_2316.inp -input_directory .   (from the folder)
 -- It runs unthrottled while skipping, then at normal speed from level 21. It only writes the dot counter (0x4E0E).
 local mem = manager.machine.devices[":maincpu"].spaces["program"]
 local skipping = false
