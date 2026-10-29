@@ -31,18 +31,22 @@ def arcs(ts):
     return [(t, maze.step(*t, d), d) for t in sorted(ts) for d in maze.DIRS if maze.step(*t, d) in ts]
 
 
-def solve(ts, A, time_limit=1800, fruit_visits=0, avoid=()):
+def solve(ts, A, time_limit=1800, fruit_visits=0, avoid=(), jitter=None):
     """Fewest steps from START visiting every dot, ending anywhere. Returns {arc index: count}.
     Connected by flow: START sends one unit to every dot, only along steps the walk takes.
-    avoid: arc sets of earlier walks; each must be left at least once (a step on an arc outside it)."""
+    avoid: arc sets of earlier walks; each must be left at least once (a step on an arc outside it).
+    jitter: extra cost per arc (small, for a different near-optimal step set)."""
     T = sorted(ts)
     nt, na = len(T), len(A)
     idx = {t: i for i, t in enumerate(T)}
     nd = sum(1 for t in T if t in maze.DOTS and t != START)
+    fv = 1 if fruit_visits and FRUIT not in maze.DOTS else 0  # FRUIT gets flow too: its visits must join the walk
+    nd += fv
     # variables: x[a] (steps along arc a), f[a] (flow along a), e[t] (the walk ends on t)
     X, F, E = 0, na, 2 * na
     n = 2 * na + nt
     cost = np.zeros(n); cost[X:X + na] = 1
+    if jitter is not None: cost[X:X + na] += jitter
     M = lil_matrix((2 * nt + 2 + na + len(avoid), n)); lo, hi = [], []
     k = 0
     for t in T:  # steps: out - in + end = [t is START]
@@ -52,7 +56,7 @@ def solve(ts, A, time_limit=1800, fruit_visits=0, avoid=()):
         if t == FRUIT and fruit_visits:
             for j, (a, b, _) in enumerate(A):
                 if b == FRUIT: M[2 * nt + 1 + na, X + j] = 1
-        v = -nd if t == START else (1 if t in maze.DOTS else 0); lo.append(v); hi.append(v); k += 1
+        v = -nd if t == START else (1 if t in maze.DOTS or (fv and t == FRUIT) else 0); lo.append(v); hi.append(v); k += 1
     for j, (a, b, _) in enumerate(A):
         M[idx[a], X + j] += 1; M[idx[b], X + j] -= 1
         M[nt + idx[b], F + j] += 1; M[nt + idx[a], F + j] -= 1

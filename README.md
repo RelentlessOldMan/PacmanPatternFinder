@@ -76,24 +76,28 @@ kill it versus 31 for the 118/88 (`harness/goodrich_late.py`).
 
 ### Level 21+ speed run (just for fun)
 
-Video: [level 21 in 2367 frames](videos/L21_speed_2367_level21.mp4) (39.06 s from start to clear, both fruits;
-the bar under the maze shows the joystick on every frame, at the game's own 60.606 fps). Route: `best/L21_speed_2367.json`. It is frame-exact and not meant for human play: it is stored as the
+Video: [level 21 in 2343 frames](videos/L21_speed_2343_level21.mp4) (38.66 s from start to clear, both fruits;
+the bar under the maze shows the joystick on every frame, at the game's own 60.606 fps). Route: `best/L21_speed_2343.json`. It is frame-exact and not meant for human play: it is stored as the
 tile walk Pac-Man takes plus the joystick direction held on every frame, and replaying just those inputs in
-stock MAME 0.289 clears in 2367 frames (`harness/video_walk.py`).
+stock MAME 0.289 clears in 2343 frames (`harness/video_walk.py`).
 
-To watch it in your own MAME 0.289, download `best/L21_speed_2367.inp` and `best/L21_skip.lua` into one folder and run
-`mame pacman -autoboot_script L21_skip.lua -playback L21_speed_2367.inp -input_directory .` from it. A .inp only
+To watch it in your own MAME 0.289, download `best/L21_speed_2343.inp` and `best/L21_skip.lua` into one folder and run
+`mame pacman -autoboot_script L21_skip.lua -playback L21_speed_2343.inp -input_directory .` from it. A .inp only
 records inputs, so the skip script must run on playback too: it marks levels 1-20 cleared as each starts, at full
 speed, then the recorded run plays on level 21 at normal speed (made by `harness/record_inp.py`, which plays the
-.inp back and checks it clears in 2367 frames).
+.inp back and checks it clears in 2343 frames).
 
-How it was found: start from a shortest ghost-free walk that eats every dot (`harness/floor.py`), mirror it left to
-right (the maze is symmetric, but the ghosts are not, so the mirrored walk meets them later), then reorder it:
-reverse stretches of the walk, reconnect them by shortest paths, and press a few turns a few frames late, playing
-every candidate with the real ghosts and keeping the ones that get furthest (`harness/reorder.py`). A fruit that
-disappears uneaten counts as a failure. The 2367 is one such walk, mirrored, with six stretches reversed and two
-turns pressed late. The fastest possible clear with no ghosts at all is about 2337 frames. The log is in
-`harness/RUNS.md`.
+How it was found: start from a short ghost-free walk that eats every dot and both fruits, mirror it left to right
+(the maze is symmetric, but the ghosts are not, so the mirrored walk meets them later), then reorder it: reverse
+stretches of the walk, reconnect them by shortest paths, and press a few turns a few frames late, playing every
+candidate with the real ghosts and keeping the ones that get furthest (`harness/reorder.py`). A fruit that
+disappears uneaten counts as a failure. The ghost-free walks come from `harness/tripsets.py`: it solves the
+shortest eat-every-dot walk (`harness/floor.py`) many times with small random costs, so each solve gives a
+slightly different set of steps; it orders each set's steps in every way it can, then adds the cheapest side
+trips through the fruit spot that land while each fruit is out. The fruit only counts as eaten when Pac-Man
+crosses between the two tiles under it. The 2343 started from a 2280-frame ghost-free walk, mirrored, with three
+stretches reversed and one turn pressed late. The fastest ghost-free walk found so far
+takes 2272 frames. The log is in `harness/RUNS.md`.
 
 ## Running it
 

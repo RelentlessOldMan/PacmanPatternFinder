@@ -24,9 +24,10 @@ def init(walk):
     DIRS = [next(d for d in "LRUD" if maze.step(*P[i], d) == P[i + 1]) for i in range(len(P) - 1)]
 
 
-def play(late, delay=0, stop_frame=4000):
+def play(late, delay=0, stop_frame=4000, hook=None):
     """Pathplay along P with early presses; late[j] holds the old direction until Pac-Man has been on P[j] that many
-    frames. Returns (status, frames, k, fruits); status clear / caught / stop; k = walk index reached."""
+    frames. Returns (status, frames, k, fruits); status clear / caught / stop; k = walk index reached.
+    hook(frame), if given, runs after every frame (diagnostics: booey_diag.py pokes the speed phase)."""
     import maze
     late = {int(a): b for a, b in late.items()}
     srv.handle("mload s L")
@@ -57,6 +58,7 @@ def play(late, delay=0, stop_frame=4000):
         if fr <= delay: want = None
         srv.joy(want); h = want or h
         srv.wait(1)
+        if hook: hook(srv.frame - f0)
         s2 = srv.score()
         ate = s2 - score >= 5000  # level 21's key (5000; + a dot's 10 on the same frame)
         if ate: fruits += 1
