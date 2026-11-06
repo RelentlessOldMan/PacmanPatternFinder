@@ -21,6 +21,7 @@ heading left. Details, timing data and older patterns are in [`best/`](best/READ
 | 3 | `best/L3_allghosts_147.json` | 147 / 107 | all 16 ghosts, both fruits, full clear |
 | 4 | `best/L4_allghosts_171.json` | 171 / 130 | all 16 ghosts, both fruits, full clear |
 | 5–20 | `best/L5-20_keep70_115.json` | 115 / 78 | **leave the corners**: eats both fruits, leaves the corner pockets to eat by hand; any one turn can be pressed 1–4 frames late |
+| 17, 19, 20 (cabinet) | `best/L17-20_cleanup_137.json` | 137 / 98 | the 5–20 route to move 91, then a full-clear ending for levels with no blue ghosts, built for a laggy cabinet |
 | 21+ | `best/L21_full_118.json` | 118 / 88 | **2-fruit full clear**, ~50 s; starts like 5–20 |
 | 21+ (safe) | `best/L21_safe141.json` | 141 / 104 | the 118 to move 110, then an ending that dodges blue wherever it is, ~61 s |
 
@@ -50,6 +51,18 @@ Videos: [level 5](videos/L5-20_keep70_115_level5.mp4) and [level 20](videos/L5-2
 (the corner dots are left to eat by hand).
 
 ![Levels 5-20 pattern](best/L5-20_115_screen.png)
+
+**Levels 17, 19 and 20 on a laggy cabinet** (`best/L17-20_cleanup_137.json`, videos: [level 17](videos/L17-20_cleanup_137_level17.mp4),
+[level 20](videos/L17-20_cleanup_137_level20.mp4)): on these levels the ghosts never turn blue, so cleaning up the
+corner dots by hand is dangerous. Playing the whole 5–20 route first doesn't work on a laggy cabinet: it ends in the
+top-left corner with ghosts right behind Pac-Man, and running even a frame or two late there gets you caught within
+a few moves, whatever you do next. This route plays the 5–20 route for its first 91 moves, then 46 moves of its
+own that eat the corner pockets too: full clear, both fruits, 137 moves. One route works on all three levels
+(the ghosts move the same on 19 and 20). Tested with turns from move 80 on pressed 1–2 frames late at random
+(3 turns in 10), 44 of 90 fresh games survived (17: 18/30, 19: 13/30, 20: 13/30), more than any other cleanup tried;
+most deaths come at move 104 and on the last move.
+
+![Levels 17, 19, 20 cabinet cleanup](best/L17-20_cleanup_137_screen.png)
 
 ### Levels 21+: two fruits, full clear
 

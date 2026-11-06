@@ -1,0 +1,13 @@
+{
+ "route": "LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLUUULDRUURDLDRDLDDDRDRRRDRRDLLULULURUULULURRRRRRDDDRDLDRDLURURULULULLURUULDRULLDLULLDDRDDDDLULURR",
+ "levels": [
+  17,
+  19,
+  20
+ ],
+ "moves": 137,
+ "frames": 3441,
+ "fruits": 2,
+ "dots": 244,
+ "note": "Cabinet cleanup for levels 17, 19 and 20 (no blue ghosts): the keep-70 5-20 route (L5-20_keep70_115.json) for its first 91 moves, then 46 moves of its own that eat the corner pockets too. Full clear, both fruits. Checked with turns from move 80 on pressed 1-2 frames late at random (p 0.3): 44 of 90 fresh games survive (L17 18/30, L19 13/30, L20 13/30); most deaths at moves 104 and 137. On time min ghost >= 8 px."
+}

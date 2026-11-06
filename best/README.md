@@ -10,10 +10,11 @@ position heading left. None of them reverses.
 | 3 | `L3_allghosts_147.json` | 147 / 107 | 4568 frames (~75 s) | full clear, both fruits, all 16 ghosts |
 | 4 | `L4_allghosts_171.json` | 171 / 130 | 5089 frames (~84 s) | full clear, both fruits, all 16 ghosts |
 | 5–20 | `L5-20_keep70_115.json` | 115 / 78 | 2971 frames (~50 s) | eats both fruits; leaves the corner pockets to eat by hand; its first 70 moves are the old 99 |
+| 17, 19, 20 | `L17-20_cleanup_137.json` | 137 / 98 | 3442 frames (~57 s) | for a laggy cabinet: the 5–20 route to move 91, then an ending that eats the corner pockets too; 44/90 drifted games survive |
 | 21+ | `L21_full_118.json` | 118 / 88 | 3040 frames (~50 s) | full clear, both keys; its first 15 moves are the 5–20 route |
 | 21+ (safe) | `L21_safe141.json` | 141 / 104 | 3727 frames (~61 s) | the 118 to move 110, then a safe ending that survives blue being out of place (see below) |
 
-Pattern sheets: `L<N>_allghosts_<moves>_screen.png`, `L5-20_115_screen.png`, `L21_118_screen.png`, `L21_safe141_screen.png` (plain
+Pattern sheets: `L<N>_allghosts_<moves>_screen.png`, `L5-20_115_screen.png`, `L21_118_screen.png`, `L21_safe141_screen.png`, `L17-20_cleanup_137_screen.png` (plain
 drawn versions without `_screen`). Videos: `../videos/`.
 
 **Timing data** (`harness/rank_sols.py`): each turn is replayed pressed 1–4 frames past the point where
