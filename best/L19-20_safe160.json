@@ -1,0 +1,12 @@
+{
+ "route": "LLDLLDRRURULURRURUURRRRDLDLLDLDDRRRURULDLUUULDRUURDLDRDLDDDRDRRRDRRDLLULULURUULULURRRRRRDDLDLDLULDDDRURULLUURURULURDDLULLURDLDLDLLDDDLDDLULURDRRRURUURUULLLULLDD",
+ "levels": [
+  19,
+  20
+ ],
+ "moves": 160,
+ "frames": 3783,
+ "fruits": 2,
+ "dots": 244,
+ "note": "Full clear for levels 19 and 20, where the ghosts never turn blue, so eating the corner dots by hand is dangerous. The 5-20 route (L5-20_keep70_115.json) for its first 90 moves, then its own ending. Both fruits."
+}
