@@ -1,3 +1,5 @@
+> The tolerant patterns (5–20, 17/19/20, 21+) have moved to [`../tolerant/`](../tolerant/README.md). This folder is being reorganized into the perfect-game speedrun section.
+
 # Patterns (2026-10-24)
 
 Routes are the direction to leave each junction or corner (R D L U), starting from Pac-Man's start

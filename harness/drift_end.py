@@ -10,7 +10,7 @@ from worker import MAME_MEM, Worker
 
 trials, seed, outp = int(sys.argv[1]), int(sys.argv[2]), sys.argv[3]
 P, KMAX, LO, ENDDRIFT = (float(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7])) if len(sys.argv) > 4 else (0.3, 2, 80, 0)
-r = tokens(json.load(open("../best/L21_full_118.json"))["route"])
+r = tokens(json.load(open("../tolerant/L21+/L21_full_118.json"))["route"])
 ends = {"118": r[110:], "user": r[110:112] + list("RRULLDRU")}
 for log in ("search_L21_safeend_k110_mg32.log", "search_L21_safeend_k110_ot95_mg24.log", "search_L21_safe3_hist24_s11.log"):
     for m in re.finditer(r"SOLUTION.*?route=(\S+)", open(log).read()):

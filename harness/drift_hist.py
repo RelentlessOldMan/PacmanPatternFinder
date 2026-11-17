@@ -8,7 +8,7 @@ from worker import MAME_MEM, Worker
 
 n, seed, outp = int(sys.argv[1]), int(sys.argv[2]), sys.argv[3]
 P, KMAX, LO = (float(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6])) if len(sys.argv) > 4 else (0.3, 2, 80)
-r = tokens(json.load(open("../best/L21_full_118.json"))["route"])
+r = tokens(json.load(open("../tolerant/L21+/L21_full_118.json"))["route"])
 rng = random.Random(seed)
 w = Worker(MAME_MEM, idle=True)
 w.cmd("newgame"); w.cmd("level 21"); w.cmd("msave s")
