@@ -1,4 +1,4 @@
-"""pattern_sheet.py <route.json> <out.png> <title> [screenshot.png] [--level N]: draw a route as one image to learn it from.
+"""pattern_sheet.py <route.json> <out.png> <title> [screenshot.png] [--level N] [--leg K]: draw a route as one image to learn it from.
 
 The route is split into legs, one maze panel each: the leg's path in colour with every move numbered
 where it's taken, on the dots still left when the leg starts. The maze is drawn from maze.txt (no game
@@ -6,7 +6,10 @@ graphics), or with a screenshot, on that: a 3x MAME frame (672x864) of the level
 blacked out.
 
 A route with turn-backs ("x", "x3") or late presses ("R9") is walked on pacemu (replay_route.play, level N,
-default 21), since where a turn-back happens depends on the dots eaten and where each move leaves Pac-Man."""
+default 21), since where a turn-back happens depends on the dots eaten and where each move leaves Pac-Man.
+
+--leg K: K moves per leg (a last leg under 5 moves joins the one before), so sheets of routes that share a start
+split the same way; without it the route is split into 6 equal legs."""
 import json, re, sys, os
 from PIL import Image, ImageDraw, ImageFont
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -18,7 +21,7 @@ MY = 0                      # where the maze starts in a panel (a screenshot has
 LW = 4                      # path line width
 PAD, HEAD, LEGHEAD, FOOT = 24, 96, 56, 60
 BG, WALL, WALL_EDGE, DOT = (12, 12, 20), (24, 34, 92), (70, 90, 200), (235, 205, 170)
-COLOURS = [(255, 70, 70), (70, 210, 90), (80, 150, 255), (255, 150, 60), (230, 220, 70), (60, 220, 220), (220, 100, 230)]
+COLOURS = [(255, 70, 70), (70, 210, 90), (80, 150, 255), (255, 150, 60), (230, 220, 70), (60, 220, 220), (220, 100, 230), (240, 240, 240)]
 FONT = "C:/Windows/Fonts/arial.ttf"
 BOLD = "C:/Windows/Fonts/arialbd.ttf"
 
@@ -88,9 +91,12 @@ def walk_emu(route, level):
     return tiles, at
 
 
-def legs(n, k):
-    size = -(-n // k)
-    return [(i, min(i + size, n)) for i in range(0, n, size)]
+def legs(n, k, size=None):
+    size = size or -(-n // k)
+    out = [(i, min(i + size, n)) for i in range(0, n, size)]
+    if size and len(out) > 1 and out[-1][1] - out[-1][0] < 5:
+        out[-2:] = [(out[-2][0], n)]
+    return out
 
 
 def centre(t, ox, oy):
@@ -177,7 +183,7 @@ def main():
     global T, PW, PH, MY, LW
     src, out, title = sys.argv[1], sys.argv[2], sys.argv[3]
     shot = None
-    if len(sys.argv) > 4 and sys.argv[4] != "--level":
+    if len(sys.argv) > 4 and not sys.argv[4].startswith("--"):
         shot = Image.open(sys.argv[4]).convert("RGB")
         T, MY, LW = 24, 3 * 24, 5
         PW, PH = shot.size
@@ -192,7 +198,7 @@ def main():
     lates = [f"move {i + 1} {m[0]} {m[1:]} late" for i, m in enumerate(route) if m[0] != "x" and len(m) > 1]
     eaten = set(tiles) & maze.DOTS
     nleg = 6
-    parts = legs(len(route), nleg)
+    parts = legs(len(route), nleg, int(sys.argv[sys.argv.index("--leg") + 1]) if "--leg" in sys.argv else None)
     cols = 3
     rows = -(-len(parts) // cols)
     W = PAD + cols * (PW + PAD)
