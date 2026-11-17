@@ -20,8 +20,6 @@ Patterns for playing by hand, with diagrams and videos for each:
 | 17, 19, 20 | [`L17_safe135`, `L19-20_safe160`](tolerant/README.md#levels-17-19-and-20-full-clear) | full clear: the 5–20 route, then its own ending that eats the corners (no blue ghosts on these levels) |
 | 21+ | [`L21_safe141`](tolerant/README.md#levels-21-two-keys-full-clear) | full clear, both keys, with an ending that survives blue being out of place |
 
-![Levels 5-20 pattern](tolerant/L5-20/L5-20_115_screen.png)
-
 ## Perfect-game speedrun
 
 The other half of the project: frame-exact routes for the fastest perfect-score game (every dot, fruit and ghost on
