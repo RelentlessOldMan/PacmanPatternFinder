@@ -11,8 +11,6 @@ graphics; the plain `.png` sheets are the same patterns drawn without them (`har
 | Levels | Folder | File | Moves / turns | Time | What it does |
 |---|---|---|---|---|---|
 | 5–20 | [`L5-20/`](L5-20/) | `L5-20_keep70_115.json` | 115 / 78 | 2971 frames (~50 s) | eats both fruits; leaves the corner pockets to eat by hand |
-| 17 | [`L17-19-20/`](L17-19-20/) | `L17_safe135.json` | 135 / 92 | 3419 frames (~57 s) | full clear, both fruits: the 5–20 route to move 79, then its own ending |
-| 19, 20 | [`L17-19-20/`](L17-19-20/) | `L19-20_safe160.json` | 160 / 113 | 3783 frames (~63 s) | full clear, both fruits: the 5–20 route to move 90, then its own ending |
 | 21+ | [`L21+/`](L21+/) | `L21_safe141.json` | 141 / 104 | 3727 frames (~61 s) | full clear, both keys; an ending that dodges blue wherever it is |
 
 ## Levels 5–20: leave the corners
@@ -25,31 +23,6 @@ Videos: [level 5](L5-20/L5-20_keep70_115_level5.mp4), [level 20](L5-20/L5-20_kee
 No single late press kills it on any level from 5 to 20; the search required that. Each turn was replayed
 pressed 1–4 frames past the point where Pac-Man would corner cleanly, alone and in pairs (`harness/rank_sols.py`).
 532 pairs of late presses kill, spread over moves 40–112, worst on levels 15–18. The JSON lists them.
-
-## Levels 17, 19 and 20: full clear
-
-The ghosts never turn blue on these levels, so eating the corner dots by hand is dangerous. These routes play the
-5–20 route, then eat the corners too.
-
-Videos: [level 17](L17-19-20/L17_safe135_level17.mp4), [level 19](L17-19-20/L19-20_safe160_level19.mp4),
-[level 20](L17-19-20/L19-20_safe160_level20.mp4).
-
-![Level 17 full clear](L17-19-20/L17_safe135_screen.png)
-
-![Levels 19 and 20 full clear](L17-19-20/L19-20_safe160_screen.png)
-
-Their endings were searched against whole games of late presses: every turn of the level pressed late at random,
-the way a laggy machine plays. Tested on 100 such games per level, they lived far more often than the
-earlier 137-move cleanup:
-
-| Level | Route | Each turn late with chance 0.1: lived | with chance 0.15: lived |
-|---|---|---|---|
-| 17 | `L17_safe135` | **55** of 100 | **46** of 100 |
-| 17 | old 137 cleanup | 24 of 100 | 5 of 100 |
-| 19, 20 | `L19-20_safe160` | **127** of 200 | **89** of 200 |
-| 19, 20 | old 137 cleanup | 36 of 200 | 4 of 200 |
-
-Most of the remaining deaths are in the shared 5–20 part (moves 40, 54 and 74 on level 17), not the ending.
 
 ## Levels 21+: two keys, full clear
 
